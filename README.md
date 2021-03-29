@@ -1,6 +1,6 @@
 # group-01 - AlSet
 
-![AlSet](images/alset.svg)
+![AlSet](images/alset-whiteOutline.svg)
 
 ## What you are going to make?
 
