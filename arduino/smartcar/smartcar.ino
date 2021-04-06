@@ -1,5 +1,4 @@
 #include <Smartcar.h>
-#include <GP2D120.hpp>
 
 const unsigned long PRINT_INTERVAL = 100;
 unsigned long previousPrintout     = 0;
@@ -31,9 +30,13 @@ SmartCar car(arduinoRuntime, control, gyroscope, leftOdometer, rightOdometer);
 const auto triggerPin = 6;
 const auto echoPin = 7;
 const auto maxDistance = 400;
-const unsigned short IR_PIN = A1;
+const unsigned short IR_PIN = 0;
+
+//measures distances in short distances
 GP2D120 infraredSensor(arduinoRuntime, IR_PIN);
-SR04 front(arduinoRuntime, triggerPin, echoPin, maxDistance);
+
+//measures distances in longer distances
+SR04 frontUSSensor(arduinoRuntime, triggerPin, echoPin, maxDistance);
 
 void setup()
 {
@@ -51,7 +54,8 @@ void loop()
     if (currentTime >= previousPrintout + PRINT_INTERVAL)
     {
         previousPrintout = currentTime;
-        Serial.println(infraredSensor.getMedianDistance());
+        Serial.println(infraredSensor.getDistance());
+        //Serial.println(frontUSSensor.getDistance());
     }
     
 }
