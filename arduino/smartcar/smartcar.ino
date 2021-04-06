@@ -1,5 +1,6 @@
 #include <Smartcar.h>
 
+//only for printing current readings of sensor to serial terminal
 const unsigned long PRINT_INTERVAL = 100;
 unsigned long previousPrintout     = 0;
 
@@ -30,10 +31,12 @@ SmartCar car(arduinoRuntime, control, gyroscope, leftOdometer, rightOdometer);
 const auto triggerPin = 6;
 const auto echoPin = 7;
 const auto maxDistance = 400;
-const unsigned short IR_PIN = 0;
+const unsigned short FRONT_IR_PIN = 0;
+const unsigned short BACK_IR_PIN = 3;
 
 //measures distances in short distances
-GP2D120 infraredSensor(arduinoRuntime, IR_PIN);
+GP2D120 frontIRSensor(arduinoRuntime, FRONT_IR_PIN);
+GP2D120 backIRSensor(arduinoRuntime, BACK_IR_PIN);
 
 //measures distances in longer distances
 SR04 frontUSSensor(arduinoRuntime, triggerPin, echoPin, maxDistance);
@@ -54,8 +57,10 @@ void loop()
     if (currentTime >= previousPrintout + PRINT_INTERVAL)
     {
         previousPrintout = currentTime;
-        Serial.println(infraredSensor.getDistance());
+        //Serial.println(frontIRSensor.getDistance());
+        Serial.println(backIRSensor.getDistance());
         //Serial.println(frontUSSensor.getDistance());
+        
     }
     
 }
