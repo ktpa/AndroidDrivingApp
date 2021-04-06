@@ -11,26 +11,26 @@ DifferentialControl control(leftMotor, rightMotor);
 
 GY50 gyroscope(arduinoRuntime, 37);
 
-const auto pulsesPerMeter = 600;
+const auto PULSES_PER_METER = 600;
 
 DirectionlessOdometer leftOdometer{
     arduinoRuntime,
     smartcarlib::pins::v2::leftOdometerPin,
     []() { leftOdometer.update(); },
-    pulsesPerMeter};
+    PULSES_PER_METER};
 DirectionlessOdometer rightOdometer{
     arduinoRuntime,
     smartcarlib::pins::v2::rightOdometerPin,
     []() { rightOdometer.update(); },
-    pulsesPerMeter};
+    PULSES_PER_METER};
 
 
 
 SmartCar car(arduinoRuntime, control, gyroscope, leftOdometer, rightOdometer);
 
-const auto triggerPin = 6;
-const auto echoPin = 7;
-const auto maxDistance = 400;
+const auto TRIGGER_PIN = 6;
+const auto ECHO_PIN = 7;
+const auto MAX_DISTANCE = 400;
 const unsigned short FRONT_IR_PIN = 0;
 const unsigned short BACK_IR_PIN = 3;
 
@@ -39,7 +39,7 @@ GP2D120 frontIRSensor(arduinoRuntime, FRONT_IR_PIN);
 GP2D120 backIRSensor(arduinoRuntime, BACK_IR_PIN);
 
 //measures distances in longer distances
-SR04 frontUSSensor(arduinoRuntime, triggerPin, echoPin, maxDistance);
+SR04 frontUSSensor(arduinoRuntime, TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 void setup()
 {
