@@ -70,17 +70,17 @@ void avoidObstacle()
     unsigned int forwardDistance = frontIRSensor.getDistance();
     unsigned int reverseDistance = backIRSensor.getDistance();
     
-    // if the forward distance to an object is smaller than 25, the car will stop
+    // if the forward or reverse distance to an object is smaller than 25, the car will stop
     if (forwardDistance != 0 && forwardDistance < 25) 
     {
         car.setSpeed(0);
     }
-    car.setSpeed(1.5);
-    
-    // if the reverse distance to an object is smaller than 25, the car will stop
-    if (reverseDistance != 0 && reverseDistance < 25)
+    else if (reverseDistance != 0 && reverseDistance < 25)
     {
         car.setSpeed(0);
     }
-    car.setSpeed(1.5);
+    else 
+    {
+        car.setSpeed(1.5);
+    }
 }
