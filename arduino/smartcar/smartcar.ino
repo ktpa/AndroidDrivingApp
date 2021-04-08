@@ -53,6 +53,8 @@ void loop()
 {
     // Maintain the speed and update the heading
     car.update();
+    avoidObstacle();
+    
     unsigned long currentTime = millis();
     if (currentTime >= previousPrintout + PRINT_INTERVAL)
     {
@@ -60,7 +62,25 @@ void loop()
         //Serial.println(frontIRSensor.getDistance());
         Serial.println(backIRSensor.getDistance());
         //Serial.println(frontUSSensor.getDistance());
-        
     }
+}
+
+void avoidObstacle() 
+{
+    unsigned int forwardDistance = frontIRSensor.getDistance();
+    unsigned int reverseDistance = backIRSensor.getDistance();
     
+    // if the forward distance to an object is smaller than 25, the car will stop
+    if (forwardDistance != 0 && forwardDistance < 25) 
+    {
+        car.setSpeed(0);
+    }
+    car.setSpeed(1.5);
+    
+    // if the reverse distance to an object is smaller than 25, the car will stop
+    if (reverseDistance != 0 && reverseDistance < 25)
+    {
+        car.setSpeed(0);
+    }
+    car.setSpeed(1.5);
 }
