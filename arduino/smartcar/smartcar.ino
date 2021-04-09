@@ -41,12 +41,14 @@ GP2D120 backIRSensor(arduinoRuntime, BACK_IR_PIN);
 //measures distances in longer distances
 SR04 frontUSSensor(arduinoRuntime, TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
+const auto DEFAULT_DRIVING_SPEED = 1.5;
+
 void setup()
 {
     Serial.begin(9600);
 
     car.enableCruiseControl();
-    car.setSpeed(1.5); // Maintain a speed of 1.5 m/sec
+    car.setSpeed(DEFAULT_DRIVING_SPEED); // Maintain a speed of 1.5 m/sec
 }
 
 void loop()
@@ -65,22 +67,15 @@ void loop()
     }
 }
 
+const auto STOPPING_DISTANCE = 100;
+
 void avoidObstacle() 
 {
-    unsigned int forwardDistance = frontIRSensor.getDistance();
+    unsigned int forwardDistance = frontUSSensor.getDistance();
     unsigned int reverseDistance = backIRSensor.getDistance();
-    
-    // if the forward or reverse distance to an object is smaller than 25, the car will stop
-    if (forwardDistance != 0 && forwardDistance < 25) 
-    {
-        car.setSpeed(0);
-    }
-    else if (reverseDistance != 0 && reverseDistance < 25)
-    {
-        car.setSpeed(0);
-    }
-    else 
-    {
-        car.setSpeed(1.5);
-    }
+
+    bool frontStop = forwardDistance != 0 && forwardDistance < STOPPING_DISTANCE;
+    bool backStop = reverseDistance != 0 && reverseDistance < STOPPING_DISTANCE;
+
+    car.setSpeed((frontStop || backStop) ? 0 : DEFAULT_DRIVING_SPEED);
 }
