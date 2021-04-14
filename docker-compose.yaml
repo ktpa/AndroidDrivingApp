@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+    mqtt:
+        image: eclipse-mosquitto
+        volumes:
+            - ./mqtt/config/mqtt.conf:/mosquitto/config/mosquitto.conf
+            - ./mqtt/data:/mosquitto/data
+            - ./mqtt/log:/mosquitto/log
+        ports:
+            - 1883:1883
+            # - 9001:9001 enable if using WS
