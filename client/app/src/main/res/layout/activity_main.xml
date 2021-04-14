@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <SeekBar
-        android:id="@+id/seekBar2"
+        android:id="@+id/speed_slider"
         android:layout_width="0dp"
         android:layout_height="379dp"
         android:layout_marginEnd="6dp"
@@ -19,31 +19,31 @@
         android:scaleY="3.5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2" />
+        app:layout_constraintStart_toEndOf="@+id/rightDir_button" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="78dp"
         android:text="START"
         app:backgroundTint="#4CAF50"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton2"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
-        app:layout_constraintTop_toTopOf="@+id/seekBar2" />
+        app:layout_constraintEnd_toStartOf="@+id/rightDir_button"
+        app:layout_constraintStart_toEndOf="@+id/leftDir_button"
+        app:layout_constraintTop_toTopOf="@+id/speed_slider" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="STOP"
         app:backgroundTint="#F44336"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintStart_toStartOf="@+id/start_button"
+        app:layout_constraintTop_toBottomOf="@+id/start_button" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/leftDir_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="73dp"
@@ -51,13 +51,13 @@
         android:layout_marginTop="36dp"
         android:scaleX="2"
         android:scaleY="2"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/start_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/stop_button"
         app:srcCompat="@drawable/abc_vector_test" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/rightDir_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
@@ -66,9 +66,9 @@
         android:rotation="180"
         android:scaleX="2"
         android:scaleY="2"
-        app:layout_constraintEnd_toStartOf="@+id/seekBar2"
-        app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/speed_slider"
+        app:layout_constraintStart_toEndOf="@+id/start_button"
+        app:layout_constraintTop_toBottomOf="@+id/stop_button"
         app:srcCompat="@drawable/abc_vector_test" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
