@@ -33,3 +33,8 @@
 
 # VSC
 .vscode
+
+# MQTT
+
+/mqtt/data
+/mqtt/log
