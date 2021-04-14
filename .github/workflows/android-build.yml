@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Run unit tests
-        run: ./gradlew test
+        run: ./client/gradlew test
   android_tests:
     runs-on: macos-11.0
     steps:
@@ -19,4 +19,4 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
-          script: ./gradlew connectedAndroidTest
+          script: ./client/gradlew connectedAndroidTest
