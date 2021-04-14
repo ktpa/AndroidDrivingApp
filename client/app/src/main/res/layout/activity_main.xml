@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="78dp"
-        android:text="START"
+        android:text="@string/activity_main_button_start_content"
         app:backgroundTint="#4CAF50"
         app:layout_constraintEnd_toStartOf="@+id/rightDir_button"
         app:layout_constraintStart_toEndOf="@+id/leftDir_button"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="STOP"
+        android:text="@string/activity_main_button_stop_content"
         app:backgroundTint="#F44336"
         app:layout_constraintStart_toStartOf="@+id/start_button"
         app:layout_constraintTop_toBottomOf="@+id/start_button" />
@@ -54,7 +54,8 @@
         app:layout_constraintEnd_toStartOf="@+id/start_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stop_button"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/abc_vector_test"
+        android:contentDescription="@string/activity_main_leftDir_button_description" />
 
     <ImageButton
         android:id="@+id/rightDir_button"
@@ -69,6 +70,7 @@
         app:layout_constraintEnd_toStartOf="@+id/speed_slider"
         app:layout_constraintStart_toEndOf="@+id/start_button"
         app:layout_constraintTop_toBottomOf="@+id/stop_button"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/abc_vector_test"
+        android:contentDescription="@string/activity_main_rightDir_button_description" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
