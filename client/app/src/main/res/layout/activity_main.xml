@@ -6,13 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="114dp"
+        android:layout_height="379dp"
+        android:progress="50"
+        android:rotation="-90"
+        android:scaleX="3.5"
+        android:scaleY="3.5"
+        tools:layout_editor_absoluteX="281dp"
+        tools:layout_editor_absoluteY="291dp" />
+
+    <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="START"
+        app:backgroundTint="#4CAF50"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="414dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STOP"
+        app:backgroundTint="#F44336"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="490dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="2"
+        android:scaleY="2"
+        app:srcCompat="@drawable/abc_vector_test"
+        tools:layout_editor_absoluteX="73dp"
+        tools:layout_editor_absoluteY="574dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="180"
+        android:scaleX="2"
+        android:scaleY="2"
+        app:srcCompat="@drawable/abc_vector_test"
+        tools:layout_editor_absoluteX="209dp"
+        tools:layout_editor_absoluteY="574dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
