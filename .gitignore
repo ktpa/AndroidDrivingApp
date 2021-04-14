@@ -34,6 +34,7 @@
 # VSC
 .vscode
 
+
 # Android
 
 *.iml
@@ -46,3 +47,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# MQTT
+
+/mqtt/data
+/mqtt/log
+
