@@ -5,19 +5,23 @@ on: [push]
 jobs:
   unit_tests:
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - uses: actions/checkout@v2
 
       - name: Run unit tests
-        working-directory: ./client
         run: ./gradlew test
   android_tests:
     runs-on: macos-11.0
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - uses: actions/checkout@v2
 
       - name: Run instrumentation tests
-        working-directory: ./client
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
