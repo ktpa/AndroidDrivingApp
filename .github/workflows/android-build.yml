@@ -1,0 +1,22 @@
+name: Android CI
+
+on: [push]
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run unit test
+        run: ./gradlew test
+  android_tests:
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          script: ./gradlew connectedAndroidTest
