@@ -19,6 +19,21 @@ public class MainActivity extends AppCompatActivity {
         registerComponentCallbacks();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Disconnect from MQTT server if application is paused
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Reconnect to MQTT server if application is resumed
+
+    }
+
     private void registerComponentCallbacks() {
         findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
         findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
