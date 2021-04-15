@@ -1,4 +1,7 @@
 #include <Smartcar.h>
+#include <MQTT.h>
+#include <WiFi.h>
+
 
 //only for printing current readings of sensor to serial terminal
 const unsigned long PRINT_INTERVAL = 100;
@@ -8,6 +11,7 @@ ArduinoRuntime arduinoRuntime;
 BrushedMotor leftMotor(arduinoRuntime, smartcarlib::pins::v2::leftMotorPins);
 BrushedMotor rightMotor(arduinoRuntime, smartcarlib::pins::v2::rightMotorPins);
 DifferentialControl control(leftMotor, rightMotor);
+MQTTClient mqtt;
 
 GY50 gyroscope(arduinoRuntime, 37);
 
@@ -46,16 +50,37 @@ const auto DEFAULT_DRIVING_SPEED = 1.5;
 void setup()
 {
     Serial.begin(9600);
-
+	mqtt.begin("hysm.dev", 1883, WiFi);
+	if (mqtt.connect("arduino", "", "")) {
+		mqtt.subscribe("/smartcar/control/#", 1);
+		mqtt.onMessage([](String topic, String message) {
+			Serial.println(topic + " " + message);
+			
+			mqtt.publish("/smartcar/received/msg", message);
+			
+			if (topic == "/smartcar/control/speed") {
+				car.setSpeed(message.toInt());
+			} else if (topic == "/smartcar/control/steering") {
+				car.setAngle(message.toInt());
+			}
+		});
+	}
+	
+	
     car.enableCruiseControl();
-    car.setSpeed(DEFAULT_DRIVING_SPEED); // Maintain a speed of 1.5 m/sec
+	car.setSpeed(0);
+    // car.setSpeed(DEFAULT_DRIVING_SPEED); // Maintain a speed of 1.5 m/sec
 }
 
 void loop()
 {
+	if (mqtt.connected()){
+		 mqtt.loop();
+	}
+	
     // Maintain the speed and update the heading
     car.update();
-    avoidObstacle();
+    // avoidObstacle();
     
     unsigned long currentTime = millis();
     if (currentTime >= previousPrintout + PRINT_INTERVAL)
