@@ -2,36 +2,35 @@ package group01.smartcar.client;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import static group01.smartcar.client.Status.*;
 
 public class MainActivity extends AppCompatActivity {
+    SeekBar simpleSeekBar;
+    CarControl car;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         registerComponentCallbacks();
+        car = new CarControl(this.getApplicationContext());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        // Disconnect from MQTT server if application is paused
+        car.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        System.out.println("OnResume");
         // Reconnect to MQTT server if application is resumed
-
+        car.resume();
     }
 
     private void registerComponentCallbacks() {
@@ -39,21 +38,41 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
         findViewById(R.id.leftDir_button).setOnClickListener(this::onLeftDirClick);
         findViewById(R.id.rightDir_button).setOnClickListener(this::onRightDirClick);
+        simpleSeekBar = findViewById(R.id.speed_slider);
+        simpleSeekBar.setOnSeekBarChangeListener(this.onSeekBarChange);
     }
 
     private void onStartClick(View view) {
-        // TODO
+        car.start();
     }
 
     private void onStopClick(View view) {
-        // TODO
+        car.stop();
     }
 
     private void onLeftDirClick(View view) {
-        // TODO
+        car.steer(Direction.LEFT);
     }
 
     private void onRightDirClick(View view) {
-        // TODO
+        car.steer(Direction.RIGHT);
     }
+
+    private SeekBar.OnSeekBarChangeListener onSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
+        int progressChangedValue = 0;
+
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            progressChangedValue = progress - (seekBar.getMax() / 2);
+            car.throttle(progressChangedValue);
+
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            // TODO Auto-generated method stub
+        }
+
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
 }
