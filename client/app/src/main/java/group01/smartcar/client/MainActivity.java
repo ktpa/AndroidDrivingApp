@@ -1,14 +1,14 @@
 package group01.smartcar.client;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import static group01.smartcar.client.Status.*;
 
-public class MainActivity extends AppCompatActivity {
-    SeekBar simpleSeekBar;
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
     CarControl car;
 
     @Override
@@ -36,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private void registerComponentCallbacks() {
         findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
         findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
-        findViewById(R.id.leftDir_button).setOnClickListener(this::onLeftDirClick);
-        findViewById(R.id.rightDir_button).setOnClickListener(this::onRightDirClick);
-        simpleSeekBar = findViewById(R.id.speed_slider);
-        simpleSeekBar.setOnSeekBarChangeListener(this.onSeekBarChange);
     }
 
     private void onStartClick(View view) {
@@ -50,29 +46,16 @@ public class MainActivity extends AppCompatActivity {
         car.stop();
     }
 
-    private void onLeftDirClick(View view) {
-        car.steer(Direction.LEFT);
+    @Override
+    public void onJoystickMoved(float xPercent, float yPercent, int id){
+        int angle = (int)((xPercent) * 100);
+        int speed = (int)((yPercent) * -100);
+        Log.d("joystick", "angle: " + angle + " speed: " + speed );
+        if(car.getStatus() == ACTIVE) {
+            car.setSteeringAngle(angle);
+            car.throttle(speed);
+        }
+
     }
 
-    private void onRightDirClick(View view) {
-        car.steer(Direction.RIGHT);
-    }
-
-    private SeekBar.OnSeekBarChangeListener onSeekBarChange = new SeekBar.OnSeekBarChangeListener() {
-        int progressChangedValue = 0;
-
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            progressChangedValue = progress - (seekBar.getMax() / 2);
-            car.throttle(progressChangedValue);
-
-        }
-
-        public void onStartTrackingTouch(SeekBar seekBar) {
-            // TODO Auto-generated method stub
-        }
-
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
 }

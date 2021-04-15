@@ -1,5 +1,8 @@
 package group01.smartcar.client;
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 import group01.smartcar.client.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -65,6 +68,7 @@ public class CarControl {
     public Status getStatus() {
         return status;
     }
+    //old code to replace
 
     public void start() {
         connect();
@@ -95,27 +99,7 @@ public class CarControl {
             this.connect();
         }
     }
-
-    public void steer(Direction direction) {
-        if (mqtt.isConnected() && status == ACTIVE) {
-            switch (direction) {
-                case LEFT: steerLeft(-10); break;
-                case RIGHT: steerRight(10); break;
-            }
-        }
-    }
-
-    private void steerLeft(int angle) {
-        steeringAngle = (steeringAngle <= - 90) ? -90 : steeringAngle + angle;
-        setSteeringAngle(steeringAngle);
-    }
-
-    private void steerRight(int angle) {
-        steeringAngle = (steeringAngle >= 90) ? 90 : steeringAngle + angle;
-        setSteeringAngle(steeringAngle);
-    }
-
-    private void setSteeringAngle(int angle) {
+    public void setSteeringAngle(int angle) {
         steeringAngle = angle;
         mqtt.publish(STEERING_URI, String.valueOf(steeringAngle), 1, mqttPublishListener);
     }
@@ -125,6 +109,7 @@ public class CarControl {
             mqtt.publish(THROTTLE_URI, String.valueOf(speed), 1, mqttPublishListener);
         }
     }
+
 
     MqttCallback mqttCallback = new MqttCallback() {
         @Override
