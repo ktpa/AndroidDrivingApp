@@ -13,6 +13,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+// Adapted from: https://www.instructables.com/A-Simple-Android-UI-Joystick/
+
 public class JoystickView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
 
     private float centerX;
@@ -23,7 +25,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
     private void setupDimensions(){
         centerX = getWidth()/2;
-        centerY = getWidth()/2;
+        centerY = getWidth()/(float)(2.5);
         baseRadius = Math.min(getWidth(), getHeight()) / 3;
         hatRadius = Math.min(getWidth(), getHeight()) / 5;
 
@@ -53,17 +55,21 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
             joystickCallback = (JoystickListener) context;
     }
 
-    private void drawJoystick(float newX, float newY){
+    private void drawJoystick(float newX, float newY) {
         if(getHolder().getSurface().isValid()) {
             Canvas myCanvas = this.getHolder().lockCanvas();
             Paint colors = new Paint();
-            myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            colors.setARGB(255,50,50,50);
-            myCanvas.drawCircle(newX, newY, baseRadius, colors);
-            colors.setARGB(255,0,0,255);
-            myCanvas.drawCircle(newX, newY, hatRadius, colors);
-            getHolder().unlockCanvasAndPost(myCanvas);
+            myCanvas.drawColor(Color.parseColor("#0D1117")); // Clear the BG
 
+            colors.setARGB(255, 8, 29, 61); //base
+            myCanvas.drawCircle(centerX, centerY, baseRadius, colors);
+            colors.setARGB(255, 13, 17, 23); //base
+            myCanvas.drawCircle(centerX, centerY, (float)(baseRadius*0.95), colors);
+
+            colors.setARGB(150,35,74,132); //hat
+            myCanvas.drawCircle(newX, newY, hatRadius, colors);
+
+            getHolder().unlockCanvasAndPost(myCanvas);
         }
     }
 

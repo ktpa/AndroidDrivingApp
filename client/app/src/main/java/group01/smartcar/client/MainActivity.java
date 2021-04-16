@@ -3,7 +3,6 @@ package group01.smartcar.client;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import static group01.smartcar.client.Status.*;
