@@ -6,71 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <SeekBar
-        android:id="@+id/speed_slider"
-        android:layout_width="0dp"
-        android:layout_height="379dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginBottom="16dp"
-        android:progress="50"
-        android:rotation="-90"
-        android:scaleX="3.5"
-        android:scaleY="3.5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/rightDir_button" />
-
     <Button
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="78dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/activity_main_button_start_content"
         app:backgroundTint="#4CAF50"
-        app:layout_constraintEnd_toStartOf="@+id/rightDir_button"
-        app:layout_constraintStart_toEndOf="@+id/leftDir_button"
-        app:layout_constraintTop_toTopOf="@+id/speed_slider" />
+        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
+        app:layout_constraintEnd_toStartOf="@+id/stop_button"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/stop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/activity_main_button_stop_content"
         app:backgroundTint="#F44336"
-        app:layout_constraintStart_toStartOf="@+id/start_button"
-        app:layout_constraintTop_toBottomOf="@+id/start_button" />
+        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/start_button" />
 
-    <ImageButton
-        android:id="@+id/leftDir_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="73dp"
-        android:layout_marginLeft="73dp"
-        android:layout_marginTop="36dp"
-        android:scaleX="2"
-        android:scaleY="2"
-        app:layout_constraintEnd_toStartOf="@+id/start_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stop_button"
-        app:srcCompat="@drawable/abc_vector_test"
-        android:contentDescription="@string/activity_main_leftDir_button_description" />
-
-    <ImageButton
-        android:id="@+id/rightDir_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="34dp"
-        android:layout_marginRight="34dp"
-        android:rotation="180"
-        android:scaleX="2"
-        android:scaleY="2"
-        app:layout_constraintEnd_toStartOf="@+id/speed_slider"
-        app:layout_constraintStart_toEndOf="@+id/start_button"
-        app:layout_constraintTop_toBottomOf="@+id/stop_button"
-        app:srcCompat="@drawable/abc_vector_test"
-        android:contentDescription="@string/activity_main_rightDir_button_description" />
+    <group01.smartcar.client.JoystickView
+        android:id="@+id/joystickView2"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

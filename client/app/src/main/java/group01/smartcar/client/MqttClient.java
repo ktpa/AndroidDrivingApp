@@ -65,4 +65,8 @@ public class MqttClient {
             e.printStackTrace();
         }
     }
+
+    public boolean isConnected() {
+        return mMqttAndroidClient.isConnected();
+    }
 }

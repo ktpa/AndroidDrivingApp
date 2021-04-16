@@ -1,59 +1,60 @@
 package group01.smartcar.client;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import static group01.smartcar.client.Status.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
+    CarControl car;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         registerComponentCallbacks();
+        car = new CarControl(this.getApplicationContext());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        // Disconnect from MQTT server if application is paused
+        car.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        System.out.println("OnResume");
         // Reconnect to MQTT server if application is resumed
-
+        car.resume();
     }
 
     private void registerComponentCallbacks() {
         findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
         findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
-        findViewById(R.id.leftDir_button).setOnClickListener(this::onLeftDirClick);
-        findViewById(R.id.rightDir_button).setOnClickListener(this::onRightDirClick);
     }
 
     private void onStartClick(View view) {
-        // TODO
+        car.start();
     }
 
     private void onStopClick(View view) {
-        // TODO
+        car.stop();
     }
 
-    private void onLeftDirClick(View view) {
-        // TODO
+    @Override
+    public void onJoystickMoved(float xPercent, float yPercent, int id){
+        int angle = (int)((xPercent) * 100);
+        int speed = (int)((yPercent) * -100);
+        Log.d("joystick", "angle: " + angle + " speed: " + speed );
+        if(car.getStatus() == ACTIVE) {
+            car.setSteeringAngle(angle);
+            car.throttle(speed);
+        }
+
     }
 
-    private void onRightDirClick(View view) {
-        // TODO
-    }
 }
