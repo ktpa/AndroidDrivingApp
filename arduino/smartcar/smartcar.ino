@@ -2,6 +2,10 @@
 #include <MQTT.h>
 #include <WiFi.h>
 
+#ifndef __SMCE__
+WiFiClient net;
+#endif
+
 
 //only for printing current readings of sensor to serial terminal
 const unsigned long PRINT_INTERVAL = 100;
@@ -50,7 +54,11 @@ const auto DEFAULT_DRIVING_SPEED = 1.5;
 void setup()
 {
     Serial.begin(9600);
-	mqtt.begin("hysm.dev", 1883, WiFi);
+    #ifndef __SMCE__
+        mqtt.begin(net);
+    #else
+	    mqtt.begin("hysm.dev", 1883, WiFi);
+    #endif
 	if (mqtt.connect("arduino", "", "")) {
 		mqtt.subscribe("/smartcar/control/#", 1);
 		mqtt.onMessage([](String topic, String message) {
