@@ -14,12 +14,12 @@ public class PasswordEncoder {
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 128;
 
-    public String encodePassword(String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public static String encodePassword(String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
         requireNonNull(password);
         return encodePassword(password, generateSalt());
     }
 
-    private String encodePassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private static String encodePassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         requireNonNull(password);
 
         PBEKeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
@@ -29,7 +29,7 @@ public class PasswordEncoder {
         return Arrays.toString(encodedPassword);
     }
 
-    private byte[] generateSalt() {
+    private static byte[] generateSalt() {
         SecureRandom randomise = new SecureRandom();
         byte[] salt = new byte[16];
         randomise.nextBytes(salt);
