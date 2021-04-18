@@ -1,39 +1,34 @@
 package security;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 
 import static java.util.Objects.requireNonNull;
 
-public class PasswordEncoder {
-    private static final int ITERATIONS = 65536;
-    private static final int KEY_LENGTH = 128;
+public interface PasswordEncoder {
 
-    public static String encodePassword(String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        requireNonNull(password);
-        return encodePassword(password, generateSalt());
-    }
+    EncodedResult encodePassword(String password)
+            throws InvalidKeySpecException, NoSuchAlgorithmException;
 
-    private static String encodePassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        requireNonNull(password);
+    EncodedResult encodePassword(String password, byte[] salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException;
 
-        PBEKeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHMacSHA1");
-        byte[] encodedPassword = factory.generateSecret(keySpec).getEncoded();
+    class EncodedResult {
+        private final String password;
+        private final byte[] salt;
 
-        return Arrays.toString(encodedPassword);
-    }
+        EncodedResult(String password, byte[] salt) {
+            this.password = requireNonNull(password);
+            this.salt = requireNonNull(salt);
+        }
 
-    private static byte[] generateSalt() {
-        SecureRandom randomise = new SecureRandom();
-        byte[] salt = new byte[16];
-        randomise.nextBytes(salt);
+        public String getPassword() {
+            return password;
+        }
 
-        return salt;
+        public byte[] getSalt() {
+            return salt;
+        }
     }
 }
+
