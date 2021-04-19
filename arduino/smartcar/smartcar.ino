@@ -2,8 +2,13 @@
 #include <MQTT.h>
 #include <WiFi.h>
 
+#ifdef __SMCE__
+#include <OV767X.h>
+#endif
+
 #ifndef __SMCE__
 WiFiClient net;
+
 #endif
 
 
@@ -58,6 +63,8 @@ void setup()
         mqtt.begin(net);
     #else
 	    mqtt.begin("hysm.dev", 1883, WiFi);
+       Camera.begin(QVGA, RGB888, 15);
+  frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
     #endif
 	if (mqtt.connect("arduino", "", "")) {
 		mqtt.subscribe("/smartcar/control/#", 1);
@@ -85,6 +92,16 @@ void loop()
 	if (mqtt.connected()){
 		 mqtt.loop();
 	}
+
+ #ifdef __SMCE__
+    static auto previousFrame = 0UL;
+    if (currentTime - previousFrame >= 65) {
+      previousFrame = currentTime;
+      Camera.readFrame(frameBuffer.data());
+      mqtt.publish("/smartcar/camera", frameBuffer.data(), frameBuffer.size(),
+                   false, 0);
+    }
+ #endif   
 	
     // Maintain the speed and update the heading
     car.update();
