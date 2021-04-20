@@ -3,7 +3,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="activity_main_button_start_content">START</string>
     <string name="activity_main_button_stop_content">STOP</string>
-    <string name="activity_main_leftDir_button_description">TODO</string>
-    <string name="activity_main_rightDir_button_description">TODO</string>
     <string name="activity_main_camera_image_content">cameraView</string>
 </resources>
