@@ -1,9 +1,11 @@
+#include <vector>
 #include <Smartcar.h>
 #include <MQTT.h>
 #include <WiFi.h>
 
-#include <vector> // CameraCode
-#include <OV767X.h> // CameraCode
+#ifdef __SMCE__
+#include <OV767X.h>
+#endif
 
 #ifndef __SMCE__
 WiFiClient net;
@@ -90,6 +92,7 @@ void setup()
 void loop(){
   if (mqtt.connected()){
      mqtt.loop();
+#ifdef __SMCE__
      const auto currentTime = millis();
       static auto previousFrame = 0UL;
       if (currentTime - previousFrame >= 65) {
@@ -98,20 +101,11 @@ void loop(){
         mqtt.publish("/smartcar/control/camera", frameBuffer.data(), frameBuffer.size(),
                      false, 0);
       }
+#endif
   }
-  
     // Maintain the speed and update the heading
     car.update();
     // avoidObstacle();
-    
-    unsigned long currentTime = millis();
-    if (currentTime >= previousPrintout + PRINT_INTERVAL)
-    {
-        previousPrintout = currentTime;
-        //Serial.println(frontIRSensor.getDistance());
-        Serial.println(backIRSensor.getDistance());
-        //Serial.println(frontUSSensor.getDistance());
-    }
 }
 
 const auto STOPPING_DISTANCE = 100;
