@@ -21,7 +21,7 @@ public class CarControl {
     private final String CAMERA_URI = "/smartcar/control/camera";
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
-    private ImageView mCameraView;
+    private ImageView cameraView;
 
     private String username = "app_user";
     private String password = "app_pass";
@@ -29,21 +29,21 @@ public class CarControl {
     private Status status = INACTIVE;
     int steeringAngle = 0;
 
-    public CarControl(Context context, ImageView mCameraView) {
+    public CarControl(Context context, ImageView cameraView) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
-        this.mCameraView = mCameraView;
+        this.cameraView = cameraView;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView mCameraView) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView) {
         mqtt = new MqttClient(context, serverUrl, clientId);
-        this.mCameraView = mCameraView;
+        this.cameraView = cameraView;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView mCameraView) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
-        this.mCameraView = mCameraView;
+        this.cameraView = cameraView;
     }
 
     public void connect() {
@@ -135,7 +135,7 @@ public class CarControl {
                 }
                 bm.setPixels(colors, 0, IMAGE_WIDTH, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-                mCameraView.setImageBitmap(bm);
+                cameraView.setImageBitmap(bm);
             }
         }
 

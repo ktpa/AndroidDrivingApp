@@ -10,15 +10,15 @@ import static group01.smartcar.client.Status.*;
 
 public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
     CarControl car;
-    protected ImageView mCameraView;
+    protected ImageView cameraView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         registerComponentCallbacks();
-        mCameraView = findViewById(R.id.imageView);
-        car = new CarControl(this.getApplicationContext(), mCameraView);
+        cameraView = findViewById(R.id.imageView);
+        car = new CarControl(this.getApplicationContext(), cameraView);
     }
 
     @Override
