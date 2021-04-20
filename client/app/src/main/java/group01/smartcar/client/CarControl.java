@@ -1,9 +1,8 @@
 package group01.smartcar.client;
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import group01.smartcar.client.Status;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.widget.ImageView;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -19,26 +18,32 @@ public class CarControl {
     private final String SUBSCRIBE_URI = "/smartcar/control/#";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
+    private final String CAMERA_URI = "/smartcar/control/camera";
+    private static final int IMAGE_WIDTH = 320;
+    private static final int IMAGE_HEIGHT = 240;
+    private ImageView cameraView;
 
     private String username = "app_user";
     private String password = "app_pass";
 
     private Status status = INACTIVE;
     int steeringAngle = 0;
-    int throttle = 0;
 
-    public CarControl(Context context) {
+    public CarControl(Context context, ImageView cameraView) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
+        this.cameraView = cameraView;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView) {
         mqtt = new MqttClient(context, serverUrl, clientId);
+        this.cameraView = cameraView;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
+        this.cameraView = cameraView;
     }
 
     public void connect() {
@@ -68,7 +73,6 @@ public class CarControl {
     public Status getStatus() {
         return status;
     }
-    //old code to replace
 
     public void start() {
         connect();
@@ -119,10 +123,19 @@ public class CarControl {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception {
-            if (topic.equals(STEERING_URI)) {
-                steeringAngle = Integer.getInteger(message.toString());
-            } else if (topic.equals(THROTTLE_URI)) {
-                throttle = Integer.getInteger(message.toString());
+            if (topic.equals(CAMERA_URI)) {
+                final Bitmap bm = Bitmap.createBitmap(IMAGE_WIDTH, IMAGE_HEIGHT, Bitmap.Config.ARGB_8888);
+                final byte[] payload = message.getPayload();
+                final int[] colors = new int[IMAGE_WIDTH * IMAGE_HEIGHT];
+                for (int ci = 0; ci < colors.length; ++ci) {
+                    final byte r = payload[3 * ci];
+                    final byte g = payload[3 * ci + 1];
+                    final byte b = payload[3 * ci + 2];
+                    colors[ci] = Color.rgb(r, g, b);
+                }
+                bm.setPixels(colors, 0, IMAGE_WIDTH, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
+
+                cameraView.setImageBitmap(bm);
             }
         }
 
