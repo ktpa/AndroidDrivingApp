@@ -3,19 +3,22 @@ package group01.smartcar.client;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import static group01.smartcar.client.Status.*;
 
 public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
     CarControl car;
+    protected ImageView mCameraView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         registerComponentCallbacks();
-        car = new CarControl(this.getApplicationContext());
+        mCameraView = findViewById(R.id.imageView);
+        car = new CarControl(this.getApplicationContext(), mCameraView);
     }
 
     @Override
