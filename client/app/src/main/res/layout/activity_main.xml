@@ -18,8 +18,8 @@
 
     <group01.smartcar.client.Speedometer
         android:id="@+id/speedometer"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:contentDescription="speedometer"
         app:layout_constraintBottom_toTopOf="@+id/start_button"
         app:layout_constraintStart_toStartOf="parent" />

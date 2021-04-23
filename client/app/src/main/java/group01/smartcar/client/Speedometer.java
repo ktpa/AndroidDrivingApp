@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -52,12 +54,35 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
     private void drawSpeedometer(float centerX, float centerY) {
         if(getHolder().getSurface().isValid()) {
+
+            Paint backgroundColor = new Paint();
+            backgroundColor.setARGB(255,0,0,0);
+            Paint speedIndicatorColor = new Paint();
+            speedIndicatorColor.setARGB(255,246,213,92);
+            Paint motorPowerIndicatorColor = new Paint();
+            motorPowerIndicatorColor.setARGB(255,237,85,59);
+
+
             Canvas myCanvas = this.getHolder().lockCanvas();
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clear the BG
 
-            colors.setARGB(255, 255, 255, 255); //base
-            myCanvas.drawCircle(centerX, centerY, baseRadius, colors);
+            //Print the svg background
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                Drawable gauge = getResources().getDrawable(R.drawable.ic_gauge, null);
+                gauge.setBounds(0, 0, getWidth(), getHeight());
+                gauge.draw(myCanvas);
+            }
+
+            Float indicatorSizeFactor = 0.95F;
+            Float indicatorThickness = 0.12F;
+
+            RectF rect = new RectF(0+(getWidth()*(1-indicatorSizeFactor)), 0+(getHeight()*(1-indicatorSizeFactor)), getWidth()*indicatorSizeFactor, getHeight()*indicatorSizeFactor);
+            myCanvas.drawArc(rect, 45F, -240F, true, speedIndicatorColor );
+
+
+            //hide the middle part of the indicators
+            myCanvas.drawCircle(centerX, centerY, (getWidth()*(indicatorSizeFactor-indicatorThickness)*0.5F), backgroundColor);
             getHolder().unlockCanvasAndPost(myCanvas);
         }
     }
