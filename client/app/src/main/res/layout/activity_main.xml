@@ -16,6 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <group01.smartcar.client.Speedometer
+        android:id="@+id/speedometer"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:contentDescription="speedometer"
+        app:layout_constraintBottom_toTopOf="@+id/start_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
