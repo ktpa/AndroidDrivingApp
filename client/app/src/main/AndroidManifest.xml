@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartcarClient">
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginScreen"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.SmartcarClient">
             <intent-filter>
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name="org.eclipse.paho.android.service.MqttService"></service>
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>
