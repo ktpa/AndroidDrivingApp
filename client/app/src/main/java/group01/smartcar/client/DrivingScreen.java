@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static group01.smartcar.client.Status.ACTIVE;
 
-// TODO: Login button only transitions to next screen, account authentication has not been implemented
-
 public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
     CarControl car;
     protected ImageView cameraView;

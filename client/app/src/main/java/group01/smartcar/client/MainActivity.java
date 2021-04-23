@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import static group01.smartcar.client.Status.*;
 
 public class MainActivity extends AppCompatActivity {
+
+    // TODO: Login button only transitions to next screen, account authentication has not been implemented
+
     private VideoView videoBackground;
     MediaPlayer mediaPlayer;
     int currentVideoPosition;
