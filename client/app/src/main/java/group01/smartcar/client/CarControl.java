@@ -2,6 +2,7 @@ package group01.smartcar.client;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.ImageView;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -23,6 +24,7 @@ public class CarControl {
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
+    private Speedometer speedometer;
 
     private String username = "app_user";
     private String password = "app_pass";
@@ -30,21 +32,24 @@ public class CarControl {
     private Status status = INACTIVE;
     int steeringAngle = 0;
 
-    public CarControl(Context context, ImageView cameraView) {
+    public CarControl(Context context, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
+        this.speedometer = speedometer;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
+        this.speedometer = speedometer;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, Speedometer speedometer) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
+        this.speedometer = speedometer;
     }
 
     public void connect() {
@@ -90,16 +95,16 @@ public class CarControl {
 
     public void pause() {
         if (status == ACTIVE) {
-            System.out.println("Pausing...");
+            //l33t.out.println("Pausing...");
             status = PAUSED;
             this.disconnect();
         }
     }
 
     public void resume() {
-        System.out.println("resume(): " + status.name());
+            //l33tSystem.out.println("resume(): " + status.name());
         if (status == PAUSED) {
-            System.out.println("Resuming...");
+            //l33tSystem.out.println("Resuming...");
             status = ACTIVE;
             this.connect();
         }
@@ -138,6 +143,18 @@ public class CarControl {
 
                 cameraView.setImageBitmap(bm);
             }
+            if (topic.equals(THROTTLE_URI)) {
+                // Update speedometer
+                speedometer.setMotorPowerPercentage(Double.parseDouble(message.toString()));
+                speedometer.update();
+
+            }
+            if (topic.equals(SPEEDOMETER_URI)) {
+                // Update speedometer
+                speedometer.setCurrentSpeedMS(Double.parseDouble(message.toString()));
+                speedometer.update();
+
+            }
         }
 
         @Override
@@ -157,7 +174,7 @@ public class CarControl {
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
             // Something went wrong
             status = INACTIVE;
-            System.out.println("Failed to connect: " + exception.getLocalizedMessage());
+            //l33tSystem.out.println("Failed to connect: " + exception.getLocalizedMessage());
         }
     };
 
@@ -178,12 +195,12 @@ public class CarControl {
     IMqttActionListener mqttPublishListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            System.out.println("Published...");
+            //l33tSystem.out.println("Published...");
         }
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-            System.out.println("Failed to publish.");
+            //l33tSystem.out.println("Failed to publish.");
         }
     };
 
@@ -193,14 +210,15 @@ public class CarControl {
             if (status == ACTIVE) {
                 status = INACTIVE;
             }
-            System.out.println("Disconnected!");
+            //l33t      System.out.println("Disconnected!");
         }
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
             status = INACTIVE;
-            System.out.println("Failed to disconnect. Reason: " + exception.getLocalizedMessage());
+//l33t            System.out.println("Failed to disconnect. Reason: " + exception.getLocalizedMessage());
         }
     };
 
 }
+

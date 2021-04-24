@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import java.math.BigDecimal;
 
 public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
-    private double currentSpeedMS;
+    private double currentSpeedMS ;
     private double motorPowerPercentage;
 
     private float centerX;
@@ -37,7 +37,6 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        currentSpeedMS=0;
     }
 
     public Speedometer(Context context, AttributeSet attributes, int style){
@@ -45,19 +44,18 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        currentSpeedMS=0;
     }
     public Speedometer(Context context, AttributeSet attributes){
         super(context);
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        currentSpeedMS=0;
 
     }
 
-    private void drawSpeedometer(float centerX, float centerY) {
+    private void drawSpeedometer() {
         if(getHolder().getSurface().isValid()) {
+            Canvas myCanvas = this.getHolder().lockCanvas();
 
             Paint backgroundColor = new Paint();
             backgroundColor.setARGB(255,0,0,0);
@@ -68,8 +66,6 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
             Paint textColor = new Paint();
             textColor.setARGB(255,255,255,255);
 
-
-            Canvas myCanvas = this.getHolder().lockCanvas();
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clear the BG
 
@@ -105,13 +101,24 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
             myCanvas.drawText(getCurrentSpeedKMHString(), textXPos, textYPos, textColor);
 
             getHolder().unlockCanvasAndPost(myCanvas);
+
         }
+    }
+
+
+
+    public void update() {
+
+       //drawSpeedometer();
+       currentSpeedMS++;
+       invalidate();
+
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         setupDimensions();
-        drawSpeedometer(centerX, centerY);
+        drawSpeedometer();
     }
 
     @Override
@@ -136,7 +143,9 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         this.currentSpeedMS = currentSpeedMS;
     }
 
-    public void setMotorPowerPercentage(double percentage) { this.motorPowerPercentage= percentage;}
+    public void setMotorPowerPercentage(double percentage) {
+        this.motorPowerPercentage= percentage;
+    }
 
     private float getSpeedIndicatorAngle(){
         if(getCurrentSpeedKMH() > 7 ){
