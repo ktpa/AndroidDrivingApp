@@ -1,60 +1,90 @@
 package group01.smartcar.client;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.VideoView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import static group01.smartcar.client.Status.*;
 
-public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
-    CarControl car;
+public class MainActivity extends AppCompatActivity {
+
+    // TODO: Login button only transitions to next screen, account authentication has not been implemented
+
+    private VideoView videoBackground;
+    MediaPlayer mediaPlayer;
+    int currentVideoPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.hide();
+
+        videoBackground = findViewById(R.id.videoView);
+        videoBackground.getHolder().setSizeFromLayout();
+        loadBackground();
         registerComponentCallbacks();
-        car = new CarControl(this.getApplicationContext());
+    }
+
+    private void loadBackground() {
+        videoBackground = findViewById(R.id.videoView);
+
+        Uri uri = Uri.parse("android.resource://"
+                + getPackageName()
+                + "/"
+                + R.raw.background);
+
+        videoBackground.setVideoURI(uri);
+        videoBackground.start();
+
+        videoBackground.setOnPreparedListener((mediaPlayer) -> {
+            this.mediaPlayer = mediaPlayer;
+            mediaPlayer.setLooping(true);
+
+            if (currentVideoPosition != 0) {
+                mediaPlayer.seekTo(currentVideoPosition);
+                mediaPlayer.start();
+            }
+        });
+    }
+
+    private void registerComponentCallbacks() {
+        findViewById(R.id.login_button).setOnClickListener(this::onLoginButtonClick);
+    }
+
+    private void onLoginButtonClick(View view) {
+        Intent intent = new Intent(this, DrivingScreen.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        car.pause();
+        this.currentVideoPosition = mediaPlayer.getCurrentPosition();
+        videoBackground.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("OnResume");
-        // Reconnect to MQTT server if application is resumed
-        car.resume();
-    }
-
-    private void registerComponentCallbacks() {
-        findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
-        findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
-    }
-
-    private void onStartClick(View view) {
-        car.start();
-    }
-
-    private void onStopClick(View view) {
-        car.stop();
+        videoBackground.start();
     }
 
     @Override
-    public void onJoystickMoved(float xPercent, float yPercent, int id){
-        int angle = (int)((xPercent) * 100);
-        int speed = (int)((yPercent) * -100);
-        Log.d("joystick", "angle: " + angle + " speed: " + speed );
-        if(car.getStatus() == ACTIVE) {
-            car.setSteeringAngle(angle);
-            car.throttle(speed);
-        }
-
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
+        this.mediaPlayer = null;
     }
-
 }

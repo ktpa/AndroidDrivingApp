@@ -1,6 +1,11 @@
+#include <vector>
 #include <Smartcar.h>
 #include <MQTT.h>
 #include <WiFi.h>
+
+#ifdef __SMCE__
+#include <OV767X.h>
+#endif
 
 #ifndef __SMCE__
 WiFiClient net;
@@ -49,6 +54,8 @@ GP2D120 backIRSensor(arduinoRuntime, BACK_IR_PIN);
 //measures distances in longer distances
 SR04 frontUSSensor(arduinoRuntime, TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
+std::vector<char> frameBuffer; // CameraCode
+
 const auto DEFAULT_DRIVING_SPEED = 1.5;
 
 void setup()
@@ -57,47 +64,48 @@ void setup()
     #ifndef __SMCE__
         mqtt.begin(net);
     #else
-	    mqtt.begin("hysm.dev", 1883, WiFi);
+      Camera.begin(QVGA, RGB888, 15);
+      frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
+      mqtt.begin("hysm.dev", 1883, WiFi);
     #endif
-	if (mqtt.connect("arduino", "", "")) {
-		mqtt.subscribe("/smartcar/control/#", 1);
-		mqtt.onMessage([](String topic, String message) {
-			Serial.println(topic + " " + message);
-			
-			mqtt.publish("/smartcar/received/msg", message);
-			
-			if (topic == "/smartcar/control/speed") {
-				car.setSpeed(message.toInt());
-			} else if (topic == "/smartcar/control/steering") {
-				car.setAngle(message.toInt());
-			}
-		});
-	}
-	
-	
+  if (mqtt.connect("arduino", "", "")) {
+    mqtt.subscribe("/smartcar/control/#", 1);
+    mqtt.onMessage([](String topic, String message) {
+      Serial.println(topic + " " + message);
+      
+      mqtt.publish("/smartcar/received/msg", message);
+      
+      if (topic == "/smartcar/control/speed") {
+        car.setSpeed(message.toInt());
+      } else if (topic == "/smartcar/control/steering") {
+        car.setAngle(message.toInt());
+      }
+    });
+  }
+  
+  
     car.enableCruiseControl();
-	car.setSpeed(0);
+  car.setSpeed(0);
     // car.setSpeed(DEFAULT_DRIVING_SPEED); // Maintain a speed of 1.5 m/sec
 }
 
-void loop()
-{
-	if (mqtt.connected()){
-		 mqtt.loop();
-	}
-	
+void loop(){
+  if (mqtt.connected()){
+     mqtt.loop();
+#ifdef __SMCE__
+     const auto currentTime = millis();
+      static auto previousFrame = 0UL;
+      if (currentTime - previousFrame >= 65) {
+        previousFrame = currentTime;
+        Camera.readFrame(frameBuffer.data());
+        mqtt.publish("/smartcar/control/camera", frameBuffer.data(), frameBuffer.size(),
+                     false, 0);
+      }
+#endif
+  }
     // Maintain the speed and update the heading
     car.update();
     // avoidObstacle();
-    
-    unsigned long currentTime = millis();
-    if (currentTime >= previousPrintout + PRINT_INTERVAL)
-    {
-        previousPrintout = currentTime;
-        //Serial.println(frontIRSensor.getDistance());
-        Serial.println(backIRSensor.getDistance());
-        //Serial.println(frontUSSensor.getDistance());
-    }
 }
 
 const auto STOPPING_DISTANCE = 100;

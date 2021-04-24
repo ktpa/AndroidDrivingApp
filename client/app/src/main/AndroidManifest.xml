@@ -22,7 +22,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name="org.eclipse.paho.android.service.MqttService"></service>
+        <activity
+            android:name=".DrivingScreen"
+            android:screenOrientation="portrait" />
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" ></service>
     </application>
 
 </manifest>
