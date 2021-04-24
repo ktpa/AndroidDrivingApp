@@ -19,6 +19,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Test", "DrivingScreen.onCreate: Reached!");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
         registerComponentCallbacks();
@@ -41,6 +42,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
     }
 
     private void registerComponentCallbacks() {
+        Log.d("Test", "DrivingScreen.registerComponentCallbacks: Reached");
         findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
         findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
     }

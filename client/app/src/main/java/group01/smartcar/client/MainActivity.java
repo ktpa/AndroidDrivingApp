@@ -1,5 +1,6 @@
 package group01.smartcar.client;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onLoginButtonClick(View view) {
-        setContentView(R.layout.activity_drive);
+        Intent intent = new Intent(this, DrivingScreen.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
