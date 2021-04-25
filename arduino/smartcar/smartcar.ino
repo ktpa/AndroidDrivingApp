@@ -1,3 +1,9 @@
+#if defined(__has_include) && __has_include("secrets.hpp")
+#include "secrets.hpp"
+#else
+#include "secrets-default.hpp"
+#endif
+
 #include <vector>
 #include <Smartcar.h>
 #include <MQTT.h>
@@ -11,6 +17,13 @@
 WiFiClient net;
 #endif
 
+namespace mqtt_topic 
+{
+    const auto CONTROL_GLOBAL = "/smartcar/control/#";
+    const auto CONTROL_SPEED = "/smartcar/control/speed";
+    const auto CONTORL_STEERING = "/smartcar/control/steering";
+    const auto CONTROL_CAMERA = "/smartcar/control/camera";
+}
 
 //only for printing current readings of sensor to serial terminal
 const unsigned long PRINT_INTERVAL = 100;
@@ -66,30 +79,32 @@ void setup()
 #else
     Camera.begin(QVGA, RGB888, 15);
     frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
-    mqtt.begin("hysm.dev", 1883, WiFi);
+    mqtt.begin(MQTT_HOST, MQTT_PORT, WiFi);
 #endif
-    if (mqtt.connect("arduino", "", "")) 
+    if (!mqtt.connect("arduino"))
     {
-        mqtt.subscribe("/smartcar/control/#", 1);
-        mqtt.onMessage([](String topic, String message) {
-            Serial.println(topic + " " + message);
-        
-            mqtt.publish("/smartcar/received/msg", message);
-        
-            if (topic == "/smartcar/control/speed") 
-            {
-                car.setSpeed(message.toInt());
-            } 
-            else if (topic == "/smartcar/control/steering") 
-            {
-                car.setAngle(message.toInt());
-            }
+        Serial.printf("Failed to connecto to MQTT broker at %s", MQTT_HOST);
+        return;
+    }
+
+    mqtt.subscribe(mqtt_topic::CONTROL_GLOBAL, 1);
+    mqtt.onMessage([](String topic, String message) {
+        Serial.println(topic + " " + message);
+    
+        mqtt.publish("/smartcar/received/msg", message);
+    
+        if (topic == mqtt_topic::CONTROL_SPEED) 
+        {
+            car.setSpeed(message.toInt());
+        } 
+        else if (topic == mqtt_topic::CONTORL_STEERING) 
+        {
+            car.setAngle(message.toInt());
+        }
     });
-  }
   
     car.enableCruiseControl();
     car.setSpeed(0);
-    // car.setSpeed(DEFAULT_DRIVING_SPEED); // Maintain a speed of 1.5 m/sec
 }
 
 void loop(){
@@ -103,7 +118,7 @@ void loop(){
         {
             previousFrame = currentTime;
             Camera.readFrame(frameBuffer.data());
-            mqtt.publish("/smartcar/control/camera", frameBuffer.data(), frameBuffer.size(), false, 0);
+            mqtt.publish(mqtt_topic::CONTROL_CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
         }
 #endif
     }
