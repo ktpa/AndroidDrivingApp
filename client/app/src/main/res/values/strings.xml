@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Smartcar Client</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="activity_main_button_start_content">START</string>
-    <string name="activity_main_button_stop_content">STOP</string>
+    <string name="activity_drive_button_drive">D</string>
+    <string name="activity_drive_button_park">P</string>
     <string name="activity_main_camera_image_content">cameraView</string>
     <string name="button">Button</string>
     <string name="logo">logo</string>
