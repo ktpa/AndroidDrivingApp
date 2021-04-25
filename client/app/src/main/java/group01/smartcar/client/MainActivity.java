@@ -83,17 +83,14 @@ public class MainActivity extends AppCompatActivity {
     private void verifyUser() {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
-            if (firebaseUser.isEmailVerified()) {
-                Toast.makeText(MainActivity.this,
-                        "Welcome to AlSet.",
-                        Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, DrivingScreen.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(MainActivity.this, "Your email has not been verified!",
-                        Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(MainActivity.this, "Welcome to AlSet", Toast.LENGTH_SHORT)
+                    .show();
+            Intent intent = new Intent(this, DrivingScreen.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(MainActivity.this, "Your login details are incorrect.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
