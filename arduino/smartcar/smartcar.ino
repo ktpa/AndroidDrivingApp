@@ -72,18 +72,18 @@ void setup()
     {
         mqtt.subscribe("/smartcar/control/#", 1);
         mqtt.onMessage([](String topic, String message) {
-        Serial.println(topic + " " + message);
-      
-        mqtt.publish("/smartcar/received/msg", message);
-      
-        if (topic == "/smartcar/control/speed") 
-        {
-            car.setSpeed(message.toInt());
-        } 
-        else if (topic == "/smartcar/control/steering") 
-        {
-            car.setAngle(message.toInt());
-        }
+            Serial.println(topic + " " + message);
+        
+            mqtt.publish("/smartcar/received/msg", message);
+        
+            if (topic == "/smartcar/control/speed") 
+            {
+                car.setSpeed(message.toInt());
+            } 
+            else if (topic == "/smartcar/control/steering") 
+            {
+                car.setAngle(message.toInt());
+            }
     });
   }
   
