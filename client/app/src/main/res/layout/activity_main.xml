@@ -35,14 +35,14 @@
         app:srcCompat="@drawable/alset_logo" />
 
     <EditText
-        android:id="@+id/username_textfield"
+        android:id="@+id/email_textfield"
         android:layout_width="250dp"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="384dp"
         android:background="@drawable/transparent"
         android:ems="10"
-        android:hint="Username"
+        android:hint="Email"
         android:inputType="text"
         android:paddingLeft="5dp"
         android:textColor="#ffffff"
@@ -69,7 +69,7 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_textfield"
+        app:layout_constraintTop_toBottomOf="@+id/email_textfield"
         android:paddingStart="5dp" />
 
     <Button
