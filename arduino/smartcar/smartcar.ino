@@ -61,48 +61,52 @@ const auto DEFAULT_DRIVING_SPEED = 1.5;
 void setup()
 {
     Serial.begin(9600);
-    #ifndef __SMCE__
-        mqtt.begin(net);
-    #else
-      Camera.begin(QVGA, RGB888, 15);
-      frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
-      mqtt.begin("hysm.dev", 1883, WiFi);
-    #endif
-  if (mqtt.connect("arduino", "", "")) {
-    mqtt.subscribe("/smartcar/control/#", 1);
-    mqtt.onMessage([](String topic, String message) {
-      Serial.println(topic + " " + message);
+#ifndef __SMCE__
+    mqtt.begin(net);
+#else
+    Camera.begin(QVGA, RGB888, 15);
+    frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
+    mqtt.begin("hysm.dev", 1883, WiFi);
+#endif
+    if (mqtt.connect("arduino", "", "")) 
+    {
+        mqtt.subscribe("/smartcar/control/#", 1);
+        mqtt.onMessage([](String topic, String message) {
+        Serial.println(topic + " " + message);
       
-      mqtt.publish("/smartcar/received/msg", message);
+        mqtt.publish("/smartcar/received/msg", message);
       
-      if (topic == "/smartcar/control/speed") {
-        car.setSpeed(message.toInt());
-      } else if (topic == "/smartcar/control/steering") {
-        car.setAngle(message.toInt());
-      }
+        if (topic == "/smartcar/control/speed") 
+        {
+            car.setSpeed(message.toInt());
+        } 
+        else if (topic == "/smartcar/control/steering") 
+        {
+            car.setAngle(message.toInt());
+        }
     });
   }
   
-  
     car.enableCruiseControl();
-  car.setSpeed(0);
+    car.setSpeed(0);
     // car.setSpeed(DEFAULT_DRIVING_SPEED); // Maintain a speed of 1.5 m/sec
 }
 
 void loop(){
-  if (mqtt.connected()){
-     mqtt.loop();
+    if (mqtt.connected())
+    {
+        mqtt.loop();
 #ifdef __SMCE__
-     const auto currentTime = millis();
-      static auto previousFrame = 0UL;
-      if (currentTime - previousFrame >= 65) {
-        previousFrame = currentTime;
-        Camera.readFrame(frameBuffer.data());
-        mqtt.publish("/smartcar/control/camera", frameBuffer.data(), frameBuffer.size(),
-                     false, 0);
-      }
+        const auto currentTime = millis();
+        static auto previousFrame = 0UL;
+        if (currentTime - previousFrame >= 65) 
+        {
+            previousFrame = currentTime;
+            Camera.readFrame(frameBuffer.data());
+            mqtt.publish("/smartcar/control/camera", frameBuffer.data(), frameBuffer.size(), false, 0);
+        }
 #endif
-  }
+    }
     // Maintain the speed and update the heading
     car.update();
     // avoidObstacle();
