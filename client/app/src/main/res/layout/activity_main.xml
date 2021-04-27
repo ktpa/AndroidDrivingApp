@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:rotation="0"
     tools:context=".MainActivity">
 
     <ImageView
@@ -25,7 +26,7 @@
         app:backgroundTint="#4CAF50"
         app:layout_constraintBottom_toTopOf="@+id/joystickView2"
         app:layout_constraintEnd_toStartOf="@+id/stop_button"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/switch1" />
 
     <Button
         android:id="@+id/stop_button"
@@ -43,6 +44,17 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gearbox_horizontal"
+        android:scrollbarSize="4dp"
+        android:switchMinWidth="120dp"
+        android:track="@color/grey"
+        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
