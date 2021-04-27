@@ -3,7 +3,9 @@ package group01.smartcar.client;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import static group01.smartcar.client.Status.*;
@@ -36,16 +38,14 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     }
 
     private void registerComponentCallbacks() {
-        findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
-        findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
-    }
-
-    private void onStartClick(View view) {
-        car.start();
-    }
-
-    private void onStopClick(View view) {
-        car.stop();
+        Switch sw = (Switch) findViewById(R.id.drive_park_switch);
+        sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                car.start();
+            } else {
+                car.stop();
+            }
+        });
     }
 
     @Override

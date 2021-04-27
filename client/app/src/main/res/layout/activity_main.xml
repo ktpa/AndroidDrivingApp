@@ -13,31 +13,8 @@
         android:layout_height="0dp"
         android:layout_weight="0.3"
         android:contentDescription="cameraView"
-        app:layout_constraintBottom_toTopOf="@+id/start_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/start_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/activity_main_button_start_content"
-        app:backgroundTint="#4CAF50"
-        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintEnd_toStartOf="@+id/stop_button"
-        app:layout_constraintStart_toEndOf="@+id/switch1" />
-
-    <Button
-        android:id="@+id/stop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/activity_main_button_stop_content"
-        app:backgroundTint="#F44336"
-        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/start_button" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
@@ -46,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/gearbox_horizontal"
@@ -54,7 +31,7 @@
         android:switchMinWidth="120dp"
         android:track="@color/grey"
         app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
