@@ -18,7 +18,7 @@ public class CarControl {
     private final String SUBSCRIBE_URI = "/smartcar/control/#";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
-    private final String CAMERA_URI = "/smartcar/control/camera";
+    private final String CAMERA_URI = "/smartcar/camera";
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
