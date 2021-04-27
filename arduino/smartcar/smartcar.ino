@@ -23,7 +23,7 @@ namespace mqtt_topic
     const auto CONTROL_GLOBAL = "/smartcar/control/#";
     const auto CONTROL_SPEED = "/smartcar/control/speed";
     const auto CONTORL_STEERING = "/smartcar/control/steering";
-    const auto CONTROL_CAMERA = "/smartcar/camera";
+    const auto CAMERA = "/smartcar/camera";
 }
 
 //only for printing current readings of sensor to serial terminal
@@ -169,7 +169,7 @@ void publishCameraFrame()
     {
         previousFrame = currentTime;
         Camera.readFrame(frameBuffer.data());
-        mqtt.publish(mqtt_topic::CONTROL_CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
+        mqtt.publish(mqtt_topic::CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
     }
 }
 
