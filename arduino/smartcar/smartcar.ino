@@ -9,6 +9,7 @@
 #include <MQTT.h>
 #include <WiFi.h>
 #include <map>
+#include <cmath>
 
 #ifdef __SMCE__
 #include <OV767X.h>
@@ -82,23 +83,17 @@ void setup()
     frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
     mqtt.begin(MQTT_HOST, MQTT_PORT, WiFi);
 #endif
-    if (!mqtt.connect("arduino"))
-    {
-        Serial.print("Failed to connect to MQTT broker at ");
-        Serial.println(MQTT_HOST);
-        return;
-    }
-
-    registerMqttMessageHandlers();
-
-    mqtt.subscribe(mqtt_topic::CONTROL_GLOBAL, 1);
-    mqtt.onMessage(handleMqttMessage);
   
     car.enableCruiseControl();
     car.setSpeed(0);
 }
 
 void loop(){
+    if (!mqtt.connected())
+    {
+        connectToMqttBroker();
+    }
+
     if (mqtt.connected())
     {
         mqtt.loop();
@@ -109,6 +104,68 @@ void loop(){
     // Maintain the speed and update the heading
     car.update();
     // avoidObstacle();
+}
+
+const auto MAX_CONNECTION_RETRIES = 5;
+const auto INITIAL_CONNECTION_RETRY_DELAY = 1000;
+const auto MAX_CONNECTION_RETRY_DELAY = 10000;
+const auto CONNECTION_RETRY_RESET_PERIOD = 5000;
+
+void connectToMqttBroker()
+{
+    auto connectionRetries = 0;
+    const auto currentTime = millis();
+    static auto timeSinceLastRetry = 0;
+    static auto retryLimitHit = false;
+
+    if (retryLimitHit && currentTime - timeSinceLastRetry < CONNECTION_RETRY_RESET_PERIOD)
+    {
+        return;
+    }
+    
+    retryLimitHit = false;
+
+    Serial.print("Connecting to MQTT broker at ");
+    Serial.println(MQTT_HOST);
+
+    while (!mqtt.connect("arduino"))
+    {
+        if (connectionRetries >= MAX_CONNECTION_RETRIES)
+        {
+            break;
+        }
+
+        delay(calculateExponentialDelay(++connectionRetries));
+    }
+
+    timeSinceLastRetry = millis();
+    
+    if (!mqtt.connected())
+    {
+        Serial.print("Failed to connect to MQTT broker at ");
+        Serial.println(MQTT_HOST);
+
+        retryLimitHit = true;        
+
+        return;
+    }
+
+    Serial.print("Successfully connected to MQTT broker at ");
+    Serial.println(MQTT_HOST);
+
+    registerMqttMessageHandlers();
+
+    mqtt.subscribe(mqtt_topic::CONTROL_GLOBAL, 1);
+    mqtt.onMessage(handleMqttMessage);
+}
+
+int calculateExponentialDelay(int retries)
+{
+    const auto delay = INITIAL_CONNECTION_RETRY_DELAY * (((double) 1 / (double) 2) * pow(2, retries));
+
+    return delay > MAX_CONNECTION_RETRY_DELAY
+        ? MAX_CONNECTION_RETRY_DELAY
+        : delay;
 }
 
 void registerMqttMessageHandlers()
