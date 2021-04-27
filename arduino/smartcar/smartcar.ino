@@ -8,6 +8,7 @@
 #include <Smartcar.h>
 #include <MQTT.h>
 #include <WiFi.h>
+#include <map>
 
 #ifdef __SMCE__
 #include <OV767X.h>
@@ -33,7 +34,9 @@ ArduinoRuntime arduinoRuntime;
 BrushedMotor leftMotor(arduinoRuntime, smartcarlib::pins::v2::leftMotorPins);
 BrushedMotor rightMotor(arduinoRuntime, smartcarlib::pins::v2::rightMotorPins);
 DifferentialControl control(leftMotor, rightMotor);
+
 MQTTClient mqtt;
+std::map<String, std::function<void(String)>> mqttMessageHandlers;
 
 GY50 gyroscope(arduinoRuntime, 37);
 
@@ -49,8 +52,6 @@ DirectionlessOdometer rightOdometer{
     smartcarlib::pins::v2::rightOdometerPin,
     []() { rightOdometer.update(); },
     PULSES_PER_METER};
-
-
 
 SmartCar car(arduinoRuntime, control, gyroscope, leftOdometer, rightOdometer);
 
@@ -83,25 +84,15 @@ void setup()
 #endif
     if (!mqtt.connect("arduino"))
     {
-        Serial.printf("Failed to connecto to MQTT broker at %s", MQTT_HOST);
+        Serial.print("Failed to connect to MQTT broker at ");
+        Serial.println(MQTT_HOST);
         return;
     }
 
+    registerMqttMessageHandlers();
+
     mqtt.subscribe(mqtt_topic::CONTROL_GLOBAL, 1);
-    mqtt.onMessage([](String topic, String message) {
-        Serial.println(topic + " " + message);
-    
-        mqtt.publish("/smartcar/received/msg", message);
-    
-        if (topic == mqtt_topic::CONTROL_SPEED) 
-        {
-            car.setSpeed(message.toInt());
-        } 
-        else if (topic == mqtt_topic::CONTORL_STEERING) 
-        {
-            car.setAngle(message.toInt());
-        }
-    });
+    mqtt.onMessage(handleMqttMessage);
   
     car.enableCruiseControl();
     car.setSpeed(0);
@@ -112,19 +103,29 @@ void loop(){
     {
         mqtt.loop();
 #ifdef __SMCE__
-        const auto currentTime = millis();
-        static auto previousFrame = 0UL;
-        if (currentTime - previousFrame >= 65) 
-        {
-            previousFrame = currentTime;
-            Camera.readFrame(frameBuffer.data());
-            mqtt.publish(mqtt_topic::CONTROL_CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
-        }
+        publishCameraFrame();
 #endif
     }
     // Maintain the speed and update the heading
     car.update();
     // avoidObstacle();
+}
+
+void registerMqttMessageHandlers()
+{
+    mqttMessageHandlers[mqtt_topic::CONTROL_SPEED] = handleSpeedChangeRequest;
+    mqttMessageHandlers[mqtt_topic::CONTORL_STEERING] = handleSteeringChangeRequest;
+}
+
+void handleMqttMessage(String topic, String payload)
+{
+    if (!mqttMessageHandlers.count(topic))
+    {
+        Serial.println("No handler found for topic " + topic);
+        return;
+    }
+
+    mqttMessageHandlers[topic](payload);
 }
 
 const auto STOPPING_DISTANCE = 100;
@@ -138,4 +139,50 @@ void avoidObstacle()
     bool backStop = reverseDistance != 0 && reverseDistance < STOPPING_DISTANCE;
 
     car.setSpeed((frontStop || backStop) ? 0 : DEFAULT_DRIVING_SPEED);
+}
+
+void handleSpeedChangeRequest(String payload)
+{
+    if (!isNumber(payload))
+    {
+        return;
+    }
+
+    car.setSpeed(payload.toInt());
+}
+
+void handleSteeringChangeRequest(String payload)
+{
+    if (!isNumber(payload))
+    {
+        return;
+    }
+
+    car.setAngle(payload.toInt());
+}
+
+void publishCameraFrame()
+{
+    const auto currentTime = millis();
+    static auto previousFrame = 0UL;
+    if (currentTime - previousFrame >= 65) 
+    {
+        previousFrame = currentTime;
+        Camera.readFrame(frameBuffer.data());
+        mqtt.publish(mqtt_topic::CONTROL_CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
+    }
+}
+
+bool isNumber(String string)
+{
+    for (std::size_t i = 0; i < string.length(); i++)
+    {
+        if (!isDigit(string[i]))
+        {
+            return false;
+        }
+        
+    }
+    
+    return true;
 }
