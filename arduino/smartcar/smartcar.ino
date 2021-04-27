@@ -218,8 +218,10 @@ void handleSteeringChangeRequest(String payload)
     car.setAngle(payload.toInt());
 }
 
+
 void publishCameraFrame()
 {
+#ifdef __SMCE__
     const auto currentTime = millis();
     static auto previousFrame = 0UL;
     if (currentTime - previousFrame >= 65) 
@@ -228,6 +230,7 @@ void publishCameraFrame()
         Camera.readFrame(frameBuffer.data());
         mqtt.publish(mqtt_topic::CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
     }
+#endif
 }
 
 bool isNumber(String string)
