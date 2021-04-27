@@ -23,7 +23,7 @@ namespace mqtt_topic
     const auto CONTROL_GLOBAL = "/smartcar/control/#";
     const auto CONTROL_SPEED = "/smartcar/control/speed";
     const auto CONTORL_STEERING = "/smartcar/control/steering";
-    const auto CONTROL_CAMERA = "/smartcar/control/camera";
+    const auto CONTROL_CAMERA = "/smartcar/camera";
 }
 
 //only for printing current readings of sensor to serial terminal
