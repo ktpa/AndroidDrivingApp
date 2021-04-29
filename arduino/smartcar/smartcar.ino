@@ -10,6 +10,7 @@
 #include <WiFi.h>
 #include <map>
 #include <cmath>
+#include <functional>
 
 #ifdef __SMCE__
 #include <OV767X.h>
