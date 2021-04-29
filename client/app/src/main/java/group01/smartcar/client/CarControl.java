@@ -37,12 +37,14 @@ public class CarControl {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
     public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, TextView speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
     public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, TextView speedometer) {
@@ -51,6 +53,7 @@ public class CarControl {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
     public void connect() {
@@ -148,7 +151,7 @@ public class CarControl {
                 double newSpeedMS = Double.parseDouble(message.toString());
                 if(currentSpeedMS != newSpeedMS){
                     currentSpeedMS=newSpeedMS;
-                    speedometer.setText(getCurrentSpeedKMHString());
+                    updateSpeedometer();
                 }
             }
         }
@@ -219,6 +222,10 @@ public class CarControl {
     private String getCurrentSpeedKMHString(){
         String twoDigit = Double.toString(currentSpeedMS);
         return twoDigit.substring(0, Math.min(twoDigit.length(), 3)) + " km/h";
+    }
+
+    private void updateSpeedometer(){
+        speedometer.setText(getCurrentSpeedKMHString());
     }
 
 }

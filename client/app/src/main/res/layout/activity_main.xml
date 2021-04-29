@@ -42,7 +42,8 @@
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
         android:layout_marginBottom="56dp"
-        android:text="TextView"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="32dp"
         app:layout_constraintBottom_toTopOf="@+id/joystickView2"
         app:layout_constraintStart_toStartOf="parent" />
 
