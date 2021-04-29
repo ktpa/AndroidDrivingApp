@@ -162,7 +162,7 @@ void connectToMqttBroker()
 
 int calculateExponentialDelay(int retries)
 {
-    const auto delay = INITIAL_CONNECTION_RETRY_DELAY * (((double) 1 / (double) 2) * pow(2, retries));
+    const auto delay = INITIAL_CONNECTION_RETRY_DELAY * ((1.0 / 2.0) * pow(2, retries));
 
     return delay > MAX_CONNECTION_RETRY_DELAY
         ? MAX_CONNECTION_RETRY_DELAY
