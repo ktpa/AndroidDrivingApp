@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:rotation="0"
     tools:context=".MainActivity">
 
     <VideoView
@@ -42,7 +43,7 @@
         android:layout_marginBottom="384dp"
         android:background="@drawable/transparent"
         android:ems="10"
-        android:hint="Username"
+        android:hint="@string/username"
         android:inputType="text"
         android:paddingLeft="5dp"
         android:textColor="#ffffff"
@@ -61,7 +62,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/transparent"
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/pw"
         android:inputType="textPassword"
         android:paddingLeft="5dp"
         android:textColor="#ffffff"
@@ -89,6 +90,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_textfield"
         android:paddingStart="33dp" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

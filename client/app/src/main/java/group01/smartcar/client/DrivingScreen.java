@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.ActionBar;
@@ -13,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static group01.smartcar.client.Status.ACTIVE;
 
-// 70 to 103 adapted from https://developer.android.com/training/system-ui/immersive .
+// 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
     CarControl car;
@@ -43,8 +44,14 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
     }
 
     private void registerComponentCallbacks() {
-        findViewById(R.id.start_button).setOnClickListener(this::onStartClick);
-        findViewById(R.id.stop_button).setOnClickListener(this::onStopClick);
+        Switch sw = (Switch) findViewById(R.id.drive_park_switch);
+        sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                car.start();
+            } else {
+                car.stop();
+            }
+        });
     }
 
     private void onStartClick(View view) {

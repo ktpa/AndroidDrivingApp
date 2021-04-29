@@ -8,40 +8,34 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="410dp"
+        android:layout_height="310dp"
         android:layout_weight="0.3"
         android:contentDescription="cameraView"
-        app:layout_constraintBottom_toTopOf="@+id/start_button"
+        app:layout_constraintBottom_toTopOf="@+id/drive_park_switch"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/start_button"
+    <Switch
+        android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/activity_drive_button_drive"
-        app:backgroundTint="#4CAF50"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/gearbox_vertical_background"
+        android:rotation="90"
+        android:scrollbarSize="4dp"
+        android:switchMinWidth="120dp"
+        android:track="@color/grey"
         app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintEnd_toStartOf="@+id/stop_button"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/stop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="@string/activity_drive_button_park"
-        app:backgroundTint="#F44336"
-        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/start_button" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_width="412dp"
+        android:layout_height="293dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 
