@@ -220,7 +220,8 @@ public class CarControl {
     };
 
     private String getCurrentSpeedKMHString(){
-        String twoDigit = Double.toString(currentSpeedMS);
+        double currentSpeedKMH = currentSpeedMS * 3.6;
+        String twoDigit = Double.toString(currentSpeedKMH);
         return twoDigit.substring(0, Math.min(twoDigit.length(), 3)) + " km/h";
     }
 
