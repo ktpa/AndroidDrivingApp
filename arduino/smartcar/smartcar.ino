@@ -84,7 +84,7 @@ void setup()
     frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
     mqtt.begin(MQTT_HOST, MQTT_PORT, WiFi);
 #endif
-  
+
     car.enableCruiseControl();
     car.setSpeed(0);
 }
@@ -232,6 +232,11 @@ void publishCameraFrame()
         mqtt.publish(mqtt_topic::CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
     }
 #endif
+}
+
+void publishCarSpeed()
+{
+    mqtt.publish("/smartcar/control/speedMS", String(car.getSpeed()));
 }
 
 bool isNumber(String string)
