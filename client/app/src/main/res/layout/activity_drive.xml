@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="#414141">
+    android:background="#414141"
+    tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/backRectTop"
         android:layout_width="match_parent"
         android:layout_height="285dp"
         android:layout_marginTop="16dp"
-        android:translationZ="1dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
+        android:translationZ="1dp"
         app:layout_constraintBottom_toTopOf="@+id/joystickView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="1.0"
@@ -24,28 +24,31 @@
     <ImageView
         android:id="@+id/backRectMid"
         android:layout_width="match_parent"
-        android:layout_height="105dp"
+        android:layout_height="130dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/backRectBot"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
-        app:layout_constraintVertical_bias="0.48"></ImageView>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.05"></ImageView>
 
     <ImageView
         android:id="@+id/backRectBot"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="315dp"
+        android:elevation="5dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/joystickView2"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="1.0"></ImageView>
+        app:layout_constraintVertical_bias="1.0">
+
+    </ImageView>
 
     <ImageView
         android:id="@+id/imageView"
@@ -53,7 +56,8 @@
         android:layout_height="250dp"
         android:layout_weight="0.3"
         android:contentDescription="cameraView"
-        android:translationZ="2dp"
+        android:elevation="6dp"
+        android:translationZ="6dp"
         app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
         app:layout_constraintTop_toTopOf="@+id/backRectTop"
         tools:layout_editor_absoluteX="0dp" />
@@ -62,24 +66,28 @@
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="36dp"
         android:background="@drawable/gearbox_vertical_background"
+        android:elevation="6dp"
         android:rotation="90"
-        android:translationZ="2dp"
         android:scrollbarSize="4dp"
         android:switchMinWidth="120dp"
         android:track="@color/grey"
-        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="258dp" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
         android:layout_width="match_parent"
-        android:layout_height="295dp"
-        android:translationZ="2dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="285dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="1dp"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
