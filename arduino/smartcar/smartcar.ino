@@ -24,7 +24,8 @@ namespace mqtt_topic
 {
     const auto CONTROL_GLOBAL = "/smartcar/control/#";
     const auto CONTROL_SPEED = "/smartcar/control/speed";
-    const auto CONTORL_STEERING = "/smartcar/control/steering";
+    const auto CONTROL_STEERING = "/smartcar/control/steering";
+    const auto CONTROL_SPEED_OUT = "/smartcar/control/speedMS";
     const auto CAMERA = "/smartcar/camera";
 }
 
@@ -100,6 +101,7 @@ void loop(){
         mqtt.loop();
 #ifdef __SMCE__
         publishCameraFrame();
+        publishCarSpeed();
 #endif
     }
     // Maintain the speed and update the heading
@@ -172,7 +174,7 @@ int calculateExponentialDelay(int retries)
 void registerMqttMessageHandlers()
 {
     mqttMessageHandlers[mqtt_topic::CONTROL_SPEED] = handleSpeedChangeRequest;
-    mqttMessageHandlers[mqtt_topic::CONTORL_STEERING] = handleSteeringChangeRequest;
+    mqttMessageHandlers[mqtt_topic::CONTROL_STEERING] = handleSteeringChangeRequest;
 }
 
 void handleMqttMessage(String topic, String payload)
@@ -236,7 +238,7 @@ void publishCameraFrame()
 
 void publishCarSpeed()
 {
-    mqtt.publish("/smartcar/control/speedMS", String(car.getSpeed()));
+    mqtt.publish(mqtt_topic::CONTROL_SPEED_OUT, String(car.getSpeed()));
 }
 
 bool isNumber(String string)
