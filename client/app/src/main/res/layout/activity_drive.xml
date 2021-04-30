@@ -4,18 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#414141">
+
+    <ImageView
+        android:id="@+id/backRectTop"
+        android:layout_width="match_parent"
+        android:layout_height="285dp"
+        android:layout_marginTop="16dp"
+        android:translationZ="1dp"
+        android:src="@drawable/grey_curved_rectangle_with_border"
+        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"></ImageView>
+
+    <ImageView
+        android:id="@+id/backRectMid"
+        android:layout_width="match_parent"
+        android:layout_height="105dp"
+        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/backRectBot"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
+        app:layout_constraintVertical_bias="0.48"></ImageView>
+
+    <ImageView
+        android:id="@+id/backRectBot"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/joystickView2"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="1.0"></ImageView>
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="410dp"
-        android:layout_height="310dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
         android:layout_weight="0.3"
         android:contentDescription="cameraView"
-        app:layout_constraintBottom_toTopOf="@+id/drive_park_switch"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
+        app:layout_constraintTop_toTopOf="@+id/backRectTop"
+        tools:layout_editor_absoluteX="0dp" />
 
     <Switch
         android:id="@+id/drive_park_switch"
@@ -23,9 +64,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="36dp"
         android:background="@drawable/gearbox_vertical_background"
         android:rotation="90"
+        android:translationZ="2dp"
         android:scrollbarSize="4dp"
         android:switchMinWidth="120dp"
         android:track="@color/grey"
@@ -34,8 +76,9 @@
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
-        android:layout_width="412dp"
-        android:layout_height="293dp"
+        android:layout_width="match_parent"
+        android:layout_height="295dp"
+        android:translationZ="2dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

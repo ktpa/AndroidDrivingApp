@@ -66,7 +66,7 @@ void setup()
     #else
       Camera.begin(QVGA, RGB888, 15);
       frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
-      mqtt.begin("hysm.dev", 1883, WiFi);
+      mqtt.begin("betong.serveminecraft.net", 1883, WiFi);
     #endif
   if (mqtt.connect("arduino", "", "")) {
     mqtt.subscribe("/smartcar/control/#", 1);
