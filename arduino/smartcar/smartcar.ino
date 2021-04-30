@@ -66,7 +66,7 @@ void setup()
     #else
       Camera.begin(QVGA, RGB888, 15);
       frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
-      mqtt.begin("hysm.dev", 1883, WiFi);
+      mqtt.begin(WiFi);
     #endif
   if (mqtt.connect("arduino", "", "")) {
     mqtt.subscribe("/smartcar/control/#", 1);
@@ -92,16 +92,19 @@ void setup()
 void loop(){
   if (mqtt.connected()){
      mqtt.loop();
-#ifdef __SMCE__
+
      const auto currentTime = millis();
       static auto previousFrame = 0UL;
       if (currentTime - previousFrame >= 65) {
         previousFrame = currentTime;
+#ifdef __SMCE__
         Camera.readFrame(frameBuffer.data());
         mqtt.publish("/smartcar/control/camera", frameBuffer.data(), frameBuffer.size(),
                      false, 0);
-      }
 #endif
+      mqtt.publish("/smartcar/control/speedMS", String(car.getSpeed()));
+      }
+
   }
     // Maintain the speed and update the heading
     car.update();

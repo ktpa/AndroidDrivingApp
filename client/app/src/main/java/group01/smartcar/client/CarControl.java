@@ -3,6 +3,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -13,37 +14,46 @@ import static group01.smartcar.client.Status.*;
 
 public class CarControl {
     MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://hysm.dev:1883";
+    private final String DEFAULT_SERVER_URL = "tcp://10.0.2.2:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String SUBSCRIBE_URI = "/smartcar/control/#";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
+    private final String SPEED_URI = "/smartcar/control/speedMS";
     private final String CAMERA_URI = "/smartcar/control/camera";
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
+    private TextView speedometer;
 
     private String username = "app_user";
     private String password = "app_pass";
 
     private Status status = INACTIVE;
     int steeringAngle = 0;
+    double currentSpeedMS=0;
 
-    public CarControl(Context context, ImageView cameraView) {
+    public CarControl(Context context, ImageView cameraView, TextView speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
+        this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, TextView speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
+        this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, TextView speedometer) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
+        this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
     public void connect() {
@@ -137,6 +147,13 @@ public class CarControl {
 
                 cameraView.setImageBitmap(bm);
             }
+            if(topic.equals(SPEED_URI)){
+                double newSpeedMS = Double.parseDouble(message.toString());
+                if(currentSpeedMS != newSpeedMS){
+                    currentSpeedMS=newSpeedMS;
+                    updateSpeedometer();
+                }
+            }
         }
 
         @Override
@@ -201,5 +218,15 @@ public class CarControl {
             System.out.println("Failed to disconnect. Reason: " + exception.getLocalizedMessage());
         }
     };
+
+    private String getCurrentSpeedKMHString(){
+        double currentSpeedKMH = currentSpeedMS * 3.6;
+        String twoDigit = Double.toString(currentSpeedKMH);
+        return twoDigit.substring(0, Math.min(twoDigit.length(), 3)) + " km/h";
+    }
+
+    private void updateSpeedometer(){
+        speedometer.setText(getCurrentSpeedKMHString());
+    }
 
 }
