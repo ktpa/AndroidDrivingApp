@@ -66,12 +66,12 @@ void setup()
     #else
       Camera.begin(QVGA, RGB888, 15);
       frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
-      mqtt.begin("hysm.dev", 1883, WiFi);
+      mqtt.begin("192.168.0.105", 1883, WiFi);
     #endif
   if (mqtt.connect("arduino", "", "")) {
     mqtt.subscribe("/smartcar/control/#", 1);
     mqtt.onMessage([](String topic, String message) {
-      Serial.println(topic + " " + message);
+      //Serial.println(topic + " " + message);
       
       mqtt.publish("/smartcar/received/msg", message);
       

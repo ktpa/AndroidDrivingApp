@@ -1,5 +1,6 @@
 package group01.smartcar.client;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
@@ -13,7 +14,7 @@ import static group01.smartcar.client.Status.*;
 
 public class CarControl {
     MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://hysm.dev:1883";
+    private final String DEFAULT_SERVER_URL =  "tcp://hysm.dev:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String SUBSCRIBE_URI = "/smartcar/control/#";
     private final String STEERING_URI = "/smartcar/control/steering";
@@ -34,6 +35,11 @@ public class CarControl {
         this.cameraView = cameraView;
     }
 
+    public CarControl(Context context, String serverUrl, ImageView cameraView) {
+        mqtt = new MqttClient(context, serverUrl, DEFAULT_CLIENT_ID);
+        this.cameraView = cameraView;
+    }
+
     public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
@@ -47,22 +53,23 @@ public class CarControl {
     }
 
     public void connect() {
-        if (!mqtt.isConnected()) {
-            try {
+        try {
+            if (!mqtt.isConnected()) {
+
                 mqtt.connect(username, password, mqttConnectionListener, mqttCallback);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+                e.printStackTrace();
         }
     }
 
     public void disconnect() {
-        if (mqtt.isConnected()) {
-            try {
+        try {
+            if (mqtt.isConnected()) {
                 mqtt.disconnect(mqttDisconnectListener);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -82,7 +89,7 @@ public class CarControl {
         if (status == ACTIVE) {
             throttle(0);
             setSteeringAngle(0);
-            disconnect();
+            this.disconnect();
             status = INACTIVE;
         }
     }
@@ -177,7 +184,7 @@ public class CarControl {
     IMqttActionListener mqttPublishListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            System.out.println("Published...");
+            //System.out.println("Published...");
         }
 
         @Override
