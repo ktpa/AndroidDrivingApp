@@ -10,14 +10,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import static group01.smartcar.client.Status.*;
 import static java.util.Objects.requireNonNull;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         emailTextView = findViewById(R.id.email_textfield);
         passwordTextView = findViewById(R.id.password_textfield);
         findViewById(R.id.login_button).setOnClickListener(login);
+        findViewById(R.id.debug_mode).setOnClickListener(this::onDevModeActivated);
+    }
+
+    private void onDevModeActivated(View view) {
+        Intent intent = new Intent(this, UserMenuActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private final View.OnClickListener login = new View.OnClickListener() {
