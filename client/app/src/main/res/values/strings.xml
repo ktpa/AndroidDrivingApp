@@ -10,4 +10,6 @@
     <string name="username">Username</string>
     <string name="pw">Password</string>
     <string name="logged_in_as">Logged in as</string>
+    <string name="dev_mode">Dev mode</string>
+    <string name="debug_mode">Debug mode</string>
 </resources>
