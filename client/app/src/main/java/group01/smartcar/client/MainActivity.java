@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static group01.smartcar.client.Status.*;
+import static java.util.Objects.requireNonNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +45,50 @@ public class MainActivity extends AppCompatActivity {
         registerComponentCallbacks();
     }
 
+    private void registerComponentCallbacks() {
+        emailTextView = findViewById(R.id.email_textfield);
+        passwordTextView = findViewById(R.id.password_textfield);
+        findViewById(R.id.login_button).setOnClickListener(login);
+    }
+
+    private final View.OnClickListener login = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String email = emailTextView.getText().toString();
+            String password = passwordTextView.getText().toString();
+
+            if (!email.isEmpty() && !password.isEmpty()) {
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("EmailPassword", "signInWithEmail:success");
+                        verifyUser();
+                    } else {
+                        Log.w("EmailPassword", "signInWithEmail:failure",
+                                task.getException());
+                        Toast.makeText(
+                                MainActivity.this, "Failed to log in! Ask your " +
+                                        "local AlSet dealer for your " +
+                                        "personal login details.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    };
+
+    private void verifyUser() {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
+            MainActivity.this.startActivityForResult(intent, 0);
+            Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT)
+                    .show();
+            finish();
+        } else {
+            Toast.makeText(MainActivity.this, "Your login details are incorrect.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void loadBackground() {
         videoBackground = findViewById(R.id.videoView);
 
@@ -63,55 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 mediaPlayer.start();
             }
         });
-    }
-
-    private void verifyUser() {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            Toast.makeText(MainActivity.this, "Welcome to AlSet", Toast.LENGTH_SHORT)
-                    .show();
-            Intent intent = new Intent(this, DrivingScreen.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(MainActivity.this, "Your login details are incorrect.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void registerComponentCallbacks() {
-        findViewById(R.id.login_button).setOnClickListener(this::onLoginButtonClick);
-        emailTextView = findViewById(R.id.email_textfield);
-        passwordTextView = findViewById(R.id.password_textfield);
-        findViewById(R.id.login_button).setOnClickListener(login);
-    }
-
-    private final View.OnClickListener login = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String email = emailTextView.getText().toString();
-            String password = passwordTextView.getText().toString();
-
-            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Log.d("EmailPassword", "signInWithEmail:success");
-                    verifyUser();
-                } else {
-                    Log.w("EmailPassword", "signInWithEmail:failure",
-                            task.getException());
-                    Toast.makeText(
-                            MainActivity.this, "Failed to log in! Ask your " +
-                                    "local AlSet dealer for your " +
-                                    "personal login details.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    };
-
-    private void onLoginButtonClick(View view) {
-        Intent intent = new Intent(this, UserMenuActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
