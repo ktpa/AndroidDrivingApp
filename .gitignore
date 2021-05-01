@@ -53,3 +53,5 @@ local.properties
 /mqtt/data
 /mqtt/log
 
+# Secrets
+/arduino/smartcar/secrets.hpp

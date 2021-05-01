@@ -16,11 +16,11 @@ public class CarControl {
     MqttClient mqtt;
     private final String DEFAULT_SERVER_URL = "tcp://10.0.2.2:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
-    private final String SUBSCRIBE_URI = "/smartcar/control/#";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
     private final String SPEED_URI = "/smartcar/control/speedMS";
-    private final String CAMERA_URI = "/smartcar/control/camera";
+    private final String CAMERA_URI = "/smartcar/camera";
+
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
@@ -166,7 +166,8 @@ public class CarControl {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
             // Try to subscribe to the main car resource
-            mqtt.subscribe(SUBSCRIBE_URI, 1, mqttSubscriptionListener);
+            mqtt.subscribe(CAMERA_URI, 1, mqttSubscriptionListener);
+            mqtt.subscribe(SPEED_URI, 1, mqttSubscriptionListener);
         }
 
         @Override
