@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class UserMenuActivity extends AppCompatActivity {
 
@@ -21,9 +24,8 @@ public class UserMenuActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void registerComponentCallbacks() {
-        // TODO: Merge into master and connect active user session to TextView
         TextView usernameView = findViewById(R.id.username_field);
-        usernameView.setText("user here");
+        usernameView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         findViewById(R.id.logout_button).setOnClickListener(this::onLogoutButtonClick);
         findViewById(R.id.drive_alset_button).setOnClickListener(this::onDriveButtonClick);

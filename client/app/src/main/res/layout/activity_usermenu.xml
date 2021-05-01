@@ -45,8 +45,8 @@
 
     <TextView
         android:id="@+id/username_field"
-        android:layout_width="121dp"
-        android:layout_height="21dp"
+        android:layout_width="286dp"
+        android:layout_height="18dp"
         android:fontFamily="sans-serif-condensed-light"
         android:textSize="14sp"
         android:typeface="normal"
