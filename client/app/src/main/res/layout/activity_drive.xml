@@ -19,12 +19,12 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"></ImageView>
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/backRectMid"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="135dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
         app:layout_constraintBottom_toTopOf="@id/backRectBot"
@@ -32,21 +32,18 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backRectTop"
-        app:layout_constraintVertical_bias="0.475"></ImageView>
+        app:layout_constraintVertical_bias="0.475" />
 
     <ImageView
         android:id="@+id/backRectBot"
         android:layout_width="match_parent"
-        android:layout_height="315dp"
+        android:layout_height="290dp"
         android:layout_marginBottom="6dp"
-        android:elevation="5dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/backRectMid"
-        app:layout_constraintEnd_toEndOf="parent">
-
-    </ImageView>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -57,14 +54,12 @@
         android:elevation="6dp"
         android:translationZ="6dp"
         app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
-        app:layout_constraintTop_toTopOf="@+id/backRectTop"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintTop_toTopOf="@+id/backRectTop" />
 
     <Switch
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
         android:background="@drawable/gearbox_vertical_background"
         android:elevation="6dp"
         android:rotation="90"
@@ -72,22 +67,19 @@
         android:switchMinWidth="120dp"
         android:track="@color/grey"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/backRectBot"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.944"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
-        app:layout_constraintVertical_bias="0.666" />
+        app:layout_constraintTop_toTopOf="@+id/backRectMid"
+        app:layout_constraintVertical_bias="0.716" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="280dp"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
-        android:layout_marginBottom="16dp"
         android:elevation="1dp"
-        android:translationZ="6dp"
+        android:translationZ="2dp"
         app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
         app:layout_constraintTop_toTopOf="@+id/backRectBot" />
 
