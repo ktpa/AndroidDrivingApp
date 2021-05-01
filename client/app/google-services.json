@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "615113532166",
+    "project_id": "smartcar-client",
+    "storage_bucket": "smartcar-client.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615113532166:android:2c07250ffe7152017a7487",
+        "android_client_info": {
+          "package_name": "group01.smartcar.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615113532166-s41nv7jdp0tnfagr9nmfh19jk9vhl86e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZTPaOzDsHc8uCKsdB3XOQQ-VHbvH0oWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615113532166-s41nv7jdp0tnfagr9nmfh19jk9vhl86e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
