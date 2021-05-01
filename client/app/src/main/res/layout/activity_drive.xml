@@ -24,7 +24,7 @@
     <ImageView
         android:id="@+id/backRectMid"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="135dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
         app:layout_constraintBottom_toTopOf="@id/backRectBot"
@@ -37,7 +37,7 @@
     <ImageView
         android:id="@+id/backRectBot"
         android:layout_width="match_parent"
-        android:layout_height="315dp"
+        android:layout_height="290dp"
         android:layout_marginBottom="6dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
@@ -60,7 +60,6 @@
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
         android:background="@drawable/gearbox_vertical_background"
         android:elevation="6dp"
         android:rotation="90"
@@ -68,12 +67,10 @@
         android:switchMinWidth="120dp"
         android:track="@color/grey"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/backRectBot"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.944"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
-        app:layout_constraintVertical_bias="0.666" />
+        app:layout_constraintTop_toTopOf="@+id/backRectMid"
+        app:layout_constraintVertical_bias="0.716" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
