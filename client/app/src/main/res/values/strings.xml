@@ -9,4 +9,5 @@
     <string name="start_your_engines">Start your engines</string>
     <string name="username">Username</string>
     <string name="pw">Password</string>
+    <string name="logged_in_as">Logged in as</string>
 </resources>

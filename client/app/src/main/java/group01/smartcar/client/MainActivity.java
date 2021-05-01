@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onLoginButtonClick(View view) {
-        Intent intent = new Intent(this, DrivingScreen.class);
+        Intent intent = new Intent(this, UserMenuActivity.class);
         startActivity(intent);
         finish();
     }

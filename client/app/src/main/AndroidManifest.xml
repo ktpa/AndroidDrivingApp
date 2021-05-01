@@ -26,6 +26,9 @@
             android:name=".DrivingScreen"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".UserMenuActivity"
+            android:screenOrientation="portrait"></activity>
+
         <service android:name="org.eclipse.paho.android.service.MqttService" ></service>
     </application>
 
