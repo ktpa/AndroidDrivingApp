@@ -58,12 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private final View.OnClickListener login = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
-            MainActivity.this.startActivityForResult(intent, 0);
-            Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT)
-                    .show();
-            finish();
-            /*
             String email = emailTextView.getText().toString();
             String password = passwordTextView.getText().toString();
 
@@ -82,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-             */
         }
     };
 
