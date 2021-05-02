@@ -20,9 +20,9 @@ import static group01.smartcar.client.Status.ACTIVE;
 // 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
-    CarControl car;
-    protected ImageView cameraView;
-    protected TextView speedometer;
+    private CarControl car;
+    private ImageView cameraView;
+    private TextView speedometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

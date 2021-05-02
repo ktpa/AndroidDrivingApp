@@ -19,9 +19,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
-    EditText emailTextView, passwordTextView;
+    private EditText emailTextView, passwordTextView;
     private VideoView videoBackground;
-    MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
     int currentVideoPosition;
 
     @Override
