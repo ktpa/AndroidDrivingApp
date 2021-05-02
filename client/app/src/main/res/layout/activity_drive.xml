@@ -14,6 +14,7 @@
         android:layout_marginTop="6dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
+        android:layout_margin="6dp"
         app:layout_constraintBottom_toTopOf="@+id/joystickView2"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="1.0"
@@ -25,6 +26,7 @@
         android:id="@+id/backRectMid"
         android:layout_width="match_parent"
         android:layout_height="135dp"
+        android:layout_margin="6dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
         app:layout_constraintBottom_toTopOf="@id/backRectBot"
@@ -41,6 +43,7 @@
         android:layout_marginBottom="6dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
+        android:layout_margin="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/backRectMid"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -76,10 +79,10 @@
         android:id="@+id/joystickView2"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
+        android:alpha="1"
         android:elevation="1dp"
         android:translationZ="2dp"
+        android:layout_margin="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
         app:layout_constraintTop_toTopOf="@+id/backRectBot" />
 
