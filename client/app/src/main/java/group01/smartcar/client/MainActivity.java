@@ -1,66 +1,135 @@
 package group01.smartcar.client;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.VideoView;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import static group01.smartcar.client.Status.*;
 
-public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
-    CarControl car;
-    protected ImageView cameraView;
-    protected TextView speedometer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth firebaseAuth;
+    private EditText emailTextView, passwordTextView;
+    private VideoView videoBackground;
+    private MediaPlayer mediaPlayer;
+    int currentVideoPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.hide();
+
+        videoBackground = findViewById(R.id.videoView);
+        videoBackground.getHolder().setSizeFromLayout();
+        loadBackground();
+
+        firebaseAuth = FirebaseAuth.getInstance();
         registerComponentCallbacks();
-        cameraView = findViewById(R.id.imageView);
-        speedometer = findViewById(R.id.simpleSpeedometer);
-        car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        car.pause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        System.out.println("OnResume");
-        // Reconnect to MQTT server if application is resumed
-        car.resume();
     }
 
     private void registerComponentCallbacks() {
-        Switch sw = (Switch) findViewById(R.id.drive_park_switch);
-        sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked) {
-                car.start();
-            } else {
-                car.stop();
+        emailTextView = findViewById(R.id.email_textfield);
+        passwordTextView = findViewById(R.id.password_textfield);
+        findViewById(R.id.login_button).setOnClickListener(login);
+        findViewById(R.id.debug_mode).setOnClickListener(this::onDevModeActivated);
+    }
+
+    private void onDevModeActivated(View view) {
+        Intent intent = new Intent(this, UserMenuActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private final View.OnClickListener login = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String email = emailTextView.getText().toString();
+            String password = passwordTextView.getText().toString();
+
+            if (!email.isEmpty() && !password.isEmpty()) {
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("EmailPassword", "signInWithEmail:success");
+                        verifyUser();
+                    } else {
+                        Log.w("EmailPassword", "signInWithEmail:failure",
+                                task.getException());
+                        Toast.makeText(
+                                MainActivity.this, "Failed to log in! Ask your " +
+                                        "local AlSet dealer for your " +
+                                        "personal login details.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    };
+
+    private void verifyUser() {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
+            MainActivity.this.startActivityForResult(intent, 0);
+            Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT)
+                    .show();
+            finish();
+        } else {
+            Toast.makeText(MainActivity.this, "Your login details are incorrect.",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadBackground() {
+        videoBackground = findViewById(R.id.videoView);
+
+        Uri uri = Uri.parse("android.resource://"
+                + getPackageName()
+                + "/"
+                + R.raw.background);
+
+        videoBackground.setVideoURI(uri);
+        videoBackground.start();
+
+        videoBackground.setOnPreparedListener((mediaPlayer) -> {
+            this.mediaPlayer = mediaPlayer;
+            mediaPlayer.setLooping(true);
+
+            if (currentVideoPosition != 0) {
+                mediaPlayer.seekTo(currentVideoPosition);
+                mediaPlayer.start();
             }
         });
     }
 
     @Override
-    public void onJoystickMoved(float xPercent, float yPercent, int id){
-        int angle = (int)((xPercent) * 100);
-        int speed = (int)((yPercent) * -100);
-        Log.d("joystick", "angle: " + angle + " speed: " + speed );
-        if(car.getStatus() == ACTIVE) {
-            car.setSteeringAngle(angle);
-            car.throttle(speed);
-        }
-
+    protected void onPause() {
+        super.onPause();
+        this.currentVideoPosition = mediaPlayer.getCurrentPosition();
+        videoBackground.pause();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        videoBackground.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.release();
+        this.mediaPlayer = null;
+    }
 }

@@ -85,7 +85,6 @@ void setup()
     frameBuffer.resize(Camera.width() * Camera.height() * Camera.bytesPerPixel());
     mqtt.begin(MQTT_HOST, MQTT_PORT, WiFi);
 #endif
-
     car.enableCruiseControl();
     car.setSpeed(0);
 }
