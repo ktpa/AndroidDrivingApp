@@ -2,8 +2,8 @@ package group01.smartcar.client;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -14,42 +14,46 @@ import static group01.smartcar.client.Status.*;
 
 public class CarControl {
     MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://10.0.2.2:1883";
+    private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
-    private final String SUBSCRIBE_URI = "/smartcar/control/#";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
-    private final String CAMERA_URI = "/smartcar/control/camera";
-    private final String SPEEDOMETER_URI = "/smartcar/control/realSpeed";
+    private final String SPEED_URI = "/smartcar/control/speedMS";
+    private final String CAMERA_URI = "/smartcar/camera";
+
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
-    private Speedometer speedometer;
+    private TextView speedometer;
 
     private String username = "app_user";
     private String password = "app_pass";
 
     private Status status = INACTIVE;
     int steeringAngle = 0;
+    double currentSpeedMS=0;
 
-    public CarControl(Context context, ImageView cameraView, Speedometer speedometer) {
+    public CarControl(Context context, ImageView cameraView, TextView speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, Speedometer speedometer) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, TextView speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, Speedometer speedometer) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, TextView speedometer) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
+        updateSpeedometer();
     }
 
     public void connect() {
@@ -95,16 +99,16 @@ public class CarControl {
 
     public void pause() {
         if (status == ACTIVE) {
-            //l33t.out.println("Pausing...");
+            System.out.println("Pausing...");
             status = PAUSED;
             this.disconnect();
         }
     }
 
     public void resume() {
-            //l33tSystem.out.println("resume(): " + status.name());
+        System.out.println("resume(): " + status.name());
         if (status == PAUSED) {
-            //l33tSystem.out.println("Resuming...");
+            System.out.println("Resuming...");
             status = ACTIVE;
             this.connect();
         }
@@ -143,17 +147,12 @@ public class CarControl {
 
                 cameraView.setImageBitmap(bm);
             }
-            if (topic.equals(THROTTLE_URI)) {
-                // Update speedometer
-                speedometer.setMotorPowerPercentage(Double.parseDouble(message.toString()));
-                speedometer.update();
-
-            }
-            if (topic.equals(SPEEDOMETER_URI)) {
-                // Update speedometer
-                speedometer.setCurrentSpeedMS(Double.parseDouble(message.toString()));
-                speedometer.update();
-
+            if(topic.equals(SPEED_URI)){
+                double newSpeedMS = Double.parseDouble(message.toString());
+                if(currentSpeedMS != newSpeedMS){
+                    currentSpeedMS=newSpeedMS;
+                    updateSpeedometer();
+                }
             }
         }
 
@@ -167,14 +166,15 @@ public class CarControl {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
             // Try to subscribe to the main car resource
-            mqtt.subscribe(SUBSCRIBE_URI, 1, mqttSubscriptionListener);
+            mqtt.subscribe(CAMERA_URI, 1, mqttSubscriptionListener);
+            mqtt.subscribe(SPEED_URI, 1, mqttSubscriptionListener);
         }
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
             // Something went wrong
             status = INACTIVE;
-            //l33tSystem.out.println("Failed to connect: " + exception.getLocalizedMessage());
+            System.out.println("Failed to connect: " + exception.getLocalizedMessage());
         }
     };
 
@@ -195,12 +195,12 @@ public class CarControl {
     IMqttActionListener mqttPublishListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            //l33tSystem.out.println("Published...");
+            System.out.println("Published...");
         }
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-            //l33tSystem.out.println("Failed to publish.");
+            System.out.println("Failed to publish.");
         }
     };
 
@@ -210,15 +210,24 @@ public class CarControl {
             if (status == ACTIVE) {
                 status = INACTIVE;
             }
-            //l33t      System.out.println("Disconnected!");
+            System.out.println("Disconnected!");
         }
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
             status = INACTIVE;
-//l33t            System.out.println("Failed to disconnect. Reason: " + exception.getLocalizedMessage());
+            System.out.println("Failed to disconnect. Reason: " + exception.getLocalizedMessage());
         }
     };
 
-}
+    private String getCurrentSpeedKMHString(){
+        double currentSpeedKMH = currentSpeedMS * 3.6;
+        String twoDigit = Double.toString(currentSpeedKMH);
+        return twoDigit.substring(0, Math.min(twoDigit.length(), 3)) + " km/h";
+    }
 
+    private void updateSpeedometer(){
+        speedometer.setText(getCurrentSpeedKMHString());
+    }
+
+}

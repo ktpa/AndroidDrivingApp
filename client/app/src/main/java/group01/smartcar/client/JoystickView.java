@@ -25,8 +25,8 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
     private void setupDimensions(){
         centerX = getWidth()/2;
-        centerY = getWidth()/(float)(2.5);
-        baseRadius = Math.min(getWidth(), getHeight()) / 3;
+        centerY = findViewById(R.id.joystickView2).getHeight()/(float)(2);
+        baseRadius = Math.min(getWidth(), getHeight()) / 4;
         hatRadius = Math.min(getWidth(), getHeight()) / 5;
 
     }
@@ -59,14 +59,14 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
         if(getHolder().getSurface().isValid()) {
             Canvas myCanvas = this.getHolder().lockCanvas();
             Paint colors = new Paint();
-            myCanvas.drawColor(Color.parseColor("#0D1117")); // Clear the BG
+            myCanvas.drawColor(Color.parseColor("#6C6C6C")); // Clear the BG
 
             colors.setARGB(255, 8, 29, 61); //base
             myCanvas.drawCircle(centerX, centerY, baseRadius, colors);
-            colors.setARGB(255, 13, 17, 23); //base
+            colors.setARGB(255, 13, 1, 23); //base
             myCanvas.drawCircle(centerX, centerY, (float)(baseRadius*0.95), colors);
 
-            colors.setARGB(150,35,74,132); //hat
+            colors.setARGB(225,35,74,132); //hat
             myCanvas.drawCircle(newX, newY, hatRadius, colors);
 
             getHolder().unlockCanvasAndPost(myCanvas);
