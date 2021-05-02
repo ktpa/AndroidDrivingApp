@@ -59,6 +59,19 @@
         app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
         app:layout_constraintTop_toTopOf="@+id/backRectTop" />
 
+    <TextView
+        android:id="@+id/simpleSpeedometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="56dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@id/backRectMid"
+        app:layout_constraintTop_toTopOf="@id/backRectMid"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Switch
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"

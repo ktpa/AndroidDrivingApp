@@ -7,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.ActionBar;
@@ -19,6 +22,7 @@ import static group01.smartcar.client.Status.ACTIVE;
 public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
     CarControl car;
     protected ImageView cameraView;
+    protected TextView speedometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +30,8 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         setContentView(R.layout.activity_drive);
         registerComponentCallbacks();
         cameraView = findViewById(R.id.imageView);
-        car = new CarControl(this.getApplicationContext(), cameraView);
+        speedometer = findViewById(R.id.simpleSpeedometer);
+        car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
     }
 
     @Override

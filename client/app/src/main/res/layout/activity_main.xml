@@ -91,6 +91,7 @@
         app:layout_constraintTop_toBottomOf="@+id/password_textfield"
         android:paddingStart="33dp" />
 
+
     <Button
         android:id="@+id/debug_mode"
         android:layout_width="106dp"
