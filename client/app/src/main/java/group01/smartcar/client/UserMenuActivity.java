@@ -11,8 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class UserMenuActivity extends AppCompatActivity {
+
+    private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,7 +28,11 @@ public class UserMenuActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void registerComponentCallbacks() {
         TextView usernameView = findViewById(R.id.username_field);
-        usernameView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        if (firebaseUser != null)
+            usernameView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        else
+            usernameView.setText("DEBUG MODE");
 
         findViewById(R.id.logout_button).setOnClickListener(this::onLogoutButtonClick);
         findViewById(R.id.drive_alset_button).setOnClickListener(this::onDriveButtonClick);
@@ -33,6 +40,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
     private void onLogoutButtonClick(View view) {
         // TODO: Actually log out and pass Toast to next screen
+        FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
