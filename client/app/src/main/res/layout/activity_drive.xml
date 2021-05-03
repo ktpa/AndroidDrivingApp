@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/BG"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/backRectTop"
+        android:layout_width="match_parent"
+        android:layout_height="285dp"
+        android:layout_marginTop="6dp"
+        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:translationZ="1dp"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/backRectMid"
+        android:layout_width="match_parent"
+        android:layout_height="135dp"
+        android:layout_margin="6dp"
+        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toTopOf="@id/backRectBot"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
+        app:layout_constraintVertical_bias="0.475" />
+
+    <ImageView
+        android:id="@+id/backRectBot"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_marginBottom="6dp"
+        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:translationZ="1dp"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/backRectMid"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_weight="0.3"
+        android:contentDescription="cameraView"
+        android:elevation="6dp"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
+        app:layout_constraintTop_toTopOf="@+id/backRectTop" />
+
+    <TextView
+        android:id="@+id/simpleSpeedometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="56dp"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="32dp"
+        app:layout_constraintBottom_toBottomOf="@id/backRectMid"
+        app:layout_constraintTop_toTopOf="@id/backRectMid"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Switch
+        android:id="@+id/drive_park_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gearbox_vertical_background"
+        android:elevation="6dp"
+        android:rotation="90"
+        android:scrollbarSize="4dp"
+        android:switchMinWidth="120dp"
+        android:track="@color/grey"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backRectMid"
+        app:layout_constraintVertical_bias="0.716" />
+
+    <group01.smartcar.client.JoystickView
+        android:id="@+id/joystickView2"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:alpha="1"
+        android:elevation="1dp"
+        android:translationZ="2dp"
+        android:layout_margin="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
+        app:layout_constraintTop_toTopOf="@+id/backRectBot" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

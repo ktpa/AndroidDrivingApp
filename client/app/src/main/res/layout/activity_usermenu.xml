@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="413dp"
+        android:layout_height="71dp"
+        android:background="#2A65DC"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="39dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_person_24" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="108dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="43dp"
+        android:layout_marginLeft="43dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/logged_in_as"
+        android:textSize="14sp"
+        android:typeface="sans"
+        app:layout_constraintStart_toStartOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/username_field"
+        android:layout_width="286dp"
+        android:layout_height="18dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textSize="14sp"
+        android:typeface="normal"
+        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <ImageView
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintEnd_toStartOf="@+id/settings_button"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:srcCompat="@drawable/ic_baseline_logout_24" />
+
+    <ImageButton
+        android:id="@+id/settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@null"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_miscellaneous_services_24" />
+
+    <ImageButton
+        android:id="@+id/drive_alset_button"
+        android:layout_width="318dp"
+        android:layout_height="203dp"
+        android:layout_marginTop="40dp"
+        android:alpha="0.45"
+        android:background="@null"
+        android:hapticFeedbackEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:srcCompat="@drawable/curved_whiterectangle" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:alpha="0.65"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="@string/drive_your_alset"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:typeface="sans"
+        app:layout_constraintEnd_toEndOf="@+id/drive_alset_button"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintTop_toTopOf="@+id/drive_alset_button" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="422dp"
+        android:layout_height="229dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/drive_alset_button"
+        app:layout_constraintHorizontal_bias="0.471"
+        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintTop_toTopOf="@+id/textView10"
+        app:srcCompat="@drawable/car" />
+
+    <ImageView
+        android:id="@+id/battery_image"
+        android:layout_width="92dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginLeft="108dp"
+        android:alpha="1"
+        android:rotation="90"
+        app:layout_constraintBottom_toBottomOf="@+id/drive_alset_button"
+        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintTop_toTopOf="@+id/drive_alset_button"
+        app:layout_constraintVertical_bias="0.24"
+        app:srcCompat="@drawable/battery_full" />
+
+    <TextView
+        android:id="@+id/battery_text"
+        android:layout_width="91dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginLeft="108dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:text="@string/percentage"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintTop_toTopOf="@+id/battery_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

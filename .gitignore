@@ -42,7 +42,7 @@
 /local.properties
 */.idea
 .DS_Store
-/build
+*/build
 /captures
 .externalNativeBuild
 .cxx
@@ -52,5 +52,6 @@ local.properties
 
 /mqtt/data
 /mqtt/log
+
+# Secrets
 /arduino/smartcar/secrets.hpp
-/client/app/src/main/res/values/secrets.xml
