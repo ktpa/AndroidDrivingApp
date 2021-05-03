@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UserMenuActivity extends AppCompatActivity {
+    // Battery monitor adapted from https://www.youtube.com/watch?v=GxfdnOtRibQ&ab_channel=TihomirRAdeff
 
     private Handler handler;
     private Runnable runnable;
@@ -46,7 +47,7 @@ public class UserMenuActivity extends AppCompatActivity {
             if (level > 25 && level <= 50)
                 batteryImage.setImageResource(R.drawable.battery_medium);
 
-            if (level > 0 && level <= 25)
+            if (level >= 0 && level <= 25)
                 batteryImage.setImageResource(R.drawable.battery_low);
 
             handler.postDelayed(runnable, 1000);
