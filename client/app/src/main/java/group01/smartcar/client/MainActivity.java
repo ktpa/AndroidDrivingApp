@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText emailTextView, passwordTextView;
     private VideoView videoBackground;
     private MediaPlayer mediaPlayer;
-    int currentVideoPosition;
+    private int currentVideoPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
         emailTextView = findViewById(R.id.email_textfield);
         passwordTextView = findViewById(R.id.password_textfield);
         findViewById(R.id.login_button).setOnClickListener(login);
-        findViewById(R.id.debug_mode).setOnClickListener(this::onDevModeActivated);
+        findViewById(R.id.debug_mode).setOnClickListener(this::onDebugModeActivated);
     }
 
-    private void onDevModeActivated(View view) {
+    private void onDebugModeActivated(View view) {
         Intent intent = new Intent(this, UserMenuActivity.class);
         startActivity(intent);
         finish();
