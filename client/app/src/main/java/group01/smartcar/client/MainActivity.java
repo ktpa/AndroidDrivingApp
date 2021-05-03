@@ -2,7 +2,9 @@ package group01.smartcar.client;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText emailTextView, passwordTextView;
     private VideoView videoBackground;
     private MediaPlayer mediaPlayer;
-    int currentVideoPosition;
+    private int currentVideoPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
         emailTextView = findViewById(R.id.email_textfield);
         passwordTextView = findViewById(R.id.password_textfield);
         findViewById(R.id.login_button).setOnClickListener(login);
-        findViewById(R.id.debug_mode).setOnClickListener(this::onDevModeActivated);
+        findViewById(R.id.debug_mode).setOnClickListener(this::onDebugModeActivated);
     }
 
-    private void onDevModeActivated(View view) {
+    private void onDebugModeActivated(View view) {
         Intent intent = new Intent(this, UserMenuActivity.class);
         startActivity(intent);
         finish();
@@ -105,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
         videoBackground.setOnPreparedListener((mediaPlayer) -> {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.setLooping(true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PlaybackParams playbackParams = new PlaybackParams();
+                playbackParams.setSpeed(0.5f);
+                mediaPlayer.setPlaybackParams(playbackParams);
+            }
 
             if (currentVideoPosition != 0) {
                 mediaPlayer.seekTo(currentVideoPosition);
