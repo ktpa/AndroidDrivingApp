@@ -7,6 +7,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class UserMenuActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private TextView batteryText;
+    private ImageView batteryImage;
 
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -31,11 +33,23 @@ public class UserMenuActivity extends AppCompatActivity {
         hideSystemUI();
         registerComponentCallbacks();
 
-        // TODO: Add image to battery indicator
         runnable = () -> {
             int level = (int) batteryLevel();
             batteryText.setText(level + "%");
-            handler.postDelayed(runnable, 5000);
+
+            if (level > 75)
+                batteryImage.setImageResource(R.drawable.battery_full);
+
+            if (level > 50 && level <= 75)
+                batteryImage.setImageResource(R.drawable.battery_high);
+
+            if (level > 25 && level <= 50)
+                batteryImage.setImageResource(R.drawable.battery_medium);
+
+            if (level > 0 && level <= 25)
+                batteryImage.setImageResource(R.drawable.battery_low);
+
+            handler.postDelayed(runnable, 1000);
         };
 
         handler = new Handler();
@@ -53,7 +67,8 @@ public class UserMenuActivity extends AppCompatActivity {
 
         findViewById(R.id.logout_button).setOnClickListener(this::onLogoutButtonClick);
         findViewById(R.id.drive_alset_button).setOnClickListener(this::onDriveButtonClick);
-        batteryText = (TextView) findViewById(R.id.battery_percentage);
+        batteryText = (TextView) findViewById(R.id.battery_text);
+        batteryImage = (ImageView) findViewById(R.id.battery_image);
     }
 
     private float batteryLevel() {

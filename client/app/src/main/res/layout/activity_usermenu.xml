@@ -81,13 +81,13 @@
     <ImageButton
         android:id="@+id/drive_alset_button"
         android:layout_width="318dp"
-        android:layout_height="196dp"
+        android:layout_height="203dp"
         android:layout_marginTop="40dp"
         android:alpha="0.45"
         android:background="@null"
         android:hapticFeedbackEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:srcCompat="@drawable/curved_whiterectangle" />
@@ -96,7 +96,7 @@
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:alpha="0.65"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/drive_your_alset"
@@ -104,55 +104,46 @@
         android:textSize="24sp"
         android:typeface="sans"
         app:layout_constraintEnd_toEndOf="@+id/drive_alset_button"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
         app:layout_constraintTop_toTopOf="@+id/drive_alset_button" />
 
     <ImageView
         android:id="@+id/imageView14"
-        android:layout_width="323dp"
-        android:layout_height="183dp"
-        android:layout_marginTop="12dp"
+        android:layout_width="422dp"
+        android:layout_height="229dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="@+id/drive_alset_button"
-        app:layout_constraintHorizontal_bias="0.431"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
         app:layout_constraintTop_toTopOf="@+id/textView10"
         app:srcCompat="@drawable/car" />
 
     <ImageView
-        android:id="@+id/battery_box"
-        android:layout_width="194dp"
-        android:layout_height="167dp"
-        android:layout_marginTop="56dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.184"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView14"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/curved_whiterectangle" />
+        android:id="@+id/battery_image"
+        android:layout_width="92dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginLeft="108dp"
+        android:alpha="1"
+        android:rotation="90"
+        app:layout_constraintBottom_toBottomOf="@+id/drive_alset_button"
+        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintTop_toTopOf="@+id/drive_alset_button"
+        app:layout_constraintVertical_bias="0.24"
+        app:srcCompat="@drawable/battery_full" />
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="112dp"
+        android:id="@+id/battery_text"
+        android:layout_width="91dp"
         android:layout_height="25dp"
-        android:layout_marginTop="116dp"
-        android:text="@string/battery_level"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/battery_box"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="@+id/battery_box"
-        app:layout_constraintTop_toTopOf="@+id/battery_box" />
-
-    <TextView
-        android:id="@+id/battery_percentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginLeft="108dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
         android:text="@string/percentage"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/battery_box"
-        app:layout_constraintStart_toStartOf="@+id/battery_box"
-        app:layout_constraintTop_toBottomOf="@+id/textView1" />
+        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintTop_toTopOf="@+id/battery_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

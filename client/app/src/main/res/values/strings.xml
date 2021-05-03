@@ -15,4 +15,5 @@
     <string name="drive_your_alset">Drive Your AlSet</string>
     <string name="battery_level">Battery Level:</string>
     <string name="percentage">percentage</string>
+    <string name="x_percent" />
 </resources>
