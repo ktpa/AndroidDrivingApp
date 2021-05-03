@@ -2,7 +2,9 @@ package group01.smartcar.client;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -105,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
         videoBackground.setOnPreparedListener((mediaPlayer) -> {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.setLooping(true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PlaybackParams playbackParams = new PlaybackParams();
+                playbackParams.setSpeed(0.5f);
+                mediaPlayer.setPlaybackParams(playbackParams);
+            }
 
             if (currentVideoPosition != 0) {
                 mediaPlayer.seekTo(currentVideoPosition);
