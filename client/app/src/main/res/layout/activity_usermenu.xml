@@ -99,7 +99,7 @@
         android:layout_marginTop="16dp"
         android:alpha="0.65"
         android:fontFamily="sans-serif-condensed-medium"
-        android:text="Drive Your AlSet"
+        android:text="@string/drive_your_alset"
         android:textColor="#000000"
         android:textSize="24sp"
         android:typeface="sans"
@@ -117,5 +117,42 @@
         app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
         app:layout_constraintTop_toTopOf="@+id/textView10"
         app:srcCompat="@drawable/car" />
+
+    <ImageView
+        android:id="@+id/battery_box"
+        android:layout_width="194dp"
+        android:layout_height="167dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.184"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView14"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/curved_whiterectangle" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="112dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="116dp"
+        android:text="@string/battery_level"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/battery_box"
+        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintStart_toStartOf="@+id/battery_box"
+        app:layout_constraintTop_toTopOf="@+id/battery_box" />
+
+    <TextView
+        android:id="@+id/battery_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="@string/percentage"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/battery_box"
+        app:layout_constraintStart_toStartOf="@+id/battery_box"
+        app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

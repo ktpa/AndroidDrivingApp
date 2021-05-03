@@ -2,7 +2,10 @@ package group01.smartcar.client;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +18,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class UserMenuActivity extends AppCompatActivity {
 
+    private Handler handler;
+    private Runnable runnable;
+    private TextView batteryText;
+
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
@@ -23,6 +30,16 @@ public class UserMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_usermenu);
         hideSystemUI();
         registerComponentCallbacks();
+
+        // TODO: Add image to battery indicator
+        runnable = () -> {
+            int level = (int) batteryLevel();
+            batteryText.setText(level + "%");
+            handler.postDelayed(runnable, 5000);
+        };
+
+        handler = new Handler();
+        handler.postDelayed(runnable, 0);
     }
 
     @SuppressLint("SetTextI18n")
@@ -36,6 +53,21 @@ public class UserMenuActivity extends AppCompatActivity {
 
         findViewById(R.id.logout_button).setOnClickListener(this::onLogoutButtonClick);
         findViewById(R.id.drive_alset_button).setOnClickListener(this::onDriveButtonClick);
+        batteryText = (TextView) findViewById(R.id.battery_percentage);
+    }
+
+    private float batteryLevel() {
+        Intent batteryIntent = registerReceiver(
+                null,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        );
+        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        if (level == -1 || scale == -1) {
+            return 50.0f;
+        }
+        return (float) level / (float) scale * 100.0f;
     }
 
     private void onLogoutButtonClick(View view) {

@@ -12,4 +12,7 @@
     <string name="logged_in_as">Logged in as</string>
     <string name="dev_mode">Dev mode</string>
     <string name="debug_mode">Debug mode</string>
+    <string name="drive_your_alset">Drive Your AlSet</string>
+    <string name="battery_level">Battery Level:</string>
+    <string name="percentage">percentage</string>
 </resources>
