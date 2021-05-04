@@ -13,7 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import static group01.smartcar.client.Status.*;
 
 public class CarControl {
-    MqttClient mqtt;
+    private MqttClient mqtt;
     private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String STEERING_URI = "/smartcar/control/steering";
