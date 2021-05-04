@@ -12,11 +12,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-
-import java.math.BigDecimal;
 
 public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     private double currentSpeedMS = 0;
@@ -139,7 +136,9 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void setCurrentSpeedMS(double currentSpeedMS) {
+
         this.currentSpeedMS = currentSpeedMS;
+
     }
 
     public void setMotorPowerPercentage(double percentage) {
@@ -156,16 +155,14 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
     private float getMotorPowerIndicatorAngle(){
         if(Math.abs(motorPowerPercentage) > 100 ){
-            return 60;
+            return -60;
         }
-        return (float)Math.abs(motorPowerPercentage)*60/100;
+        return (float)Math.abs(motorPowerPercentage)*60/100*(-1);
     }
 
     private String getCurrentSpeedKMHString(){
        String twoDigit = Double.toString(getCurrentSpeedKMH());
        return twoDigit.substring(0, Math.min(twoDigit.length(), 3));
     }
-
-
 
 }

@@ -15,7 +15,7 @@ import static group01.smartcar.client.Status.*;
 
 public class CarControl {
     MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://10.0.2.2:1883";
+    private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
@@ -120,6 +120,10 @@ public class CarControl {
     public void throttle(int speed) {
         if (mqtt.isConnected() && status == ACTIVE) {
             mqtt.publish(THROTTLE_URI, String.valueOf(speed), 1, mqttPublishListener);
+            //temporary solution. I am not sure where we should update motor power for speedometer
+            //re publishing this info from the car may be unnecessary
+            //further investigation required!
+            speedometer.setMotorPowerPercentage(speed);
         }
     }
 

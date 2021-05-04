@@ -63,14 +63,14 @@
         android:id="@+id/fancySpeedometer"
         android:layout_width="125dp"
         android:layout_height="125dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
         app:layout_constraintStart_toStartOf="@+id/backRectMid"
         app:layout_constraintTop_toTopOf="@+id/backRectMid"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Switch
         android:id="@+id/drive_park_switch"

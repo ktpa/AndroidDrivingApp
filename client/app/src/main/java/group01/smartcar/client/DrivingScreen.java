@@ -37,7 +37,6 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         registerComponentCallbacks();
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
-        System.out.println("£££££££££££££££££££££" + speedometer);
         car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
         AsyncTask.execute(() -> {
             while (true) {
@@ -102,6 +101,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         if(car.getStatus() == ACTIVE) {
             car.setSteeringAngle(angle);
             car.throttle(speed);
+
         }
     }
 
