@@ -76,6 +76,7 @@
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/gearbox_vertical_background"
         android:elevation="6dp"
         android:rotation="90"
