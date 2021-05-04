@@ -100,8 +100,7 @@ void loop(){
     {
         mqtt.loop();
 #ifdef __SMCE__
-        publishCameraFrame();
-        publishCarSpeed();
+        publishWithTimer();
 #endif
     }
     // Maintain the speed and update the heading
@@ -225,20 +224,28 @@ void handleSteeringChangeRequest(String payload)
 void publishCameraFrame()
 {
 #ifdef __SMCE__
-    const auto currentTime = millis();
-    static auto previousFrame = 0UL;
-    if (currentTime - previousFrame >= 65) 
-    {
-        previousFrame = currentTime;
         Camera.readFrame(frameBuffer.data());
         mqtt.publish(mqtt_topic::CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
-    }
 #endif
 }
 
 void publishCarSpeed()
 {
     mqtt.publish(mqtt_topic::CONTROL_SPEED_OUT, String(car.getSpeed()));
+}
+
+void publishWithTimer(){
+#ifdef __SMCE__
+    const auto currentTime = millis();
+    static auto previousFrame = 0UL;
+    if (currentTime - previousFrame >= 65) 
+    {
+        previousFrame = currentTime;
+        publishCameraFrame();
+        publishCarSpeed();
+    }
+#endif
+
 }
 
 bool isNumber(String string)
