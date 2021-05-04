@@ -238,7 +238,12 @@ void publishCameraFrame()
 
 void publishCarSpeed()
 {
-    mqtt.publish(mqtt_topic::CONTROL_SPEED_OUT, String(car.getSpeed()));
+    const auto currentTime = millis();
+    static auto previousFrame = 0UL;
+    if (currentTime - previousFrame >= 65) 
+    {
+      mqtt.publish(mqtt_topic::CONTROL_SPEED_OUT, String(car.getSpeed()));
+    }
 }
 
 bool isNumber(String string)
