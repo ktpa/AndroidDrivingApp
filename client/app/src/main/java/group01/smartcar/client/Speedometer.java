@@ -19,8 +19,8 @@ import androidx.annotation.NonNull;
 import java.math.BigDecimal;
 
 public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
-    private double currentSpeedMS ;
-    private double motorPowerPercentage;
+    private double currentSpeedMS = 0;
+    private double motorPowerPercentage = 0;
 
     private float centerX;
     private float centerY;
@@ -40,13 +40,13 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public Speedometer(Context context, AttributeSet attributes, int style){
-        super(context);
+        super(context, attributes, style);
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
     public Speedometer(Context context, AttributeSet attributes){
-        super(context);
+        super(context, attributes);
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -109,9 +109,8 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
 
-       //drawSpeedometer();
-       currentSpeedMS++;
-       invalidate();
+       drawSpeedometer();
+       //invalidate();
 
     }
 

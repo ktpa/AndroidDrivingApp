@@ -15,7 +15,7 @@ import static group01.smartcar.client.Status.*;
 
 public class CarControl {
     MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
+    private final String DEFAULT_SERVER_URL = "tcp://10.0.2.2:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
@@ -25,7 +25,7 @@ public class CarControl {
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
-    private TextView speedometer;
+    private Speedometer speedometer;
 
     private String username = "app_user";
     private String password = "app_pass";
@@ -34,27 +34,24 @@ public class CarControl {
     int steeringAngle = 0;
     double currentSpeedMS=0;
 
-    public CarControl(Context context, ImageView cameraView, TextView speedometer) {
+    public CarControl(Context context, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
-        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, TextView speedometer) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
-        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, TextView speedometer) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, Speedometer speedometer) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
-        updateSpeedometer();
     }
 
     public void connect() {
@@ -153,7 +150,7 @@ public class CarControl {
                 double newSpeedMS = Double.parseDouble(message.toString());
                 if(currentSpeedMS != newSpeedMS){
                     currentSpeedMS=newSpeedMS;
-                    updateSpeedometer();
+                    speedometer.setCurrentSpeedMS(currentSpeedMS);
                 }
             }
         }
@@ -228,8 +225,6 @@ public class CarControl {
         return twoDigit.substring(0, Math.min(twoDigit.length(), 3)) + " km/h";
     }
 
-    private void updateSpeedometer(){
-        speedometer.setText(getCurrentSpeedKMHString());
-    }
+
 
 }

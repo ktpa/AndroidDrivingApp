@@ -3,6 +3,7 @@ package group01.smartcar.client;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -26,7 +27,7 @@ import static group01.smartcar.client.Status.ACTIVE;
 public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
     private CarControl car;
     private ImageView cameraView;
-    private TextView speedometer;
+    private Speedometer speedometer;
     private Vibrator vibrator;
 
     @Override
@@ -35,8 +36,19 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         setContentView(R.layout.activity_drive);
         registerComponentCallbacks();
         cameraView = findViewById(R.id.imageView);
-        speedometer = findViewById(R.id.simpleSpeedometer);
+        speedometer = findViewById(R.id.fancySpeedometer);
+        System.out.println("£££££££££££££££££££££" + speedometer);
         car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
+        AsyncTask.execute(() -> {
+            while (true) {
+                speedometer.update();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
