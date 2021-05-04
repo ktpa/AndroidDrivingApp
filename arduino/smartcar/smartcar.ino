@@ -249,15 +249,22 @@ void publishWithTimer(){
 }
 
 bool isNumber(String string)
-{
-    for (std::size_t i = 0; i < string.length(); i++)
-    {
-        if (!isDigit(string[i]))
-        {
-            return false;
-        }
-        
-    }
+{   
     
-    return true;
+    if(string.length()>0){
+        std::size_t digitToStart=0;
+        if(string[0] == '-' && string.length() > 1){
+            digitToStart=1;
+        }
+
+        for (std::size_t i = digitToStart; i < string.length(); i++)
+        {
+                if (!isDigit(string[i]))
+                {
+                    return false;
+                }
+        }
+        return true; 
+    }
+    return false;         
 }
