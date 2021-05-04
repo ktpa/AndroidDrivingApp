@@ -78,6 +78,7 @@ const auto DEFAULT_DRIVING_SPEED = 1.5;
 void setup()
 {
     Serial.begin(9600);
+
 #ifndef __SMCE__
     mqtt.begin(net);
 #else

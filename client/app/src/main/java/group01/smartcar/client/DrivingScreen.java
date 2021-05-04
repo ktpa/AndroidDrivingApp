@@ -1,8 +1,12 @@
 package group01.smartcar.client;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +27,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
     private CarControl car;
     private ImageView cameraView;
     private TextView speedometer;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.simpleSpeedometer);
         car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -49,8 +55,17 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
     }
 
     private void registerComponentCallbacks() {
-        Switch sw = (Switch) findViewById(R.id.drive_park_switch);
+        final Switch sw = findViewById(R.id.drive_park_switch);
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            final VibrationEffect vibrationEffect1;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrationEffect1 = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_HEAVY_CLICK);
+                vibrator.cancel();
+                vibrator.vibrate(vibrationEffect1);
+            } else {
+                vibrator.vibrate(100);
+            }
+
             if(isChecked) {
                 car.start();
             } else {

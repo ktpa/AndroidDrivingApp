@@ -18,6 +18,7 @@ public class MqttClient {
     public void connect(String username, String password, IMqttActionListener connectionCallback, MqttCallback clientCallback) {
         mMqttAndroidClient.setCallback(clientCallback);
         MqttConnectOptions options = new MqttConnectOptions();
+        options.setMaxInflight(1000);
         options.setUserName(username);
         options.setPassword(password.toCharArray());
         options.setAutomaticReconnect(true);
