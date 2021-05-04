@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Smartcar Client</string>
     <string name="title_activity_main">MainActivity</string>
@@ -12,4 +13,8 @@
     <string name="logged_in_as">Logged in as</string>
     <string name="dev_mode">Dev mode</string>
     <string name="debug_mode">Debug mode</string>
+    <string name="drive_your_alset">Drive Your AlSet</string>
+    <string name="battery_level">Battery Level:</string>
+    <string name="percentage">percentage</string>
+    <string name="x_percent" />
 </resources>

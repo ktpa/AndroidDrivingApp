@@ -78,6 +78,7 @@ const auto DEFAULT_DRIVING_SPEED = 1.5;
 void setup()
 {
     Serial.begin(9600);
+
 #ifndef __SMCE__
     mqtt.begin(net);
 #else
@@ -99,8 +100,7 @@ void loop(){
     {
         mqtt.loop();
 #ifdef __SMCE__
-        publishCameraFrame();
-        publishCarSpeed();
+        publishWithTimer();
 #endif
     }
     // Maintain the speed and update the heading
@@ -224,14 +224,8 @@ void handleSteeringChangeRequest(String payload)
 void publishCameraFrame()
 {
 #ifdef __SMCE__
-    const auto currentTime = millis();
-    static auto previousFrame = 0UL;
-    if (currentTime - previousFrame >= 65) 
-    {
-        previousFrame = currentTime;
         Camera.readFrame(frameBuffer.data());
         mqtt.publish(mqtt_topic::CAMERA, frameBuffer.data(), frameBuffer.size(), false, 0);
-    }
 #endif
 }
 
@@ -240,16 +234,37 @@ void publishCarSpeed()
     mqtt.publish(mqtt_topic::CONTROL_SPEED_OUT, String(car.getSpeed()));
 }
 
-bool isNumber(String string)
-{
-    for (std::size_t i = 0; i < string.length(); i++)
+void publishWithTimer(){
+#ifdef __SMCE__
+    const auto currentTime = millis();
+    static auto previousFrame = 0UL;
+    if (currentTime - previousFrame >= 65) 
     {
-        if (!isDigit(string[i]))
-        {
-            return false;
-        }
-        
+        previousFrame = currentTime;
+        publishCameraFrame();
+        publishCarSpeed();
     }
+#endif
+
+}
+
+bool isNumber(String string)
+{   
     
-    return true;
+    if(string.length()>0){
+        std::size_t digitToStart=0;
+        if(string[0] == '-' && string.length() > 1){
+            digitToStart=1;
+        }
+
+        for (std::size_t i = digitToStart; i < string.length(); i++)
+        {
+                if (!isDigit(string[i]))
+                {
+                    return false;
+                }
+        }
+        return true; 
+    }
+    return false;         
 }

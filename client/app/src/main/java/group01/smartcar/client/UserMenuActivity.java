@@ -2,8 +2,12 @@ package group01.smartcar.client;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +18,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UserMenuActivity extends AppCompatActivity {
+    // Battery monitor adapted from https://www.youtube.com/watch?v=GxfdnOtRibQ&ab_channel=TihomirRAdeff
+
+    private Handler handler;
+    private Runnable runnable;
+    private TextView batteryText;
+    private ImageView batteryImage;
 
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -23,6 +33,28 @@ public class UserMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_usermenu);
         hideSystemUI();
         registerComponentCallbacks();
+
+        runnable = () -> {
+            int level = (int) batteryLevel();
+            batteryText.setText(level + "%");
+
+            if (level > 75)
+                batteryImage.setImageResource(R.drawable.battery_full);
+
+            if (level > 50 && level <= 75)
+                batteryImage.setImageResource(R.drawable.battery_high);
+
+            if (level > 25 && level <= 50)
+                batteryImage.setImageResource(R.drawable.battery_medium);
+
+            if (level >= 0 && level <= 25)
+                batteryImage.setImageResource(R.drawable.battery_low);
+
+            handler.postDelayed(runnable, 1000);
+        };
+
+        handler = new Handler();
+        handler.postDelayed(runnable, 0);
     }
 
     @SuppressLint("SetTextI18n")
@@ -36,6 +68,22 @@ public class UserMenuActivity extends AppCompatActivity {
 
         findViewById(R.id.logout_button).setOnClickListener(this::onLogoutButtonClick);
         findViewById(R.id.drive_alset_button).setOnClickListener(this::onDriveButtonClick);
+        batteryText = (TextView) findViewById(R.id.battery_text);
+        batteryImage = (ImageView) findViewById(R.id.battery_image);
+    }
+
+    private float batteryLevel() {
+        Intent batteryIntent = registerReceiver(
+                null,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        );
+        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        if (level == -1 || scale == -1) {
+            return 50.0f;
+        }
+        return (float) level / (float) scale * 100.0f;
     }
 
     private void onLogoutButtonClick(View view) {
