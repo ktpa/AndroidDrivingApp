@@ -43,9 +43,10 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
     private ImageView cameraView;
     private TextView speedometer;
     private Vibrator vibrator;
-    public static final Integer RecordAudioRequestCode = 1;
     private ImageView micButton;
-    private SpeechRecognizer speechRecognizer;
+    private SpeechControl speechControl;
+    public static final Integer RecordAudioRequestCode = 1;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -61,76 +62,23 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         micButton = findViewById(R.id.micButton);
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+        speechControl = new SpeechControl(this);
 
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
-            @Override
-            public void onReadyForSpeech(Bundle bundle) {
-
-            }
-
-            @Override
-            public void onBeginningOfSpeech() {
-              //  editText.setText("");
-              //  editText.setHint("Listening...");
-                System.out.println("Listening...");
-            }
-
-            @Override
-            public void onRmsChanged(float v) {
-
-            }
-
-            @Override
-            public void onBufferReceived(byte[] bytes) {
-
-            }
-
-            @Override
-            public void onEndOfSpeech() {
-
-            }
-
-            @Override
-            public void onError(int i) {
-
-            }
-
-            @Override
-            public void onResults(Bundle bundle) {
-                micButton.setImageResource(R.drawable.ic_mic_black_off);
-                ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                System.out.println(data.get(0));
-              // editText.setText(data.get(0));
-            }
-
-            @Override
-            public void onPartialResults(Bundle bundle) {
-
-            }
-
-            @Override
-            public void onEvent(int i, Bundle bundle) {
-
-            }
+        speechControl.onResults(bundle -> {
+            micButton.setImageResource(R.drawable.ic_mic_black_off);
+            ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            System.out.println(data.get(0));
         });
 
-        micButton.setOnTouchListener(new View.OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
-                    speechRecognizer.stopListening();
-                }
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    micButton.setImageResource(R.drawable.ic_mic_black_24dp);
-                    speechRecognizer.startListening(speechRecognizerIntent);
-                }
-                return false;
+        micButton.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                speechControl.stop();
             }
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                micButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                speechControl.start();
+            }
+            return false;
         });
 
     }
@@ -227,7 +175,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        speechRecognizer.destroy();
+        speechControl.destroy();
     }
 
     private void checkPermission() {
