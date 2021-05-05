@@ -1,5 +1,6 @@
 package group01.smartcar.client;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
@@ -57,22 +58,23 @@ public class CarControl {
     }
 
     public void connect() {
-        if (!mqtt.isConnected()) {
-            try {
+        try {
+            if (!mqtt.isConnected()) {
+
                 mqtt.connect(username, password, mqttConnectionListener, mqttCallback);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+                e.printStackTrace();
         }
     }
 
     public void disconnect() {
-        if (mqtt.isConnected()) {
-            try {
+        try {
+            if (mqtt.isConnected()) {
                 mqtt.disconnect(mqttDisconnectListener);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -92,7 +94,7 @@ public class CarControl {
         if (status == ACTIVE) {
             throttle(0);
             setSteeringAngle(0);
-            disconnect();
+            this.disconnect();
             status = INACTIVE;
         }
     }
@@ -195,7 +197,7 @@ public class CarControl {
     IMqttActionListener mqttPublishListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            System.out.println("Published...");
+            //System.out.println("Published...");
         }
 
         @Override
