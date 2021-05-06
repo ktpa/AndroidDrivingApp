@@ -11,11 +11,17 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import static group01.smartcar.client.Status.*;
 
 public class CarControl {
     MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
+    private final String DEFAULT_SERVER_URL = "tcp://10.0.0.21:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String STEERING_URI = "/smartcar/control/steering";
     private final String THROTTLE_URI = "/smartcar/control/speed";
@@ -33,6 +39,8 @@ public class CarControl {
     private Status status = INACTIVE;
     int steeringAngle = 0;
     double currentSpeedMS=0;
+
+    private int voiceDrivingDirection;
 
     public CarControl(Context context, ImageView cameraView, TextView speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
@@ -230,6 +238,66 @@ public class CarControl {
 
     private void updateSpeedometer(){
         speedometer.setText(getCurrentSpeedKMHString());
+    }
+
+    public void voiceControl(String results) {
+        ArrayList<String> dictionary = new ArrayList<String>( Arrays.asList("forward", "reverse", "stop", "speed", "turn", "left", "right", "lean", "zero", "one", "two", "three", "four", "five", "0", "1", "2", "3", "4", "5") );
+        ArrayList<String> trimmedResults = new ArrayList(Arrays.asList(results.toLowerCase().split(" ")));
+        ArrayList<String> cleanResults = new ArrayList();
+
+        for (String word:trimmedResults) {
+            if(word.equals("stop")) {
+                setSteeringAngle(0);
+                throttle(0);
+                return;
+            }
+            if(dictionary.contains(word)) {
+                cleanResults.add(word);
+            }
+        }
+
+        if(cleanResults.size() <= 0) {
+            return;
+        }
+        if(cleanResults.get(0).equals("forward")) {
+            throttle(50);
+            voiceDrivingDirection = 1;
+        } else if(cleanResults.get(0).equals("reverse")) {
+            throttle(-50);
+            voiceDrivingDirection = -1;
+        } else if(cleanResults.get(0).equals("speed")) {
+            if(cleanResults.size() <= 1) {
+                return;
+            } else if(cleanResults.get(1).equals("0") || cleanResults.get(1).equals("zero")) {
+                throttle(0);
+            } else if(cleanResults.get(1).equals("1") || cleanResults.get(1).equals("one")) {
+                throttle(20*voiceDrivingDirection);
+            } else if(cleanResults.get(1).equals("2") || cleanResults.get(1).equals("two")) {
+                throttle(40*voiceDrivingDirection);
+            } else if(cleanResults.get(1).equals("3") || cleanResults.get(1).equals("three")) {
+                throttle(60*voiceDrivingDirection);
+            } else if(cleanResults.get(1).equals("4") || cleanResults.get(1).equals("four")) {
+                throttle(80*voiceDrivingDirection);
+            } else if(cleanResults.get(1).equals("5") || cleanResults.get(1).equals("five")) {
+                throttle(100*voiceDrivingDirection);
+            }
+        } else if(cleanResults.get(0).equals("turn")) {
+            if(cleanResults.size() <= 1) {
+                return;
+            } else if (cleanResults.get(1).equals("left")) {
+                setSteeringAngle(-50);
+            } else if (cleanResults.get(1).equals("right")) {
+                setSteeringAngle(50);
+            }
+        } else if(cleanResults.get(0).equals("lean")) {
+            if(cleanResults.size() <= 1) {
+                return;
+            } else if (cleanResults.get(1).equals("left")) {
+                setSteeringAngle(-50);
+            } else if (cleanResults.get(1).equals("right")) {
+                setSteeringAngle(50);
+            }
+        }
     }
 
 }

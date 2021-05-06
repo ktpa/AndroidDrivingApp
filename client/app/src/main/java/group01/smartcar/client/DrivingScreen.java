@@ -68,6 +68,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
             micButton.setImageResource(R.drawable.ic_mic_black_off);
             ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             System.out.println(data.get(0));
+            car.voiceControl(data.get(0));
         });
 
         micButton.setOnTouchListener((view, motionEvent) -> {
