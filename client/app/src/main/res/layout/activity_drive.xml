@@ -70,10 +70,10 @@
 
     <group01.smartcar.client.Speedometer
         android:id="@+id/fancySpeedometer"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
