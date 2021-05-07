@@ -107,6 +107,7 @@
         android:backgroundTint="#F9F8FA"
         android:paddingRight="10dp"
         android:translationZ="6dp"
+        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
