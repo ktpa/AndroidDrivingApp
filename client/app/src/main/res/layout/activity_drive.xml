@@ -78,6 +78,7 @@
         android:fontFamily="sans-serif-medium"
         android:textSize="32dp"
         android:translationZ="6dp"
+        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="@id/backRectMid"
         app:layout_constraintTop_toTopOf="@id/backRectMid"
         app:layout_constraintStart_toStartOf="parent" />
