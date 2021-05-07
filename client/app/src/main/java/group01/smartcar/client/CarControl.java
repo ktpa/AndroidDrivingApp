@@ -11,10 +11,16 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import static group01.smartcar.client.Status.*;
 
 public class CarControl {
-    MqttClient mqtt;
+    private MqttClient mqtt;
     private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
     private final String STEERING_URI = "/smartcar/control/steering";
@@ -33,6 +39,8 @@ public class CarControl {
     private Status status = INACTIVE;
     int steeringAngle = 0;
     double currentSpeedMS=0;
+
+    private int voiceDrivingDirection;
 
     public CarControl(Context context, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
@@ -230,5 +238,78 @@ public class CarControl {
     }
 
 
+
+    public void voiceControl(String results) {
+        List<String> dictionary = new ArrayList<String>( Arrays.asList("forward", "reverse", "stop", "speed", "turn", "left", "right", "lean", "zero", "one", "two", "three", "four", "five", "0", "1", "2", "3", "4", "5") );
+        List<String> trimmedResults = Arrays.asList(results.toLowerCase().split(" "));
+        List<String> cleanResults = new ArrayList();
+
+        for (String word:trimmedResults) {
+            if(word.equals("stop")) {
+                setSteeringAngle(0);
+                throttle(0);
+                return;
+            }
+            if(dictionary.contains(word)) {
+                cleanResults.add(word);
+            }
+        }
+
+        if(cleanResults.size() <= 0) {
+            return;
+        }
+        switch(cleanResults.get(0)) {
+            case "forward":
+                throttle(50);
+                voiceDrivingDirection = 1;
+                break;
+            case "reverse":
+                throttle(-50);
+                voiceDrivingDirection = -1;
+                break;
+            case "speed":
+                if(cleanResults.size() <= 1) {
+                    return;
+                }
+                switch (cleanResults.get(1)){
+                    case "0":
+                    case "zero":
+                        throttle(0);
+                        break;
+                    case "1":
+                    case "one":
+                        throttle(20*voiceDrivingDirection);
+                        break;
+                    case "2":
+                    case "two":
+                        throttle(40*voiceDrivingDirection);
+                        break;
+                    case "3":
+                    case "three":
+                        throttle(60*voiceDrivingDirection);
+                        break;
+                    case "4":
+                    case "four":
+                        throttle(80*voiceDrivingDirection);
+                        break;
+                    case "5":
+                    case "five":
+                        throttle(100*voiceDrivingDirection);
+                        break;
+                }
+                break;
+            case "turn":
+            case "lean":
+                // case lean will be differentiated in the future.
+                if(cleanResults.size() <= 1) {
+                    return;
+                } else if (cleanResults.get(1).equals("left")) {
+                    setSteeringAngle(-50);
+                } else if (cleanResults.get(1).equals("right")) {
+                    setSteeringAngle(50);
+                }
+                break;
+        }
+    }
 
 }
