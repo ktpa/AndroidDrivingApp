@@ -241,9 +241,9 @@ public class CarControl {
     }
 
     public void voiceControl(String results) {
-        ArrayList<String> dictionary = new ArrayList<String>( Arrays.asList("forward", "reverse", "stop", "speed", "turn", "left", "right", "lean", "zero", "one", "two", "three", "four", "five", "0", "1", "2", "3", "4", "5") );
-        ArrayList<String> trimmedResults = new ArrayList(Arrays.asList(results.toLowerCase().split(" ")));
-        ArrayList<String> cleanResults = new ArrayList();
+        List<String> dictionary = new ArrayList<String>( Arrays.asList("forward", "reverse", "stop", "speed", "turn", "left", "right", "lean", "zero", "one", "two", "three", "four", "five", "0", "1", "2", "3", "4", "5") );
+        List<String> trimmedResults = Arrays.asList(results.toLowerCase().split(" "));
+        List<String> cleanResults = new ArrayList();
 
         for (String word:trimmedResults) {
             if(word.equals("stop")) {
@@ -259,44 +259,57 @@ public class CarControl {
         if(cleanResults.size() <= 0) {
             return;
         }
-        if(cleanResults.get(0).equals("forward")) {
-            throttle(50);
-            voiceDrivingDirection = 1;
-        } else if(cleanResults.get(0).equals("reverse")) {
-            throttle(-50);
-            voiceDrivingDirection = -1;
-        } else if(cleanResults.get(0).equals("speed")) {
-            if(cleanResults.size() <= 1) {
-                return;
-            } else if(cleanResults.get(1).equals("0") || cleanResults.get(1).equals("zero")) {
-                throttle(0);
-            } else if(cleanResults.get(1).equals("1") || cleanResults.get(1).equals("one")) {
-                throttle(20*voiceDrivingDirection);
-            } else if(cleanResults.get(1).equals("2") || cleanResults.get(1).equals("two")) {
-                throttle(40*voiceDrivingDirection);
-            } else if(cleanResults.get(1).equals("3") || cleanResults.get(1).equals("three")) {
-                throttle(60*voiceDrivingDirection);
-            } else if(cleanResults.get(1).equals("4") || cleanResults.get(1).equals("four")) {
-                throttle(80*voiceDrivingDirection);
-            } else if(cleanResults.get(1).equals("5") || cleanResults.get(1).equals("five")) {
-                throttle(100*voiceDrivingDirection);
-            }
-        } else if(cleanResults.get(0).equals("turn")) {
-            if(cleanResults.size() <= 1) {
-                return;
-            } else if (cleanResults.get(1).equals("left")) {
-                setSteeringAngle(-50);
-            } else if (cleanResults.get(1).equals("right")) {
-                setSteeringAngle(50);
-            }
-        } else if(cleanResults.get(0).equals("lean")) {
-            if(cleanResults.size() <= 1) {
-                return;
-            } else if (cleanResults.get(1).equals("left")) {
-                setSteeringAngle(-50);
-            } else if (cleanResults.get(1).equals("right")) {
-                setSteeringAngle(50);
-            }
+        switch(cleanResults.get(0)) {
+            case "forward":
+                throttle(50);
+                voiceDrivingDirection = 1;
+                break;
+            case "reverse":
+                throttle(-50);
+                voiceDrivingDirection = -1;
+                break;
+            case "speed":
+                if(cleanResults.size() <= 1) {
+                    return;
+                }
+                switch (cleanResults.get(1)){
+                    case "0":
+                    case "zero":
+                        throttle(0);
+                        break;
+                    case "1":
+                    case "one":
+                        throttle(20*voiceDrivingDirection);
+                        break;
+                    case "2":
+                    case "two":
+                        throttle(40*voiceDrivingDirection);
+                        break;
+                    case "3":
+                    case "three":
+                        throttle(60*voiceDrivingDirection);
+                        break;
+                    case "4":
+                    case "four":
+                        throttle(80*voiceDrivingDirection);
+                        break;
+                    case "5":
+                    case "five":
+                        throttle(100*voiceDrivingDirection);
+                        break;
+                }
+                break;
+            case "turn":
+            case "lean":
+                // case lean will be differentiated in the future.
+                if(cleanResults.size() <= 1) {
+                    return;
+                } else if (cleanResults.get(1).equals("left")) {
+                    setSteeringAngle(-50);
+                } else if (cleanResults.get(1).equals("right")) {
+                    setSteeringAngle(50);
+                }
+                break;
         }
     }
 
