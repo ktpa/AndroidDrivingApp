@@ -29,15 +29,17 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
         android:layout_marginTop="24dp"
+        android:layout_marginRight="6dp"
         android:layout_marginBottom="24dp"
+        android:elevation="5dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="5dp"
-        android:elevation="5dp"
+        android:shadowColor="@color/black"
+        android:shadowRadius="12"
         app:layout_constraintBottom_toTopOf="@id/backRectBot"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backRectTop"
         app:layout_constraintVertical_bias="0.475" />
@@ -73,14 +75,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
         android:layout_marginBottom="56dp"
+        android:elevation="6dp"
         android:fontFamily="sans-serif-medium"
+        android:textColor="@color/material_on_surface_emphasis_medium"
         android:textSize="32dp"
         android:translationZ="6dp"
         app:layout_constraintBottom_toBottomOf="@id/backRectMid"
-        app:layout_constraintTop_toTopOf="@id/backRectMid"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/backRectMid" />
 
     <Switch
         android:id="@+id/drive_park_switch"
@@ -98,20 +101,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/backRectMid"
         app:layout_constraintVertical_bias="0.716" />
-
-    <ImageView
-        android:id="@+id/micButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:backgroundTint="#F9F8FA"
-        android:paddingRight="10dp"
-        android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_mic_black_off" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
