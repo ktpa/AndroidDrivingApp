@@ -26,7 +26,7 @@ import java.util.List;
 
 import group01.smartcar.client.R;
 import group01.smartcar.client.SmartCar;
-import group01.smartcar.client.speech.SpeechControl;
+import group01.smartcar.client.speech.SpeechListener;
 import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.view.Speedometer;
 
@@ -39,7 +39,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     private Speedometer speedometer;
     private Vibrator vibrator;
     private ImageView micButton;
-    private SpeechControl speechControl;
+    private SpeechListener speechListener;
     public static final Integer RecordAudioRequestCode = 1;
 
 
@@ -60,8 +60,8 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
         micButton = findViewById(R.id.micButton);
 
-        speechControl = new SpeechControl(this);
-        speechControl.onResults(bundle -> {
+        speechListener = new SpeechListener(this);
+        speechListener.onResults(bundle -> {
             micButton.setImageResource(R.drawable.ic_mic_black_off);
             List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             System.out.println(data.get(0));
@@ -100,7 +100,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     protected void onDestroy() {
         super.onDestroy();
 
-        speechControl.destroy();
+        speechListener.destroy();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -128,14 +128,14 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         micButton.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 view.performClick();
-                speechControl.stop();
+                speechListener.stop();
 
                 return true;
             }
 
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 micButton.setImageResource(R.drawable.ic_mic_black_24dp);
-                speechControl.start();
+                speechListener.start();
 
                 return true;
             }
