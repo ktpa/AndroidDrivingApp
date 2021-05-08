@@ -14,6 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
 import group01.smartcar.client.R;
 
@@ -23,16 +24,15 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
     private float centerX;
     private float centerY;
-    private float baseRadius;
 
     private void setupDimensions(){
-        centerX = getWidth()/2;
-        centerY = getWidth()/2;
-        baseRadius = getWidth()/(float)(2.5);
+        centerX = getWidth() / 2f;
+        centerY = getWidth() / 2f;
     }
 
     public Speedometer(Context context){
         super(context);
+
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -40,12 +40,14 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
     public Speedometer(Context context, AttributeSet attributes, int style){
         super(context, attributes, style);
+
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
     public Speedometer(Context context, AttributeSet attributes){
         super(context, attributes);
+
         getHolder().addCallback(this);
         setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -53,64 +55,71 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void drawSpeedometer() {
-        if(getHolder().getSurface().isValid()) {
-            Canvas myCanvas = this.getHolder().lockCanvas();
-
-            Paint backgroundColor = new Paint();
-            backgroundColor.setARGB(255,0,0,0);
-            Paint speedIndicatorColor = new Paint();
-            speedIndicatorColor.setARGB(255,246,213,92);
-            Paint motorPowerIndicatorColor = new Paint();
-            motorPowerIndicatorColor.setARGB(255,237,85,59);
-            Paint textColor = new Paint();
-            textColor.setARGB(255,255,255,255);
-
-            Paint colors = new Paint();
-            myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clear the BG
-
-            //Print the svg background
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                Drawable gauge = getResources().getDrawable(R.drawable.ic_gauge, null);
-                gauge.setBounds(0, 0, getWidth(), getHeight());
-                gauge.draw(myCanvas);
-            }
-
-            Float indicatorSizeFactor = 0.95F;
-            Float indicatorThickness = 0.12F;
-
-            RectF rect = new RectF(0+(getWidth()*(1-indicatorSizeFactor)), 0+(getHeight()*(1-indicatorSizeFactor)), getWidth()*indicatorSizeFactor, getHeight()*indicatorSizeFactor);
-
-            //Draw speed indicator
-            myCanvas.drawArc(rect, 135F, getSpeedIndicatorAngle(), true, speedIndicatorColor );
-            //Draw motor power percentage
-            myCanvas.drawArc(rect, 120F, getMotorPowerIndicatorAngle(), true, motorPowerIndicatorColor );
-
-            //hide the middle part of the indicators
-            myCanvas.drawCircle(centerX, centerY, (getWidth()*(indicatorSizeFactor-indicatorThickness)*0.5F), backgroundColor);
-
-            //print digital speed
-            textColor.setTextSize(getWidth()/5);
-            textColor.setTextAlign(Paint.Align.CENTER);
-            Typeface currentTypeFace =   textColor.getTypeface();
-            Typeface bold = Typeface.create(currentTypeFace, Typeface.BOLD);
-            textColor.setTypeface(bold);
-
-            int textXPos = (getWidth() / 2);
-            int textYPos = (int) ((getHeight() / 2) - ((textColor.descent() + textColor.ascent()) / 2)) ;
-            myCanvas.drawText(getCurrentSpeedKMHString(), textXPos, textYPos, textColor);
-
-            getHolder().unlockCanvasAndPost(myCanvas);
-
+        if (!getHolder().getSurface().isValid()) {
+            return;
         }
+
+        final Canvas canvas = getHolder().lockCanvas();
+
+        final Paint backgroundColor = new Paint();
+        backgroundColor.setARGB(255,0,0,0);
+
+        final Paint speedIndicatorColor = new Paint();
+        speedIndicatorColor.setARGB(255,246,213,92);
+
+        final Paint motorPowerIndicatorColor = new Paint();
+        motorPowerIndicatorColor.setARGB(255,237,85,59);
+
+        final Paint textColor = new Paint();
+        textColor.setARGB(255,255,255,255);
+
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clear the BG
+
+        //Print the svg background
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Drawable gauge = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge, null);
+            gauge.setBounds(0, 0, getWidth(), getHeight());
+            gauge.draw(canvas);
+        }
+
+        final float indicatorSizeFactor = 0.95F;
+        final float indicatorThickness = 0.12F;
+
+        final RectF rect = new RectF(
+            0 + (getWidth() * (1 - indicatorSizeFactor)),
+            0 + (getHeight() * (1 - indicatorSizeFactor)),
+            getWidth() * indicatorSizeFactor,
+            getHeight() * indicatorSizeFactor
+        );
+
+        //Draw speed indicator
+        canvas.drawArc(rect, 135F, getSpeedIndicatorAngle(), true, speedIndicatorColor );
+        //Draw motor power percentage
+        canvas.drawArc(rect, 120F, getMotorPowerIndicatorAngle(), true, motorPowerIndicatorColor );
+
+        //hide the middle part of the indicators
+        canvas.drawCircle(centerX, centerY, (getWidth()*(indicatorSizeFactor-indicatorThickness)*0.5F), backgroundColor);
+
+        //print digital speed
+        textColor.setTextSize(getWidth() / 5f);
+        textColor.setTextAlign(Paint.Align.CENTER);
+
+        final Typeface currentTypeFace = textColor.getTypeface();
+        final Typeface bold = Typeface.create(currentTypeFace, Typeface.BOLD);
+
+        textColor.setTypeface(bold);
+
+        final int textXPos = (getWidth() / 2);
+        final int textYPos = (int) ((getHeight() / 2) - ((textColor.descent() + textColor.ascent()) / 2)) ;
+        canvas.drawText(getCurrentSpeedKMHString(), textXPos, textYPos, textColor);
+
+        getHolder().unlockCanvasAndPost(canvas);
     }
 
 
 
     public void update() {
-
        drawSpeedometer();
-       //invalidate();
-
     }
 
     @Override
@@ -130,40 +139,35 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public double getCurrentSpeedKMH() {
-        return currentSpeedMS*(3.6);
-    }
-
-    public double getCurrentSpeedMS() {
-        return currentSpeedMS;
+        return currentSpeedMS * 3.6;
     }
 
     public void setCurrentSpeedMS(double currentSpeedMS) {
-
         this.currentSpeedMS = currentSpeedMS;
-
     }
 
-    public void setMotorPowerPercentage(double percentage) {
-        this.motorPowerPercentage= percentage;
+    public void setMotorPowerPercentage(double motorPowerPercentage) {
+        this.motorPowerPercentage = motorPowerPercentage;
     }
 
-    private float getSpeedIndicatorAngle(){
-        if(getCurrentSpeedKMH() > 7 ){
+    private float getSpeedIndicatorAngle() {
+        if (getCurrentSpeedKMH() > 7) {
             return 270F;
         }
 
-        return (float)getCurrentSpeedKMH()*270/7;
+        return (float) getCurrentSpeedKMH() * 270 / 7;
     }
 
     private float getMotorPowerIndicatorAngle(){
-        if(Math.abs(motorPowerPercentage) > 100 ){
+        if (Math.abs(motorPowerPercentage) > 100 ){
             return -60;
         }
-        return (float)Math.abs(motorPowerPercentage)*60/100*(-1);
+
+        return (float) Math.abs(motorPowerPercentage) * 60 / 100 * -1;
     }
 
     private String getCurrentSpeedKMHString(){
-       String twoDigit = Double.toString(getCurrentSpeedKMH());
+       final String twoDigit = Double.toString(getCurrentSpeedKMH());
        return twoDigit.substring(0, Math.min(twoDigit.length(), 3));
     }
 

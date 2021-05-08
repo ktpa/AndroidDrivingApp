@@ -26,53 +26,63 @@ public class Joystick extends SurfaceView implements SurfaceHolder.Callback, Vie
     private JoystickListener joystickCallback;
 
     private void setupDimensions(){
-        centerX = getWidth()/2;
+        centerX = getWidth() / 2f;
         centerY = findViewById(R.id.joystickView2).getHeight()/(float)(2);
-        baseRadius = Math.min(getWidth(), getHeight()) / 4;
-        hatRadius = Math.min(getWidth(), getHeight()) / 5;
+        baseRadius = Math.min(getWidth(), getHeight()) / 4f;
+        hatRadius = Math.min(getWidth(), getHeight()) / 5f;
 
     }
 
     public Joystick(Context context){
         super(context);
+
         getHolder().addCallback(this);
         setOnTouchListener(this);
-        if(context instanceof JoystickListener)
+        if(context instanceof JoystickListener) {
             joystickCallback = (JoystickListener) context;
+        }
     }
-
 
     public Joystick(Context context, AttributeSet attributes, int style){
         super(context, attributes, style);
+
         getHolder().addCallback(this);
         setOnTouchListener(this);
-        if(context instanceof JoystickListener)
+
+        if(context instanceof JoystickListener) {
             joystickCallback = (JoystickListener) context;
+        }
     }
+
     public Joystick(Context context, AttributeSet attributes){
         super(context, attributes);
+
         getHolder().addCallback(this);
         setOnTouchListener(this);
-        if(context instanceof JoystickListener)
+
+        if(context instanceof JoystickListener) {
             joystickCallback = (JoystickListener) context;
+        }
     }
 
     private void drawJoystick(float newX, float newY) {
-        if(getHolder().getSurface().isValid()) {
-            Canvas myCanvas = this.getHolder().lockCanvas();
-            Paint colors = new Paint();
-            myCanvas.drawColor(Color.parseColor("#6C6C6C")); // Clear the BG
-
-            colors.setARGB(255, 8, 29, 61); //base
-            myCanvas.drawCircle(centerX, centerY, baseRadius, colors);
-            colors.setARGB(255, 13, 1, 23); //base
-            myCanvas.drawCircle(centerX, centerY, (float)(baseRadius*0.95), colors);
-
-            colors.setARGB(225,35,74,132); //hat
-            myCanvas.drawCircle(newX, newY, hatRadius, colors);
-
-            getHolder().unlockCanvasAndPost(myCanvas);
+        if (!getHolder().getSurface().isValid()) {
+            return;
         }
+
+        final Canvas canvas = getHolder().lockCanvas();
+        final Paint colors = new Paint();
+        canvas.drawColor(Color.parseColor("#6C6C6C")); // Clear the BG
+
+        colors.setARGB(255, 8, 29, 61); //base
+        canvas.drawCircle(centerX, centerY, baseRadius, colors);
+        colors.setARGB(255, 13, 1, 23); //base
+        canvas.drawCircle(centerX, centerY, (float) (baseRadius * 0.95), colors);
+
+        colors.setARGB(225,35,74,132); //hat
+        canvas.drawCircle(newX, newY, hatRadius, colors);
+
+        getHolder().unlockCanvasAndPost(canvas);
     }
 
 
@@ -92,33 +102,37 @@ public class Joystick extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     }
 
-    public interface JoystickListener
-    {
+    public interface JoystickListener {
         void onJoystickMoved(float xPercent, float yPercent, int id);
     }
 
-    public boolean onTouch(View v, MotionEvent e){
-        if(v.equals(this)){
-            if(e.getAction() != e.ACTION_UP) {
-                float displacement = (float) Math.sqrt((Math.pow(e.getX()-centerX,2)) + Math.pow(e.getY()-centerY,2));
-                if(displacement < baseRadius) {
-                    drawJoystick(e.getX(), e.getY());
-                    joystickCallback.onJoystickMoved((e.getX()-centerX)/baseRadius, (e.getY()-centerY)/baseRadius, getId());
-                }
-                else{
-                    float ratio = baseRadius / displacement;
-                    float constrainedX = centerX + (e.getX() - centerX) * ratio;
-                    float constrainedY = centerY + (e.getY() - centerY) * ratio;
-                    drawJoystick(constrainedX, constrainedY);
-                    joystickCallback.onJoystickMoved((constrainedX-centerX)/baseRadius, (constrainedY-centerY)/baseRadius, getId());
-                }
-            }
-            else {
-                drawJoystick(centerX, centerY);
-                joystickCallback.onJoystickMoved(0,0, getId());
-
-            }
+    public boolean onTouch(View view, MotionEvent event){
+        if (!view.equals(this)) {
+            return true;
         }
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            drawJoystick(centerX, centerY);
+            joystickCallback.onJoystickMoved(0, 0, getId());
+            return true;
+        }
+
+        final float displacement = (float) Math.sqrt((Math.pow(event.getX() - centerX, 2)) + Math.pow(event.getY() - centerY, 2));
+
+        if (displacement < baseRadius) {
+            drawJoystick(event.getX(), event.getY());
+            joystickCallback.onJoystickMoved((event.getX() - centerX) / baseRadius, (event.getY() - centerY) / baseRadius, getId());
+
+            return true;
+        }
+
+        final float ratio = baseRadius / displacement;
+        final float constrainedX = centerX + (event.getX() - centerX) * ratio;
+        final float constrainedY = centerY + (event.getY() - centerY) * ratio;
+
+        drawJoystick(constrainedX, constrainedY);
+        joystickCallback.onJoystickMoved((constrainedX - centerX) / baseRadius, (constrainedY - centerY) / baseRadius, getId());
+
         return true;
     }
 
