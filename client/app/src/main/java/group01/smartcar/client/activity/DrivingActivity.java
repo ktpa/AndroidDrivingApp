@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,16 +17,17 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import group01.smartcar.client.SmartCar;
-import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.R;
+import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.speech.SpeechControl;
+import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
@@ -36,7 +36,6 @@ import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
 public class DrivingActivity extends AppCompatActivity implements Joystick.JoystickListener {
     private SmartCar car;
-    private ImageView cameraView;
     private Speedometer speedometer;
     private Vibrator vibrator;
     private ImageView micButton;
@@ -48,14 +47,29 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_drive);
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
-            checkPermission();
-        }
-        registerComponentCallbacks();
-        cameraView = findViewById(R.id.imageView);
+
+        requestRequiredPermissions();
+
+        final ImageView cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
         car = new SmartCar(this.getApplicationContext(), cameraView, speedometer);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        micButton = findViewById(R.id.micButton);
+
+        speechControl = new SpeechControl(this);
+        speechControl.onResults(bundle -> {
+            micButton.setImageResource(R.drawable.ic_mic_black_off);
+            List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            System.out.println(data.get(0));
+            car.voiceControl(data.get(0));
+        });
+
+        registerComponentCallbacks();
+
         AsyncTask.execute(() -> {
             while (true) {
                 speedometer.update();
@@ -66,49 +80,37 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
                 }
             }
         });
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        micButton = findViewById(R.id.micButton);
-        speechControl = new SpeechControl(this);
-
-        speechControl.onResults(bundle -> {
-            micButton.setImageResource(R.drawable.ic_mic_black_off);
-            ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            System.out.println(data.get(0));
-            car.voiceControl(data.get(0));
-        });
-
-        micButton.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP){
-                speechControl.stop();
-            }
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                micButton.setImageResource(R.drawable.ic_mic_black_24dp);
-                speechControl.start();
-            }
-            return false;
-        });
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        car.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        System.out.println("OnResume");
-        // Reconnect to MQTT server if application is resumed
+
         car.resume();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        car.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        speechControl.destroy();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private void registerComponentCallbacks() {
         final Switch sw = findViewById(R.id.drive_park_switch);
+
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             final VibrationEffect vibrationEffect1;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 vibrationEffect1 = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_HEAVY_CLICK);
                 vibrator.cancel();
                 vibrator.vibrate(vibrationEffect1);
@@ -122,25 +124,34 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
                 car.stop();
             }
         });
-    }
 
-    private void onStartClick(View view) {
-        car.start();
-    }
+        micButton.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                view.performClick();
+                speechControl.stop();
 
-    private void onStopClick(View view) {
-        car.stop();
+                return true;
+            }
+
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                micButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                speechControl.start();
+
+                return true;
+            }
+
+            return false;
+        });
     }
 
     @Override
     public void onJoystickMoved(float xPercent, float yPercent, int id){
-        int angle = (int)((xPercent) * 100);
-        int speed = (int)((yPercent) * -100);
-        Log.d("joystick", "angle: " + angle + " speed: " + speed );
-        if(car.getStatus() == ACTIVE) {
+        int angle = (int) (xPercent * 100);
+        int speed = (int) (yPercent * -100);
+
+        if (car.getStatus() == ACTIVE) {
             car.setSteeringAngle(angle);
             car.throttle(speed);
-
         }
     }
 
@@ -148,57 +159,50 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
+
+        if (hasFocus && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             hideSystemUI();
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void hideSystemUI() {
-        // Enables regular immersive mode.
-        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
-        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        View decorView = getWindow().getDecorView();
+        final View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE
-                        // Set the content to appear under the system bars so that the
-                        // content doesn't resize when the system bars hide and show.
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        // Hide the nav bar and status bar
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
-    }
-
-    // Shows the system bars by removing all the flags
-// except for the ones that make the content appear under the system bars.
-    private void showSystemUI() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        speechControl.destroy();
-    }
-
-    private void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
-        }
+            View.SYSTEM_UI_FLAG_IMMERSIVE
+            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+        );
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+
+        if (requestCode != RecordAudioRequestCode || grantResults.length <= 0) {
+            return;
         }
+
+        if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Toast.makeText(this,"Permission Granted", Toast.LENGTH_SHORT).show();
+    }
+
+    private void requestRequiredPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RecordAudioRequestCode);
     }
 
 }
