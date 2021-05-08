@@ -1,23 +1,39 @@
 package group01.smartcar.client;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import static group01.smartcar.client.Status.ACTIVE;
 
@@ -26,18 +42,57 @@ import static group01.smartcar.client.Status.ACTIVE;
 public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
     private CarControl car;
     private ImageView cameraView;
-    private TextView speedometer;
+    private Speedometer speedometer;
     private Vibrator vibrator;
+    private ImageView micButton;
+    private SpeechControl speechControl;
+    public static final Integer RecordAudioRequestCode = 1;
 
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drive);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+            checkPermission();
+        }
         registerComponentCallbacks();
         cameraView = findViewById(R.id.imageView);
-        speedometer = findViewById(R.id.simpleSpeedometer);
+        speedometer = findViewById(R.id.fancySpeedometer);
         car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
+        AsyncTask.execute(() -> {
+            while (true) {
+                speedometer.update();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        micButton = findViewById(R.id.micButton);
+        speechControl = new SpeechControl(this);
+
+        speechControl.onResults(bundle -> {
+            micButton.setImageResource(R.drawable.ic_mic_black_off);
+            ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            System.out.println(data.get(0));
+            car.voiceControl(data.get(0));
+        });
+
+        micButton.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                speechControl.stop();
+            }
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                micButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                speechControl.start();
+            }
+            return false;
+        });
+
     }
 
     @Override
@@ -90,6 +145,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         if(car.getStatus() == ACTIVE) {
             car.setSteeringAngle(angle);
             car.throttle(speed);
+
         }
     }
 
@@ -127,6 +183,27 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        speechControl.destroy();
+    }
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

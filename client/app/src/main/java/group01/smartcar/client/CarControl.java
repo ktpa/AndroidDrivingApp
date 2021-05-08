@@ -11,6 +11,12 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import static group01.smartcar.client.Status.*;
 
 public class CarControl {
@@ -25,7 +31,7 @@ public class CarControl {
     private static final int IMAGE_WIDTH = 320;
     private static final int IMAGE_HEIGHT = 240;
     private ImageView cameraView;
-    private TextView speedometer;
+    private Speedometer speedometer;
 
     private String username = "app_user";
     private String password = "app_pass";
@@ -34,27 +40,26 @@ public class CarControl {
     int steeringAngle = 0;
     double currentSpeedMS=0;
 
-    public CarControl(Context context, ImageView cameraView, TextView speedometer) {
+    private int voiceDrivingDirection;
+
+    public CarControl(Context context, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
-        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, TextView speedometer) {
+    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
-        updateSpeedometer();
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, TextView speedometer) {
+    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, Speedometer speedometer) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
-        updateSpeedometer();
     }
 
     public void connect() {
@@ -123,6 +128,10 @@ public class CarControl {
     public void throttle(int speed) {
         if (mqtt.isConnected() && status == ACTIVE) {
             mqtt.publish(THROTTLE_URI, String.valueOf(speed), 1, mqttPublishListener);
+            //temporary solution. I am not sure where we should update motor power for speedometer
+            //re publishing this info from the car may be unnecessary
+            //further investigation required!
+            speedometer.setMotorPowerPercentage(speed);
         }
     }
 
@@ -153,7 +162,7 @@ public class CarControl {
                 double newSpeedMS = Double.parseDouble(message.toString());
                 if(currentSpeedMS != newSpeedMS){
                     currentSpeedMS=newSpeedMS;
-                    updateSpeedometer();
+                    speedometer.setCurrentSpeedMS(currentSpeedMS);
                 }
             }
         }
@@ -228,8 +237,79 @@ public class CarControl {
         return twoDigit.substring(0, Math.min(twoDigit.length(), 3)) + " km/h";
     }
 
-    private void updateSpeedometer(){
-        speedometer.setText(getCurrentSpeedKMHString());
+
+
+    public void voiceControl(String results) {
+        List<String> dictionary = new ArrayList<String>( Arrays.asList("forward", "reverse", "stop", "speed", "turn", "left", "right", "lean", "zero", "one", "two", "three", "four", "five", "0", "1", "2", "3", "4", "5") );
+        List<String> trimmedResults = Arrays.asList(results.toLowerCase().split(" "));
+        List<String> cleanResults = new ArrayList();
+
+        for (String word:trimmedResults) {
+            if(word.equals("stop")) {
+                setSteeringAngle(0);
+                throttle(0);
+                return;
+            }
+            if(dictionary.contains(word)) {
+                cleanResults.add(word);
+            }
+        }
+
+        if(cleanResults.size() <= 0) {
+            return;
+        }
+        switch(cleanResults.get(0)) {
+            case "forward":
+                throttle(50);
+                voiceDrivingDirection = 1;
+                break;
+            case "reverse":
+                throttle(-50);
+                voiceDrivingDirection = -1;
+                break;
+            case "speed":
+                if(cleanResults.size() <= 1) {
+                    return;
+                }
+                switch (cleanResults.get(1)){
+                    case "0":
+                    case "zero":
+                        throttle(0);
+                        break;
+                    case "1":
+                    case "one":
+                        throttle(20*voiceDrivingDirection);
+                        break;
+                    case "2":
+                    case "two":
+                        throttle(40*voiceDrivingDirection);
+                        break;
+                    case "3":
+                    case "three":
+                        throttle(60*voiceDrivingDirection);
+                        break;
+                    case "4":
+                    case "four":
+                        throttle(80*voiceDrivingDirection);
+                        break;
+                    case "5":
+                    case "five":
+                        throttle(100*voiceDrivingDirection);
+                        break;
+                }
+                break;
+            case "turn":
+            case "lean":
+                // case lean will be differentiated in the future.
+                if(cleanResults.size() <= 1) {
+                    return;
+                } else if (cleanResults.get(1).equals("left")) {
+                    setSteeringAngle(-50);
+                } else if (cleanResults.get(1).equals("right")) {
+                    setSteeringAngle(50);
+                }
+                break;
+        }
     }
 
 }

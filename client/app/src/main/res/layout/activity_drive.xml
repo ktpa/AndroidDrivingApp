@@ -37,7 +37,7 @@
         android:elevation="5dp"
         app:layout_constraintBottom_toTopOf="@id/backRectBot"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backRectTop"
         app:layout_constraintVertical_bias="0.475" />
@@ -68,6 +68,18 @@
         app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
         app:layout_constraintTop_toTopOf="@+id/backRectTop" />
 
+    <group01.smartcar.client.Speedometer
+        android:id="@+id/fancySpeedometer"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
+        app:layout_constraintStart_toStartOf="@+id/backRectMid"
+        app:layout_constraintTop_toTopOf="@+id/backRectMid"
+        app:layout_constraintVertical_bias="1.0" />
     <TextView
         android:id="@+id/simpleSpeedometer"
         android:layout_width="wrap_content"
@@ -77,6 +89,8 @@
         android:layout_marginBottom="56dp"
         android:fontFamily="sans-serif-medium"
         android:textSize="32dp"
+        android:translationZ="6dp"
+        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="@id/backRectMid"
         app:layout_constraintTop_toTopOf="@id/backRectMid"
         app:layout_constraintStart_toStartOf="parent" />
@@ -97,6 +111,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/backRectMid"
         app:layout_constraintVertical_bias="0.716" />
+
+    <ImageView
+        android:id="@+id/micButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:backgroundTint="#F9F8FA"
+        android:paddingRight="10dp"
+        android:translationZ="6dp"
+        android:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_mic_black_off" />
 
     <group01.smartcar.client.JoystickView
         android:id="@+id/joystickView2"
