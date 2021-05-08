@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/BG"
-    tools:context=".MainActivity">
+    tools:context=".activity.LoginActivity">
 
     <ImageView
         android:id="@+id/backRectTop"
@@ -68,7 +68,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
         app:layout_constraintTop_toTopOf="@+id/backRectTop" />
 
-    <group01.smartcar.client.Speedometer
+    <group01.smartcar.client.view.Speedometer
         android:id="@+id/fancySpeedometer"
         android:layout_width="140dp"
         android:layout_height="140dp"
@@ -127,7 +127,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_mic_black_off" />
 
-    <group01.smartcar.client.JoystickView
+    <group01.smartcar.client.view.Joystick
         android:id="@+id/joystickView2"
         android:layout_width="match_parent"
         android:layout_height="280dp"

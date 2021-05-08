@@ -1,46 +1,41 @@
-package group01.smartcar.client;
+package group01.smartcar.client.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
-import static group01.smartcar.client.Status.ACTIVE;
+import group01.smartcar.client.SmartCar;
+import group01.smartcar.client.view.Joystick;
+import group01.smartcar.client.R;
+import group01.smartcar.client.speech.SpeechControl;
+import group01.smartcar.client.view.Speedometer;
+
+import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
 // 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
-public class DrivingScreen extends AppCompatActivity implements JoystickView.JoystickListener {
-    private CarControl car;
+public class DrivingActivity extends AppCompatActivity implements Joystick.JoystickListener {
+    private SmartCar car;
     private ImageView cameraView;
     private Speedometer speedometer;
     private Vibrator vibrator;
@@ -60,7 +55,7 @@ public class DrivingScreen extends AppCompatActivity implements JoystickView.Joy
         registerComponentCallbacks();
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
-        car = new CarControl(this.getApplicationContext(), cameraView, speedometer);
+        car = new SmartCar(this.getApplicationContext(), cameraView, speedometer);
         AsyncTask.execute(() -> {
             while (true) {
                 speedometer.update();

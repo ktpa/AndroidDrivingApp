@@ -1,10 +1,8 @@
 package group01.smartcar.client;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -14,12 +12,16 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import static group01.smartcar.client.Status.*;
+import group01.smartcar.client.mqtt.MqttClient;
+import group01.smartcar.client.view.Speedometer;
 
-public class CarControl {
+import static group01.smartcar.client.SmartCar.Status.ACTIVE;
+import static group01.smartcar.client.SmartCar.Status.INACTIVE;
+import static group01.smartcar.client.SmartCar.Status.PAUSED;
+
+public class SmartCar {
     private MqttClient mqtt;
     private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
     private final String DEFAULT_CLIENT_ID = "CarApp";
@@ -42,19 +44,19 @@ public class CarControl {
 
     private int voiceDrivingDirection;
 
-    public CarControl(Context context, ImageView cameraView, Speedometer speedometer) {
+    public SmartCar(Context context, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, ImageView cameraView, Speedometer speedometer) {
+    public SmartCar(Context context, String serverUrl, String clientId, ImageView cameraView, Speedometer speedometer) {
         mqtt = new MqttClient(context, serverUrl, clientId);
         this.cameraView = cameraView;
         this.speedometer = speedometer;
     }
 
-    public CarControl(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, Speedometer speedometer) {
+    public SmartCar(Context context, String serverUrl, String clientId, String username, String password, ImageView cameraView, Speedometer speedometer) {
         this.username = username;
         this.password = password;
         mqtt = new MqttClient(context, serverUrl, clientId);
@@ -310,6 +312,12 @@ public class CarControl {
                 }
                 break;
         }
+    }
+
+    public enum Status {
+        ACTIVE,
+        INACTIVE,
+        PAUSED
     }
 
 }

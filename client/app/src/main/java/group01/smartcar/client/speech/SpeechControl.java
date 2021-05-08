@@ -1,4 +1,4 @@
-package group01.smartcar.client;
+package group01.smartcar.client.speech;
 
 import android.content.Context;
 import android.content.Intent;
@@ -93,7 +93,7 @@ public class SpeechControl {
         this.resultsCallback = resultsCallback;
     }
 
-    interface ResultsCallback{
+    public interface ResultsCallback{
         void onResults(Bundle bundle);
     }
 }

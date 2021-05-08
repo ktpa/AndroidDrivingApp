@@ -1,4 +1,4 @@
-package group01.smartcar.client;
+package group01.smartcar.client.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,13 +9,14 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import group01.smartcar.client.R;
 
 public class UserMenuActivity extends AppCompatActivity {
     // Battery monitor adapted from https://www.youtube.com/watch?v=GxfdnOtRibQ&ab_channel=TihomirRAdeff
@@ -89,13 +90,13 @@ public class UserMenuActivity extends AppCompatActivity {
     private void onLogoutButtonClick(View view) {
         // TODO: Actually log out and pass Toast to next screen
         FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
     private void onDriveButtonClick(View view) {
-        Intent intent = new Intent(this, DrivingScreen.class);
+        Intent intent = new Intent(this, DrivingActivity.class);
         startActivity(intent);
         finish();
     }

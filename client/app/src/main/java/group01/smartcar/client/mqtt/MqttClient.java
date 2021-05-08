@@ -1,4 +1,4 @@
-package group01.smartcar.client;
+package group01.smartcar.client.mqtt;
 
 import android.content.Context;
 

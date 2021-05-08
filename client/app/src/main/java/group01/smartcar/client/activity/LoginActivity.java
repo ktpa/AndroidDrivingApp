@@ -1,18 +1,14 @@
-package group01.smartcar.client;
+package group01.smartcar.client.activity;
 
-import android.content.res.Resources;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -22,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+import group01.smartcar.client.R;
+
+public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private EditText emailTextView, passwordTextView;
@@ -74,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("EmailPassword", "signInWithEmail:failure",
                                 task.getException());
                         Toast.makeText(
-                                MainActivity.this, "Failed to log in! Ask your " +
+                                LoginActivity.this, "Failed to log in! Ask your " +
                                         "local AlSet dealer for your " +
                                         "personal login details.", Toast.LENGTH_SHORT).show();
                     }
@@ -86,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
     private void verifyUser() {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
-            Intent intent = new Intent(MainActivity.this, UserMenuActivity.class);
-            MainActivity.this.startActivityForResult(intent, 0);
+            Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
+            LoginActivity.this.startActivityForResult(intent, 0);
             Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT)
                     .show();
             finish();
         } else {
-            Toast.makeText(MainActivity.this, "Your login details are incorrect.",
+            Toast.makeText(LoginActivity.this, "Your login details are incorrect.",
                     Toast.LENGTH_SHORT).show();
         }
     }

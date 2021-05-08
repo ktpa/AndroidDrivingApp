@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartcarClient">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.LoginActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.SmartcarClient">
             <intent-filter>
@@ -28,13 +28,14 @@
         </activity>
 
         <activity
-            android:name=".DrivingScreen"
+            android:name=".activity.DrivingActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".UserMenuActivity"
-            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.UserMenuActivity"
+            android:screenOrientation="portrait" />
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" ></service>
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
 
 </manifest>

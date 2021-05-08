@@ -1,4 +1,4 @@
-package group01.smartcar.client;
+package group01.smartcar.client.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,9 +13,11 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import group01.smartcar.client.R;
+
 // Adapted from: https://www.instructables.com/A-Simple-Android-UI-Joystick/
 
-public class JoystickView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
+public class Joystick extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
 
     private float centerX;
     private float centerY;
@@ -31,7 +33,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    public JoystickView(Context context){
+    public Joystick(Context context){
         super(context);
         getHolder().addCallback(this);
         setOnTouchListener(this);
@@ -40,14 +42,14 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
 
-    public JoystickView(Context context, AttributeSet attributes, int style){
+    public Joystick(Context context, AttributeSet attributes, int style){
         super(context, attributes, style);
         getHolder().addCallback(this);
         setOnTouchListener(this);
         if(context instanceof JoystickListener)
             joystickCallback = (JoystickListener) context;
     }
-    public JoystickView(Context context, AttributeSet attributes){
+    public Joystick(Context context, AttributeSet attributes){
         super(context, attributes);
         getHolder().addCallback(this);
         setOnTouchListener(this);

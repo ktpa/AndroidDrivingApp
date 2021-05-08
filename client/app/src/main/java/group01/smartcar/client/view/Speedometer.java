@@ -1,4 +1,4 @@
-package group01.smartcar.client;
+package group01.smartcar.client.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,6 +14,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
+
+import group01.smartcar.client.R;
 
 public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     private double currentSpeedMS = 0;
