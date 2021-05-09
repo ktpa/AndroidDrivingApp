@@ -4,7 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -23,25 +23,31 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 import group01.smartcar.client.R;
 import group01.smartcar.client.SmartCar;
+import group01.smartcar.client.async.TaskExecutor;
 import group01.smartcar.client.speech.SpeechListener;
 import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
+
 // 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingActivity extends AppCompatActivity implements Joystick.JoystickListener {
+    private static final Integer RECORD_AUDIO_REQUEST_CODE = 1;
+
     private SmartCar car;
+    private ImageView cameraView;
     private Speedometer speedometer;
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
-    public static final Integer RecordAudioRequestCode = 1;
 
+    private ScheduledFuture<?> speedometerUpdater;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -52,34 +58,28 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
         requestRequiredPermissions();
 
-        final ImageView cameraView = findViewById(R.id.imageView);
+        cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
-        car = new SmartCar(this.getApplicationContext(), cameraView, speedometer);
+        micButton = findViewById(R.id.micButton);
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        micButton = findViewById(R.id.micButton);
+        car = SmartCar.createCar(getApplicationContext());
+        car.onCameraFrameReceived(this::onCameraFrameReceived);
+        car.onSpeedUpdated(speedometer::setCurrentSpeedMS);
+        car.onMotorPowerUpdated(speedometer::setMotorPowerPercentage);
 
         speechListener = new SpeechListener(this);
         speechListener.onResults(bundle -> {
             micButton.setImageResource(R.drawable.ic_mic_black_off);
             List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             System.out.println(data.get(0));
-            car.voiceControl(data.get(0));
+//            car.voiceControl(data.get(0)); TODO: decouple car voice control from SmartCar class
         });
 
         registerComponentCallbacks();
 
-        AsyncTask.execute(() -> {
-            while (true) {
-                speedometer.update();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        speedometerUpdater = TaskExecutor.getInstance().scheduleTask(speedometer::update);
     }
 
     @Override
@@ -87,6 +87,10 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         super.onResume();
 
         car.resume();
+
+        if (speedometerUpdater != null && speedometerUpdater.isCancelled()) {
+            speedometerUpdater = TaskExecutor.getInstance().scheduleTask(speedometer::update);
+        }
     }
 
     @Override
@@ -94,6 +98,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         super.onPause();
 
         car.pause();
+        speedometerUpdater.cancel(true);
     }
 
     @Override
@@ -101,10 +106,12 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         super.onDestroy();
 
         speechListener.destroy();
+        speedometerUpdater.cancel(true);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void registerComponentCallbacks() {
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch sw = findViewById(R.id.drive_park_switch);
 
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -151,7 +158,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
         if (car.getStatus() == ACTIVE) {
             car.setSteeringAngle(angle);
-            car.throttle(speed);
+            car.setSpeed(speed);
         }
     }
 
@@ -160,7 +167,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        if (hasFocus && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (hasFocus) {
             hideSystemUI();
         }
     }
@@ -182,7 +189,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode != RecordAudioRequestCode || grantResults.length <= 0) {
+        if (requestCode != RECORD_AUDIO_REQUEST_CODE || grantResults.length <= 0) {
             return;
         }
 
@@ -198,11 +205,14 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
             return;
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_AUDIO_REQUEST_CODE);
+    }
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RecordAudioRequestCode);
+    private void onCameraFrameReceived(int[] pixels, int width, int height) {
+        final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+
+        cameraView.setImageBitmap(bitmap);
     }
 
 }

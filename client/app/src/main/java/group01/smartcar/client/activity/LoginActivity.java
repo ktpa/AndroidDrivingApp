@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -64,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
         currentVideoPosition = mediaPlayer.getCurrentPosition();
 
         videoBackground.pause();
-        mediaPlayer.release();
     }
 
     @Override
@@ -106,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
             finish();
         });
-    };
+    }
 
     private void loadBackground() {
         videoBackground = findViewById(R.id.videoView);
@@ -125,11 +123,9 @@ public class LoginActivity extends AppCompatActivity {
             this.mediaPlayer = mediaPlayer;
             mediaPlayer.setLooping(true);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                final PlaybackParams playbackParams = new PlaybackParams();
-                playbackParams.setSpeed(0.5f);
-                mediaPlayer.setPlaybackParams(playbackParams);
-            }
+            final PlaybackParams playbackParams = new PlaybackParams();
+            playbackParams.setSpeed(0.5f);
+            mediaPlayer.setPlaybackParams(playbackParams);
 
             if (currentVideoPosition != 0) {
                 mediaPlayer.seekTo(currentVideoPosition);

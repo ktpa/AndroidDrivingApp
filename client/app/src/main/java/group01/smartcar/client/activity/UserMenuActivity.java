@@ -4,22 +4,22 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.concurrent.ScheduledFuture;
+
 import group01.smartcar.client.R;
+import group01.smartcar.client.async.TaskExecutor;
 
 public class UserMenuActivity extends AppCompatActivity {
     // Battery monitor adapted from https://www.youtube.com/watch?v=GxfdnOtRibQ&ab_channel=TihomirRAdeff
@@ -28,6 +28,8 @@ public class UserMenuActivity extends AppCompatActivity {
     private Runnable runnable;
     private TextView batteryText;
     private ImageView batteryImage;
+
+    private ScheduledFuture<?> batteryRenderer;
 
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -46,37 +48,38 @@ public class UserMenuActivity extends AppCompatActivity {
             : "DEBUG MODE"
         );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            hideSystemUI();
-        }
+        hideSystemUI();
 
         registerComponentCallbacks();
 
-        runnable = () -> {
-            int level = (int) batteryLevel();
-            batteryText.setText(level + "%");
+        batteryRenderer = TaskExecutor.getInstance().scheduleTask(this::renderBatteryLevel, 5000);
+    }
 
-            if (level > 75) {
-                batteryImage.setImageResource(R.drawable.battery_full);
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-            if (level > 50 && level <= 75) {
-                batteryImage.setImageResource(R.drawable.battery_high);
-            }
+        if (batteryRenderer != null && batteryRenderer.isCancelled()) {
+            batteryRenderer = TaskExecutor.getInstance().scheduleTask(this::renderBatteryLevel, 5000);
+        }
+    }
 
-            if (level > 25 && level <= 50) {
-                batteryImage.setImageResource(R.drawable.battery_medium);
-            }
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-            if (level <= 25) {
-                batteryImage.setImageResource(R.drawable.battery_low);
-            }
+        if (!batteryRenderer.isCancelled()) {
+            batteryRenderer.cancel(true);
+        }
+    }
 
-            handler.postDelayed(runnable, 5000);
-        };
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-        handler = new Handler(Looper.myLooper());
-        handler.postDelayed(runnable, 0);
+        if (!batteryRenderer.isCancelled()) {
+            batteryRenderer.cancel(true);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -86,7 +89,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
     }
 
-    private float batteryLevel() {
+    private float getBatteryLevel() {
         final Intent batteryIntent = registerReceiver(
             null,
             new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
@@ -100,6 +103,30 @@ public class UserMenuActivity extends AppCompatActivity {
         }
 
         return (float) level / (float) scale * 100.0f;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void renderBatteryLevel() {
+        int level = (int) getBatteryLevel();
+        batteryText.setText(level + "%");
+
+        System.out.println(level);
+
+        if (level > 75) {
+            batteryImage.setImageResource(R.drawable.battery_full);
+        }
+
+        if (level > 50 && level <= 75) {
+            batteryImage.setImageResource(R.drawable.battery_high);
+        }
+
+        if (level > 25 && level <= 50) {
+            batteryImage.setImageResource(R.drawable.battery_medium);
+        }
+
+        if (level <= 25) {
+            batteryImage.setImageResource(R.drawable.battery_low);
+        }
     }
 
     private void onLogoutButtonClick(View view) {
@@ -117,7 +144,6 @@ public class UserMenuActivity extends AppCompatActivity {
         finish();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void hideSystemUI() {
         final View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(

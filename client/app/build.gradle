@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "group01.smartcar.client"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
