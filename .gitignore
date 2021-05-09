@@ -55,3 +55,4 @@ local.properties
 
 # Secrets
 /arduino/smartcar/secrets.hpp
+/client/secrets.properties

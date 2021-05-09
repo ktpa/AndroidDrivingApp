@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import group01.smartcar.client.SmartCar;
+import group01.smartcar.client.internal.mqtt.SmartCarTopics;
+import group01.smartcar.client.internal.resources.Secrets;
 import group01.smartcar.client.mqtt.MqttClient;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
@@ -26,19 +28,10 @@ public class InternalSmartCar implements SmartCar {
     private static final int IMAGE_HEIGHT = 240;
 
     private final MqttClient mqtt;
-    private final String DEFAULT_SERVER_URL = "tcp://localhost:1883";
-    private final String DEFAULT_CLIENT_ID = "CarApp";
-    private final String STEERING_URI = "/smartcar/control/steering";
-    private final String THROTTLE_URI = "/smartcar/control/speed";
-    private final String SPEED_URI = "/smartcar/control/speedMS";
-    private final String CAMERA_URI = "/smartcar/camera";
 
     private CameraFrameReceivedCallback cameraFrameReceivedCallback;
     private SpeedUpdatedCallback speedUpdatedCallback;
     private MotorPowerUpdatedCallback motorPowerUpdatedCallback;
-
-    private String username = "app_user";
-    private String password = "app_pass";
 
     private Status status = INACTIVE;
 
@@ -47,7 +40,7 @@ public class InternalSmartCar implements SmartCar {
     private int voiceDrivingDirection = 1;
 
     public InternalSmartCar(Context context) {
-        mqtt = new MqttClient(context, DEFAULT_SERVER_URL, DEFAULT_CLIENT_ID);
+        mqtt = new MqttClient(context, Secrets.Mqtt.getServerUrl(), Secrets.Mqtt.getClientId());
     }
 
     @Override
@@ -89,13 +82,13 @@ public class InternalSmartCar implements SmartCar {
 
     @Override
     public void setSteeringAngle(int angle) {
-        mqtt.publish(STEERING_URI, String.valueOf(angle), 1, mqttPublishListener);
+        mqtt.publish(SmartCarTopics.CONTROL_STEERING, String.valueOf(angle), 1, mqttPublishListener);
     }
 
     @Override
     public void setSpeed(int speed) {
         if (mqtt.isConnected() && status == ACTIVE) {
-            mqtt.publish(THROTTLE_URI, String.valueOf(speed), 1, mqttPublishListener);
+            mqtt.publish(SmartCarTopics.CONTROL_SPEED, String.valueOf(speed), 1, mqttPublishListener);
             if (motorPowerUpdatedCallback != null) {
                 motorPowerUpdatedCallback.onMotorPowerUpdated(speed);
             }
@@ -193,7 +186,7 @@ public class InternalSmartCar implements SmartCar {
     private void connect() {
         try {
             if (!mqtt.isConnected()) {
-                mqtt.connect(username, password, mqttConnectionListener, mqttCallback);
+                mqtt.connect(Secrets.Mqtt.getUsername(), Secrets.Mqtt.getPassword(), mqttConnectionListener, mqttCallback);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,7 +211,7 @@ public class InternalSmartCar implements SmartCar {
 
         @Override
         public void messageArrived(String topic, MqttMessage message) {
-            if (topic.equals(CAMERA_URI)) {
+            if (topic.equals(SmartCarTopics.CAMERA)) {
                 final byte[] payload = message.getPayload();
                 final int[] pixels = new int[IMAGE_WIDTH * IMAGE_HEIGHT];
                 for (int ci = 0; ci < pixels.length; ++ci) {
@@ -233,7 +226,7 @@ public class InternalSmartCar implements SmartCar {
                 }
             }
 
-            if(topic.equals(SPEED_URI)){
+            if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)){
                 final double newSpeedMS = Double.parseDouble(message.toString());
                 if (currentSpeedMS == newSpeedMS) {
                     return;
@@ -256,8 +249,8 @@ public class InternalSmartCar implements SmartCar {
     private final IMqttActionListener mqttConnectionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            mqtt.subscribe(CAMERA_URI, 1, mqttSubscriptionListener);
-            mqtt.subscribe(SPEED_URI, 1, mqttSubscriptionListener);
+            mqtt.subscribe(SmartCarTopics.CAMERA, 1, mqttSubscriptionListener);
+            mqtt.subscribe(SmartCarTopics.TELEMETRY_SPEED, 1, mqttSubscriptionListener);
         }
 
         @Override

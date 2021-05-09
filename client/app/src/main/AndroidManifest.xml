@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <queries> <package android:name="com.google.android.googlequicksearchbox"/> </queries>
     <application
+        android:name=".SmartCarApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"

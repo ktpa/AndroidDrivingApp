@@ -4,6 +4,8 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def secrets = getSecrets()
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -17,6 +19,11 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField("String", "MQTT_SERVER_URL", secrets['MQTT_SERVER_URL'])
+        buildConfigField("String", "MQTT_CLIENT_ID", secrets['MQTT_CLIENT_ID'])
+        buildConfigField("String", "MQTT_USERNAME", secrets['MQTT_USERNAME'])
+        buildConfigField("String", "MQTT_PASSWORD", secrets['MQTT_PASSWORD'])
     }
 
     buildTypes {
@@ -50,4 +57,16 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
+
+def getSecrets() {
+    def secretsFile = rootProject.file("secrets.properties").exists()
+        ? rootProject.file("secrets.properties")
+        : rootProject.file("secrets-default.properties")
+
+    def properties = new Properties()
+
+    properties.load(new FileInputStream(secretsFile))
+
+    return properties
 }

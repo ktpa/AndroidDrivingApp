@@ -25,7 +25,7 @@ namespace mqtt_topic
     const auto CONTROL_GLOBAL = "/smartcar/control/#";
     const auto CONTROL_SPEED = "/smartcar/control/speed";
     const auto CONTROL_STEERING = "/smartcar/control/steering";
-    const auto CONTROL_SPEED_OUT = "/smartcar/control/speedMS";
+    const auto CONTROL_SPEED_OUT = "/smartcar/telemetry/speed";
     const auto CAMERA = "/smartcar/camera";
 }
 

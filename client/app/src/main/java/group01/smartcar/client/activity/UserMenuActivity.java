@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.concurrent.ScheduledFuture;
 
 import group01.smartcar.client.R;
-import group01.smartcar.client.async.TaskExecutor;
+import group01.smartcar.client.SmartCarApplication;
 
 public class UserMenuActivity extends AppCompatActivity {
     // Battery monitor adapted from https://www.youtube.com/watch?v=GxfdnOtRibQ&ab_channel=TihomirRAdeff
@@ -52,7 +52,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
         registerComponentCallbacks();
 
-        batteryRenderer = TaskExecutor.getInstance().scheduleTask(this::renderBatteryLevel, 5000);
+        batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UserMenuActivity extends AppCompatActivity {
         super.onResume();
 
         if (batteryRenderer != null && batteryRenderer.isCancelled()) {
-            batteryRenderer = TaskExecutor.getInstance().scheduleTask(this::renderBatteryLevel, 5000);
+            batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
         }
     }
 

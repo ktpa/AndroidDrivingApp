@@ -27,7 +27,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import group01.smartcar.client.R;
 import group01.smartcar.client.SmartCar;
-import group01.smartcar.client.async.TaskExecutor;
+import group01.smartcar.client.SmartCarApplication;
 import group01.smartcar.client.speech.SpeechListener;
 import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.view.Speedometer;
@@ -79,7 +79,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
         registerComponentCallbacks();
 
-        speedometerUpdater = TaskExecutor.getInstance().scheduleTask(speedometer::update);
+        speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         car.resume();
 
         if (speedometerUpdater != null && speedometerUpdater.isCancelled()) {
-            speedometerUpdater = TaskExecutor.getInstance().scheduleTask(speedometer::update);
+            speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
         }
     }
 
