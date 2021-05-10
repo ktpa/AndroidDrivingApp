@@ -9,10 +9,6 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.internal.mqtt.SmartCarTopics;
 import group01.smartcar.client.internal.resources.Secrets;
@@ -37,7 +33,7 @@ public class InternalSmartCar implements SmartCar {
 
     private double currentSpeedMS = 0;
 
-    private int voiceDrivingDirection = 1;
+    private int direction = 1;
 
     public InternalSmartCar(Context context) {
         mqtt = new MqttClient(context, Secrets.Mqtt.getServerUrl(), Secrets.Mqtt.getClientId());
@@ -92,7 +88,14 @@ public class InternalSmartCar implements SmartCar {
             if (motorPowerUpdatedCallback != null) {
                 motorPowerUpdatedCallback.onMotorPowerUpdated(speed);
             }
+
+            direction = Integer.signum(speed);
         }
+    }
+
+    @Override
+    public int getDirection() {
+        return direction;
     }
 
     @Override
@@ -108,79 +111,6 @@ public class InternalSmartCar implements SmartCar {
     @Override
     public void onMotorPowerUpdated(MotorPowerUpdatedCallback motorPowerUpdatedCallback) {
         this.motorPowerUpdatedCallback = motorPowerUpdatedCallback;
-    }
-
-    public void voiceControl(String results) {
-        List<String> dictionary = Arrays.asList("forward", "reverse", "stop", "speed", "turn", "left", "right", "lean", "zero", "one", "two", "three", "four", "five", "0", "1", "2", "3", "4", "5");
-        String[] trimmedResults = results.toLowerCase().split(" ");
-        List<String> cleanResults = new ArrayList<>();
-
-        for (String word:trimmedResults) {
-            if(word.equals("stop")) {
-                setSteeringAngle(0);
-                setSpeed(0);
-                return;
-            }
-            if(dictionary.contains(word)) {
-                cleanResults.add(word);
-            }
-        }
-
-        if(cleanResults.size() <= 0) {
-            return;
-        }
-        switch(cleanResults.get(0)) {
-            case "forward":
-                setSpeed(50);
-                voiceDrivingDirection = 1;
-                break;
-            case "reverse":
-                setSpeed(-50);
-                voiceDrivingDirection = -1;
-                break;
-            case "speed":
-                if(cleanResults.size() <= 1) {
-                    return;
-                }
-                switch (cleanResults.get(1)){
-                    case "0":
-                    case "zero":
-                        setSpeed(0);
-                        break;
-                    case "1":
-                    case "one":
-                        setSpeed(20*voiceDrivingDirection);
-                        break;
-                    case "2":
-                    case "two":
-                        setSpeed(40*voiceDrivingDirection);
-                        break;
-                    case "3":
-                    case "three":
-                        setSpeed(60*voiceDrivingDirection);
-                        break;
-                    case "4":
-                    case "four":
-                        setSpeed(80*voiceDrivingDirection);
-                        break;
-                    case "5":
-                    case "five":
-                        setSpeed(100*voiceDrivingDirection);
-                        break;
-                }
-                break;
-            case "turn":
-            case "lean":
-                // case lean will be differentiated in the future.
-                if(cleanResults.size() <= 1) {
-                    return;
-                } else if (cleanResults.get(1).equals("left")) {
-                    setSteeringAngle(-50);
-                } else if (cleanResults.get(1).equals("right")) {
-                    setSteeringAngle(50);
-                }
-                break;
-        }
     }
 
     private void connect() {

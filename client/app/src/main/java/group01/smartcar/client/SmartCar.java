@@ -20,6 +20,8 @@ public interface SmartCar {
 
     void setSpeed(int speed);
 
+    int getDirection();
+
     void onCameraFrameReceived(CameraFrameReceivedCallback cameraFrameReceivedCallback);
 
     void onSpeedUpdated(SpeedUpdatedCallback speedUpdatedCallback);

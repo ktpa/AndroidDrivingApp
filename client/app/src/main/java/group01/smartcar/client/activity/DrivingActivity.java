@@ -22,12 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
 import group01.smartcar.client.R;
 import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.SmartCarApplication;
+import group01.smartcar.client.SmartCarVoiceControl;
 import group01.smartcar.client.speech.SpeechListener;
 import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.view.Speedometer;
@@ -46,6 +48,8 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
+
+    private SmartCarVoiceControl voiceControl;
 
     private ScheduledFuture<?> speedometerUpdater;
 
@@ -69,13 +73,10 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         car.onSpeedUpdated(speedometer::setCurrentSpeedMS);
         car.onMotorPowerUpdated(speedometer::setMotorPowerPercentage);
 
+        voiceControl = SmartCarVoiceControl.create(car);
+
         speechListener = new SpeechListener(this);
-        speechListener.onResults(bundle -> {
-            micButton.setImageResource(R.drawable.ic_mic_black_off);
-            List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            System.out.println(data.get(0));
-//            car.voiceControl(data.get(0)); TODO: decouple car voice control from SmartCar class
-        });
+        speechListener.onResults(this::onSpeechResults);
 
         registerComponentCallbacks();
 
@@ -134,17 +135,13 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
         micButton.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                view.performClick();
+                micButton.setImageResource(R.drawable.ic_mic_black_off);
                 speechListener.stop();
-
-                return true;
             }
 
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 micButton.setImageResource(R.drawable.ic_mic_black_24dp);
                 speechListener.start();
-
-                return true;
             }
 
             return false;
@@ -213,6 +210,27 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 
         cameraView.setImageBitmap(bitmap);
+    }
+
+    private void onSpeechResults(Bundle bundle) {
+        micButton.setImageResource(R.drawable.ic_mic_black_off);
+
+        final List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+
+        if (data == null || data.isEmpty()) {
+            return;
+        }
+
+        final String command = data.get(0);
+
+        final String[] commandParts = command.trim().split(" ");
+
+        if (commandParts.length == 1) {
+            voiceControl.executeCommand(commandParts[0]);
+            return;
+        }
+
+        voiceControl.executeCommand(commandParts[0], Arrays.copyOfRange(commandParts, 1, commandParts.length));
     }
 
 }
