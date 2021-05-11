@@ -17,7 +17,7 @@
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
+        app:layout_constraintBottom_toTopOf="@+id/backRectMid"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/imageView"
@@ -46,16 +46,32 @@
         android:id="@+id/backRectBot"
         android:layout_width="match_parent"
         android:layout_height="302dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="6dp"
+        android:layout_margin="6dp"
         android:layout_marginRight="6dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginBottom="6dp"
         android:src="@drawable/grey_curved_rectangle_with_border"
         android:translationZ="1dp"
-        android:layout_margin="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backRectMid"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/joystick"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="95dp"
+        android:layout_marginTop="95dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:translationZ="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
+        app:layout_constraintEnd_toEndOf="@id/backRectBot"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/backRectBot"
+        app:layout_constraintTop_toTopOf="@+id/backRectBot"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_button" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -118,26 +134,40 @@
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:backgroundTint="#F9F8FA"
+        android:elevation="6dp"
         android:paddingRight="10dp"
         android:translationZ="6dp"
-        android:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_mic_black_off" />
 
-    <group01.smartcar.client.view.Joystick
-        android:id="@+id/joystickView2"
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_margin="12dp"
-        android:alpha="1"
-        android:elevation="1dp"
-        android:translationZ="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
-        app:layout_constraintTop_toTopOf="@+id/backRectBot"
-        tools:layout_editor_absoluteX="12dp" />
+    <!--
+       <ImageView
+           android:id="@+id/joystick"
+           android:layout_width="125dp"
+           android:layout_height="125dp"
+           android:translationZ="6dp"
+           app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
+           app:layout_constraintEnd_toEndOf="@id/backRectBot"
+           app:layout_constraintHorizontal_bias="0.501"
+           app:layout_constraintStart_toStartOf="@id/backRectBot"
+           app:layout_constraintTop_toTopOf="@+id/backRectBot"
+           app:layout_constraintVertical_bias="0.502"
+           app:srcCompat="@drawable/ic_button" />
 
+           <group01.smartcar.client.view.Joystick
+               android:id="@+id/joystickView2"
+               android:layout_width="match_parent"
+               android:layout_height="280dp"
+               android:layout_margin="12dp"
+               android:alpha="1"
+               android:elevation="1dp"
+               android:translationZ="2dp"
+               app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
+               app:layout_constraintTop_toTopOf="@+id/backRectBot"
+               tools:layout_editor_absoluteX="12dp" />
+       -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package group01.smartcar.client.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +23,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +45,13 @@ import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
 public class DrivingActivity extends AppCompatActivity implements Joystick.JoystickListener {
     private static final Integer RECORD_AUDIO_REQUEST_CODE = 1;
+    private View joystick;
+    private SpringAnimation animJoystickY;
+    private SpringAnimation animJoystickX;
+    private final int joystickRadiusMax = 500;
+    private float joystickInitX;
+    private float joystickInitY;
+    private boolean notSetInit;
 
     private SmartCar car;
     private ImageView cameraView;
@@ -57,7 +68,6 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_drive);
 
         requestRequiredPermissions();
@@ -65,6 +75,11 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
         micButton = findViewById(R.id.micButton);
+        joystick = findViewById(R.id.joystick);
+
+        animJoystickY = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_Y, 0);
+        animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
+        notSetInit = true;
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -115,6 +130,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch sw = findViewById(R.id.drive_park_switch);
 
+
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             final VibrationEffect vibrationEffect1;
 
@@ -146,6 +162,46 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
             return false;
         });
+
+        // 1. Listen for touch on imageView object joystick.
+        // 2. If the touch is moving, make the imageView object follow the touch.
+        // 3. If the touch is out of the acceptable radial bounds of the joystick, set joystick position to last adjustable position (in order to not hinder the execution)
+        // 4. Listen for the position change and send it to mqtt.
+
+        joystick.setOnTouchListener((view, motionEvent) -> {
+            if(notSetInit) {
+                setInit();
+                notSetInit = false;
+            }
+
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                //Log.d("diff:", "getX, getLeft" + joystick.getX() + ", " + (float) joystick.getLeft());
+
+                Log.d("dx:", "registerComponentCallbacks: " + (joystick.getX() - joystickInitX));
+                Log.d("dy:", "registerComponentCallbacks: " + -1 * (joystick.getY() - joystickInitY));
+
+
+                joystick.setY(motionEvent.getRawY() - (joystick.getHeight()/2f));
+                joystick.setX(motionEvent.getRawX() - (joystick.getWidth()/2f));
+
+
+                // currentPosition relative to start = (int) Math.sqrt((Math.pow(motionEvent.getRawX() - joystickInitX, 2) + Math.pow(motionEvent.getRawY() - joystickInitY, 2)));
+
+                return true;
+            }
+
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                animJoystickX.start();
+                animJoystickY.start();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void setInit() {
+        joystickInitX = joystick.getX();
+        joystickInitY = joystick.getY();
     }
 
     @Override
@@ -167,6 +223,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         if (hasFocus) {
             hideSystemUI();
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
