@@ -52,6 +52,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     private float joystickInitX;
     private float joystickInitY;
     private boolean notSetInit;
+    private float joystickRadius;
 
     private SmartCar car;
     private ImageView cameraView;
@@ -80,6 +81,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         animJoystickY = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_Y, 0);
         animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
         notSetInit = true;
+        joystickRadius = 0;
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -179,20 +181,18 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
 
                 Log.d("dx:", "registerComponentCallbacks: " + (joystick.getX() - joystickInitX));
                 Log.d("dy:", "registerComponentCallbacks: " + -1 * (joystick.getY() - joystickInitY));
-
+                Log.d("xpercent", "registerComponentCallbacks: xPercent: " + ((joystick.getX() - joystickInitX)/joystickRadius));
 
                 joystick.setY(motionEvent.getRawY() - (joystick.getHeight()/2f));
                 joystick.setX(motionEvent.getRawX() - (joystick.getWidth()/2f));
-
-
-                // currentPosition relative to start = (int) Math.sqrt((Math.pow(motionEvent.getRawX() - joystickInitX, 2) + Math.pow(motionEvent.getRawY() - joystickInitY, 2)));
-
+                onJoystickMoved((joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
                 return true;
             }
 
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 animJoystickX.start();
                 animJoystickY.start();
+                onJoystickMoved(0, 0, joystick.getId());
                 return true;
             }
             return false;
@@ -202,6 +202,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     private void setInit() {
         joystickInitX = joystick.getX();
         joystickInitY = joystick.getY();
+        joystickRadius = joystick.getHeight()/2f;
     }
 
     @Override
