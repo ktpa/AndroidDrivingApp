@@ -2,7 +2,6 @@ package group01.smartcar.client.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +33,6 @@ import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.SmartCarApplication;
 import group01.smartcar.client.SmartCarVoiceControl;
 import group01.smartcar.client.speech.SpeechListener;
-import group01.smartcar.client.view.Joystick;
 import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
@@ -43,8 +40,9 @@ import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
 // 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
-public class DrivingActivity extends AppCompatActivity implements Joystick.JoystickListener {
+public class DrivingActivity extends AppCompatActivity {
     private static final Integer RECORD_AUDIO_REQUEST_CODE = 1;
+
     private View joystick;
     private SpringAnimation animJoystickY;
     private SpringAnimation animJoystickX;
@@ -170,9 +168,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
                 setInit();
                 notSetInit = false;
             }
-            float dx;
-            float dy;
-            float joystickDistance;
+
             float touchDistance;
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                 touchDistance = (float) Math.sqrt(Math.pow(motionEvent.getRawX() - joystickInitX - joystick.getWidth() / 2f, 2) + Math.pow(motionEvent.getRawY() - joystickInitY - joystick.getHeight() / 2f, 2));
@@ -180,8 +176,8 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
                     joystick.setX(motionEvent.getRawX() - (joystick.getWidth() / 2f));
                     joystick.setY(motionEvent.getRawY() - (joystick.getHeight() / 2f));
                 } else {
-                    joystick.setX((((motionEvent.getRawX() - (joystick.getWidth() / 2f)) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft()); //* (joystickRadiusMax/joystickDistance) + (joystick.getLeft())); //* (motionEvent.getRawX() - (joystick.getWidth() / 2f)));
-                    joystick.setY((((motionEvent.getRawY() - (joystick.getHeight() / 2f)) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop()); //* (joystickRadiusMax/joystickDistance) + (joystick.getTop())); //* (motionEvent.getRawY() - (joystick.getHeight() / 2f)));
+                    joystick.setX((((motionEvent.getRawX() - (joystick.getWidth() / 2f)) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft());
+                    joystick.setY((((motionEvent.getRawY() - (joystick.getHeight() / 2f)) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop());
                 }
                     onJoystickMoved((joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
                     return true;
@@ -204,7 +200,6 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
         joystickRadius = joystick.getHeight()/2f;
     }
 
-    @Override
     public void onJoystickMoved(float xPercent, float yPercent, int id){
         int angle = (int) (xPercent * 100);
         int speed = (int) (yPercent * -100);
