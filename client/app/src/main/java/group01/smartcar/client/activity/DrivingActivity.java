@@ -48,7 +48,7 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
     private View joystick;
     private SpringAnimation animJoystickY;
     private SpringAnimation animJoystickX;
-    private final int joystickRadiusMax = 500;
+    private final float joystickRadiusMax = 180;
     private float joystickInitX;
     private float joystickInitY;
     private boolean notSetInit;
@@ -165,39 +165,38 @@ public class DrivingActivity extends AppCompatActivity implements Joystick.Joyst
             return false;
         });
 
-        // 1. Listen for touch on imageView object joystick.
-        // 2. If the touch is moving, make the imageView object follow the touch.
-        // 3. If the touch is out of the acceptable radial bounds of the joystick, set joystick position to last adjustable position (in order to not hinder the execution)
-        // 4. Listen for the position change and send it to mqtt.
-
         joystick.setOnTouchListener((view, motionEvent) -> {
-            if(notSetInit) {
+            if (notSetInit) {
                 setInit();
                 notSetInit = false;
             }
-
+            float dx;
+            float dy;
+            float joystickDistance;
+            float touchDistance;
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                //Log.d("diff:", "getX, getLeft" + joystick.getX() + ", " + (float) joystick.getLeft());
+                touchDistance = (float) Math.sqrt(Math.pow(motionEvent.getRawX() - joystickInitX - joystick.getWidth() / 2f, 2) + Math.pow(motionEvent.getRawY() - joystickInitY - joystick.getHeight() / 2f, 2));
+                if (touchDistance <= joystickRadiusMax) {
+                    joystick.setX(motionEvent.getRawX() - (joystick.getWidth() / 2f));
+                    joystick.setY(motionEvent.getRawY() - (joystick.getHeight() / 2f));
+                } else {
+                    joystick.setX((((motionEvent.getRawX() - (joystick.getWidth() / 2f)) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft()); //* (joystickRadiusMax/joystickDistance) + (joystick.getLeft())); //* (motionEvent.getRawX() - (joystick.getWidth() / 2f)));
+                    joystick.setY((((motionEvent.getRawY() - (joystick.getHeight() / 2f)) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop()); //* (joystickRadiusMax/joystickDistance) + (joystick.getTop())); //* (motionEvent.getRawY() - (joystick.getHeight() / 2f)));
+                }
+                    onJoystickMoved((joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
+                    return true;
+                }
 
-                Log.d("dx:", "registerComponentCallbacks: " + (joystick.getX() - joystickInitX));
-                Log.d("dy:", "registerComponentCallbacks: " + -1 * (joystick.getY() - joystickInitY));
-                Log.d("xpercent", "registerComponentCallbacks: xPercent: " + ((joystick.getX() - joystickInitX)/joystickRadius));
-
-                joystick.setY(motionEvent.getRawY() - (joystick.getHeight()/2f));
-                joystick.setX(motionEvent.getRawX() - (joystick.getWidth()/2f));
-                onJoystickMoved((joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
-                return true;
-            }
-
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                animJoystickX.start();
-                animJoystickY.start();
-                onJoystickMoved(0, 0, joystick.getId());
-                return true;
-            }
-            return false;
-        });
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    animJoystickX.start();
+                    animJoystickY.start();
+                    onJoystickMoved(0, 0, joystick.getId());
+                    return true;
+                }
+                return false;
+            });
     }
+
 
     private void setInit() {
         joystickInitX = joystick.getX();
