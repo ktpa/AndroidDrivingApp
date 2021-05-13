@@ -14,12 +14,21 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import group01.smartcar.client.R;
 
 public class LoginActivity extends AppCompatActivity {
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance
+            ("https://smartcar-client-default-rtdb.europe-west1.firebasedatabase.app/");
+    private final DatabaseReference databaseReference = firebaseDatabase.getReference().child("Users");
 
     private EditText emailTextView;
     private EditText passwordTextView;
@@ -96,6 +105,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 return;
             }
+
+            final Map<String, String> userMap = new HashMap<>();
+            final String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+
+            userMap.put("user", userId);
+            userMap.put("email", email);
+
+            databaseReference.push().setValue(userMap);
 
             final Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
             LoginActivity.this.startActivityForResult(intent, 0);
