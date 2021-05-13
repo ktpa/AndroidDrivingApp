@@ -42,6 +42,7 @@ import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
 public class DrivingActivity extends AppCompatActivity {
     private static final Integer RECORD_AUDIO_REQUEST_CODE = 1;
+    private static final int DEFAULT_SENSITIVITY = 1;
 
     private View joystick;
     private SpringAnimation animJoystickY;
@@ -179,14 +180,14 @@ public class DrivingActivity extends AppCompatActivity {
                     joystick.setX((((motionEvent.getRawX() - (joystick.getWidth() / 2f)) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft());
                     joystick.setY((((motionEvent.getRawY() - (joystick.getHeight() / 2f)) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop());
                 }
-                    onJoystickMoved((joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
+                    onJoystickMoved(DEFAULT_SENSITIVITY,(joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
                     return true;
                 }
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     animJoystickX.start();
                     animJoystickY.start();
-                    onJoystickMoved(0, 0, joystick.getId());
+                    onJoystickMoved(DEFAULT_SENSITIVITY,0, 0, joystick.getId());
                     return true;
                 }
                 return false;
@@ -200,8 +201,8 @@ public class DrivingActivity extends AppCompatActivity {
         joystickRadius = joystick.getHeight()/2f;
     }
 
-    public void onJoystickMoved(float xPercent, float yPercent, int id){
-        int angle = (int) (xPercent * 100);
+    public void onJoystickMoved(double sensitivity, float xPercent, float yPercent, int id) {
+        int angle = (int) ((int) (xPercent * 100) * (sensitivity));
         int speed = (int) (yPercent * -100);
 
         if (car.getStatus() == ACTIVE) {
@@ -211,6 +212,7 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -218,7 +220,6 @@ public class DrivingActivity extends AppCompatActivity {
         if (hasFocus) {
             hideSystemUI();
         }
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
