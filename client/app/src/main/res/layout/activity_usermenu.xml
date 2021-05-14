@@ -65,7 +65,7 @@
         app:layout_constraintTop_toTopOf="@+id/toolbar"
         app:srcCompat="@drawable/ic_baseline_logout_24" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,16 +78,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_miscellaneous_services_24" />
 
-    <ImageButton
-        android:id="@+id/drive_alset_button"
-        android:layout_width="318dp"
-        android:layout_height="203dp"
-        android:layout_marginTop="40dp"
-        android:alpha="0.45"
+    <ImageView
+        android:id="@+id/drive_your_alset"
+        android:layout_width="308dp"
+        android:layout_height="532dp"
+        android:layout_marginTop="28dp"
+        android:alpha="0.85"
         android:background="@null"
         android:hapticFeedbackEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:srcCompat="@drawable/curved_whiterectangle" />
@@ -99,51 +99,87 @@
         android:layout_marginTop="4dp"
         android:alpha="0.65"
         android:fontFamily="sans-serif-condensed-medium"
-        android:text="@string/drive_your_alset"
+        android:text="Your AlSet"
         android:textColor="#000000"
         android:textSize="24sp"
         android:typeface="sans"
-        app:layout_constraintEnd_toEndOf="@+id/drive_alset_button"
-        app:layout_constraintHorizontal_bias="0.484"
-        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
-        app:layout_constraintTop_toTopOf="@+id/drive_alset_button" />
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset"
+        app:layout_constraintTop_toTopOf="@+id/drive_your_alset" />
 
     <ImageView
         android:id="@+id/imageView14"
         android:layout_width="422dp"
         android:layout_height="229dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="@+id/drive_alset_button"
-        app:layout_constraintHorizontal_bias="0.471"
-        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset"
         app:layout_constraintTop_toTopOf="@+id/textView10"
         app:srcCompat="@drawable/car" />
 
     <ImageView
         android:id="@+id/battery_image"
-        android:layout_width="92dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginLeft="108dp"
+        android:layout_width="129dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="128dp"
         android:alpha="1"
         android:rotation="90"
-        app:layout_constraintBottom_toBottomOf="@+id/drive_alset_button"
-        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
-        app:layout_constraintTop_toTopOf="@+id/drive_alset_button"
-        app:layout_constraintVertical_bias="0.24"
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset"
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
         app:srcCompat="@drawable/battery_full" />
 
     <TextView
         android:id="@+id/battery_text"
         android:layout_width="91dp"
         android:layout_height="25dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginLeft="108dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="64dp"
         android:gravity="center"
         android:text="@string/percentage"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/drive_alset_button"
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset"
         app:layout_constraintTop_toTopOf="@+id/battery_image" />
+
+    <SeekBar
+        android:id="@+id/driving_sensitivity"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="263dp"
+        android:layout_height="76dp"
+        android:max="10"
+        android:maxHeight="200dp"
+        android:progress="5"
+        app:layout_constraintBottom_toBottomOf="@+id/drive_your_alset"
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset"
+        app:layout_constraintTop_toBottomOf="@+id/battery_text"
+        app:layout_constraintVertical_bias="0.287" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="52dp"
+        android:text="Driving sensitivity"
+        android:textAllCaps="true"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/driving_sensitivity"
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset" />
+
+    <Button
+        android:id="@+id/drive_button"
+        android:layout_width="106dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="44dp"
+        android:background="@color/black"
+        android:text="Drive!"
+        app:layout_constraintEnd_toEndOf="@+id/drive_your_alset"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/drive_your_alset"
+        app:layout_constraintTop_toBottomOf="@+id/driving_sensitivity" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
