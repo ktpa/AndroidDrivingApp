@@ -175,11 +175,11 @@ public class DrivingActivity extends AppCompatActivity {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                 touchDistance = (float) Math.sqrt(Math.pow(motionEvent.getRawX() - joystickInitX - joystick.getWidth() / 2f, 2) + Math.pow(motionEvent.getRawY() - joystickInitY - joystick.getHeight() / 2f, 2));
                 if (touchDistance <= joystickRadiusMax) {
-                    joystick.setX(motionEvent.getRawX() - (joystick.getWidth() / 2f));
-                    joystick.setY(motionEvent.getRawY() - (joystick.getHeight() / 2f));
+                    joystick.setX(motionEvent.getRawX() - joystickRadius);
+                    joystick.setY(motionEvent.getRawY() - joystickRadius);
                 } else {
-                    joystick.setX((((motionEvent.getRawX() - (joystick.getWidth() / 2f)) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft());
-                    joystick.setY((((motionEvent.getRawY() - (joystick.getHeight() / 2f)) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop());
+                    joystick.setX((((motionEvent.getRawX() - joystickRadius) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft());
+                    joystick.setY((((motionEvent.getRawY() - joystickRadius) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop());
                 }
                     onJoystickMoved(drivingSensitivity,(joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
                     return true;
