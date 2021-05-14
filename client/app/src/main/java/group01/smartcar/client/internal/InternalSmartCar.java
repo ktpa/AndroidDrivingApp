@@ -78,6 +78,9 @@ public class InternalSmartCar implements SmartCar {
 
     @Override
     public void setSteeringAngle(int angle) {
+        /* Caps the value of the angle of the car's movement to 90 degrees or -90 degrees to save on
+           data transmission */
+        angle = angle < -90 ? -90 : Math.min(angle, 90);
         mqtt.publish(SmartCarTopics.CONTROL_STEERING, String.valueOf(angle), 1, mqttPublishListener);
     }
 
