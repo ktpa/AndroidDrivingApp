@@ -1,8 +1,10 @@
 package group01.smartcar.client.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +32,8 @@ public class UserMenuActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase;
     private Handler handler;
     private Runnable runnable;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     private TextView batteryText;
     private ImageView batteryImage;
     private SeekBar seekBar;
@@ -39,17 +43,21 @@ public class UserMenuActivity extends AppCompatActivity {
 
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "ApplySharedPref"})
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usermenu);
 
+        sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        editor.putFloat("sensitivity", 1);
+        editor.commit();
+
         batteryText = findViewById(R.id.battery_text);
         batteryImage = findViewById(R.id.battery_image);
 
         seekBar = findViewById(R.id.driving_sensitivity);
-        DrivingActivity.setDrivingSensitivity(calculateSensitivity(seekBar.getProgress()));
         onSeekBarChange();
 
         ((TextView) findViewById(R.id.username_field)).setText(firebaseUser != null
@@ -141,7 +149,8 @@ public class UserMenuActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                DrivingActivity.setDrivingSensitivity(calculateSensitivity(progress));
+                editor.putFloat("sensitivity", calculateSensitivity(progress));
+                editor.commit();
 
                 if (toast != null) {
                     toast.cancel();

@@ -3,6 +3,7 @@ package group01.smartcar.client.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -52,7 +53,7 @@ public class DrivingActivity extends AppCompatActivity {
     private float joystickInitY;
     private boolean notSetInit;
     private float joystickRadius;
-    private static float drivingSensitivity = 0;
+    private float drivingSensitivity;
 
     private SmartCar car;
     private ImageView cameraView;
@@ -72,6 +73,9 @@ public class DrivingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drive);
 
         requestRequiredPermissions();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
+        drivingSensitivity = sharedPreferences.getFloat("sensitivity", 1);
 
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
@@ -286,13 +290,5 @@ public class DrivingActivity extends AppCompatActivity {
         }
 
         voiceControl.executeCommand(commandParts[0], Arrays.copyOfRange(commandParts, 1, commandParts.length));
-    }
-
-    public static void setDrivingSensitivity(float sensitivity) {
-        drivingSensitivity = sensitivity;
-    }
-
-    public static float getDrivingSensitivity() {
-        return drivingSensitivity;
     }
 }
