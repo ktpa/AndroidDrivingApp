@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -24,10 +27,13 @@ import group01.smartcar.client.SmartCarApplication;
 public class UserMenuActivity extends AppCompatActivity {
     // Battery monitor adapted from https://www.youtube.com/watch?v=GxfdnOtRibQ&ab_channel=TihomirRAdeff
 
+    private FirebaseDatabase firebaseDatabase;
     private Handler handler;
     private Runnable runnable;
     private TextView batteryText;
     private ImageView batteryImage;
+    private SeekBar seekBar;
+    private Toast toast;
 
     private ScheduledFuture<?> batteryRenderer;
 
@@ -37,11 +43,14 @@ public class UserMenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_usermenu);
 
         batteryText = findViewById(R.id.battery_text);
         batteryImage = findViewById(R.id.battery_image);
+
+        seekBar = findViewById(R.id.driving_sensitivity);
+        DrivingActivity.setDrivingSensitivity(calculateSensitivity(seekBar.getProgress()));
+        onSeekBarChange();
 
         ((TextView) findViewById(R.id.username_field)).setText(firebaseUser != null
             ? firebaseUser.getEmail()
@@ -85,8 +94,7 @@ public class UserMenuActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void registerComponentCallbacks() {
         findViewById(R.id.logout_button).setOnClickListener(this::onLogoutButtonClick);
-        findViewById(R.id.drive_alset_button).setOnClickListener(this::onDriveButtonClick);
-
+        findViewById(R.id.drive_button).setOnClickListener(this::onDriveButtonClick);
     }
 
     private float getBatteryLevel() {
@@ -129,6 +137,39 @@ public class UserMenuActivity extends AppCompatActivity {
         }
     }
 
+    private void onSeekBarChange() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                DrivingActivity.setDrivingSensitivity(calculateSensitivity(progress));
+
+                if (toast != null) {
+                    toast.cancel();
+                }
+
+                toast = Toast.makeText(
+                        UserMenuActivity.this,
+                        "Driving sensitivity: " + progress + "/10",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+    private float calculateSensitivity(int progress) {
+        return progress / ((float) seekBar.getMax() / 2);
+    }
+
     private void onLogoutButtonClick(View view) {
         // TODO: Actually log out and pass Toast to next screen
         FirebaseAuth.getInstance().signOut();
@@ -147,12 +188,12 @@ public class UserMenuActivity extends AppCompatActivity {
     private void hideSystemUI() {
         final View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_IMMERSIVE
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
         );
     }
 }
