@@ -41,8 +41,8 @@ import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 // 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingActivity extends AppCompatActivity {
+
     private static final Integer RECORD_AUDIO_REQUEST_CODE = 1;
-    private static final int DEFAULT_SENSITIVITY = 1;
 
     private View joystick;
     private SpringAnimation animJoystickY;
@@ -52,6 +52,7 @@ public class DrivingActivity extends AppCompatActivity {
     private float joystickInitY;
     private boolean notSetInit;
     private float joystickRadius;
+    private static float drivingSensitivity = 0;
 
     private SmartCar car;
     private ImageView cameraView;
@@ -180,14 +181,14 @@ public class DrivingActivity extends AppCompatActivity {
                     joystick.setX((((motionEvent.getRawX() - (joystick.getWidth() / 2f)) - joystick.getLeft()) * joystickRadiusMax/touchDistance) + joystick.getLeft());
                     joystick.setY((((motionEvent.getRawY() - (joystick.getHeight() / 2f)) - joystick.getTop()) * joystickRadiusMax/touchDistance) + joystick.getTop());
                 }
-                    onJoystickMoved(DEFAULT_SENSITIVITY,(joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
+                    onJoystickMoved(drivingSensitivity,(joystick.getX() - joystickInitX) / joystickRadius, (joystick.getY() - joystickInitY) / joystickRadius, joystick.getId());
                     return true;
                 }
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     animJoystickX.start();
                     animJoystickY.start();
-                    onJoystickMoved(DEFAULT_SENSITIVITY,0, 0, joystick.getId());
+                    onJoystickMoved(drivingSensitivity,0, 0, joystick.getId());
                     return true;
                 }
                 return false;
@@ -201,11 +202,12 @@ public class DrivingActivity extends AppCompatActivity {
         joystickRadius = joystick.getHeight()/2f;
     }
 
-    public void onJoystickMoved(double sensitivity, float xPercent, float yPercent, int id) {
-        int angle = (int) ((int) (xPercent * 100) * (sensitivity));
+    public void onJoystickMoved(float sensitivity, float xPercent, float yPercent, int id) {
+        int angle = (int) ((xPercent * 100) * (sensitivity));
         int speed = (int) (yPercent * -100);
 
         if (car.getStatus() == ACTIVE) {
+            System.out.println(angle);
             car.setSteeringAngle(angle);
             car.setSpeed(speed);
         }
@@ -286,4 +288,11 @@ public class DrivingActivity extends AppCompatActivity {
         voiceControl.executeCommand(commandParts[0], Arrays.copyOfRange(commandParts, 1, commandParts.length));
     }
 
+    public static void setDrivingSensitivity(float sensitivity) {
+        drivingSensitivity = sensitivity;
+    }
+
+    public static float getDrivingSensitivity() {
+        return drivingSensitivity;
+    }
 }
