@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -26,6 +28,8 @@ import group01.smartcar.client.R;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private String android_id;
+
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance
             ("https://smartcar-client-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -43,6 +47,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        android_id = Settings.Secure.getString(
+                getApplicationContext().getContentResolver(),
+                Secure.ANDROID_ID);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -116,12 +124,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (!dbTask.isSuccessful()) {
                     Log.e("ERROR", "Error getting data");
                 } else {
-                    Object userSession = Boolean.FALSE;
+                    Object userSession = "";
                     if (dbTask.getResult().exists()) {
                         userSession = dbTask.getResult().getValue();
                     }
 
-                    if (userSession.equals(true)) {
+                    if (!(userSession.equals(android_id) || userSession.equals(""))) {
                         cancelToast(loginToast);
                         loginToast = Toast.makeText(getApplicationContext(),
                             "You cannot log in on multiple devices! " +
@@ -131,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser())
                                 .getEmail());
-                        userMap.put("isLoggedIn", true);
+                        userMap.put("isLoggedIn", android_id);
 
                         databaseReference.child("users/" + firebaseAuth.getCurrentUser().getUid())
                                 .updateChildren(userMap);

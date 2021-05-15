@@ -246,7 +246,7 @@ public class UserMenuActivity extends AppCompatActivity {
 
     private void onLogoutButtonClick(View view) {
         // TODO: Actually log out and pass Toast to next screen
-        savedUserSession.put("isLoggedIn", false);
+        savedUserSession.put("isLoggedIn", "");
         databaseReference.child
                 ("users/" + firebaseUser.getUid())
                 .updateChildren(savedUserSession);
