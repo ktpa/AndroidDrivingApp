@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -26,6 +27,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 
@@ -161,6 +163,10 @@ public class DrivingActivity extends AppCompatActivity {
 
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             final VibrationEffect vibrationEffect1;
+            final Drawable thumb = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_thumb, null);
+            final Drawable thumbActive = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_thumb_active, null);
+            final Drawable track = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_track, null);
+            final Drawable trackActive = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_track_active, null);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 vibrationEffect1 = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_HEAVY_CLICK);
@@ -172,8 +178,13 @@ public class DrivingActivity extends AppCompatActivity {
 
             if(isChecked) {
                 car.start();
+                sw.setThumbDrawable(thumbActive);
+                sw.setTrackDrawable(trackActive);
             } else {
                 car.stop();
+                sw.setThumbDrawable(thumb);
+                sw.setTrackDrawable(track);
+
             }
         });
 

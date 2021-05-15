@@ -26,7 +26,6 @@
         android:translationZ="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_knob" />
 
@@ -61,6 +60,7 @@
         android:layout_marginTop="45dp"
         android:layout_marginBottom="253dp"
         app:layout_constraintBottom_toTopOf="@+id/backbtn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -68,15 +68,14 @@
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="13dp"
+        android:layout_marginBottom="10dp"
         android:elevation="6dp"
-        android:scrollbarSize="4dp"
-        android:switchMinWidth="120dp"
-        android:track="@color/grey"
+        android:switchMinWidth="100dp"
+        android:track="@drawable/ic_switch_track"
+        android:thumb="@drawable/ic_switch_thumb"
         android:translationZ="6dp"
         app:layout_constraintBottom_toBottomOf="@+id/dashboard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
