@@ -130,6 +130,10 @@ public class DrivingActivity extends AppCompatActivity {
 
         speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
         batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
+
+        speedometer.setVisibility(View.INVISIBLE);
+        cameraView.setVisibility(View.INVISIBLE);
+        joystick.setVisibility(View.INVISIBLE);
     }
 
 
@@ -232,10 +236,16 @@ public class DrivingActivity extends AppCompatActivity {
                 car.start();
                 sw.setThumbDrawable(thumbActive);
                 sw.setTrackDrawable(trackActive);
+                speedometer.setVisibility(View.VISIBLE);
+                cameraView.setVisibility(View.VISIBLE);
+                joystick.setVisibility(View.VISIBLE);
             } else {
                 car.stop();
                 sw.setThumbDrawable(thumb);
                 sw.setTrackDrawable(track);
+                speedometer.setVisibility(View.INVISIBLE);
+                cameraView.setVisibility(View.INVISIBLE);
+                joystick.setVisibility(View.INVISIBLE);
 
             }
         });
