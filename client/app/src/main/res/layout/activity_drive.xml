@@ -93,14 +93,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_mic_black_off" />
 
-    <TextView
-        android:id="@+id/clock"
+
+    <TextClock
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="125dp"
         android:layout_marginTop="15dp"
         android:fontFamily="sans-serif-medium"
-        android:text="10:45"
+        android:format24Hour="H:mm"
         android:textColor="@color/white"
         android:textSize="20dp"
         android:translationZ="6dp"
