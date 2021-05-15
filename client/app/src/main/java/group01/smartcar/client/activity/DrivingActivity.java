@@ -3,6 +3,7 @@ package group01.smartcar.client.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -135,6 +136,7 @@ public class DrivingActivity extends AppCompatActivity {
     private void registerComponentCallbacks() {
         @SuppressLint("UseSwitchCompatOrMaterialCode")
         final Switch sw = findViewById(R.id.drive_park_switch);
+        findViewById(R.id.backbtn).setOnClickListener(this::onBackbtnClicked);
 
 
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -217,6 +219,11 @@ public class DrivingActivity extends AppCompatActivity {
         }
     }
 
+    private void onBackbtnClicked(View view) {
+        final Intent intent = new Intent(this, UserMenuActivity.class);
+        startActivity(intent);
+        finish();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
