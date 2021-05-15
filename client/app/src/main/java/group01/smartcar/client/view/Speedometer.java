@@ -20,15 +20,7 @@ import group01.smartcar.client.R;
 
 public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
     private double currentSpeedMS = 0;
-    private double motorPowerPercentage = 0;
-
-    private float centerX;
-    private float centerY;
-
-    private void setupDimensions(){
-        centerX = getWidth() / 2f;
-        centerY = getWidth() / 2f;
-    }
+    private int motorPowerPercentage = 0;
 
     public Speedometer(Context context){
         super(context);
@@ -59,49 +51,51 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
 
+        final int gaugeSize = getHeight();
+
         final Canvas canvas = getHolder().lockCanvas();
 
         final Paint backgroundColor = new Paint();
-        backgroundColor.setARGB(255,0,0,0);
-
-        final Paint speedIndicatorColor = new Paint();
-        speedIndicatorColor.setARGB(255,246,213,92);
-
-        final Paint motorPowerIndicatorColor = new Paint();
-        motorPowerIndicatorColor.setARGB(255,237,85,59);
+        backgroundColor.setARGB(255,6,11,23);
 
         final Paint textColor = new Paint();
         textColor.setARGB(255,255,255,255);
 
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clear the BG
 
+        final RectF leftIndicatorSpace = new RectF(gaugeSize/9, gaugeSize/9, gaugeSize-(gaugeSize/9), gaugeSize-(gaugeSize/9));
+        final RectF rightIndicatorSpace = new RectF(getWidth() - gaugeSize + (gaugeSize/9), gaugeSize/9, getWidth() - gaugeSize/9, gaugeSize-(gaugeSize/9));
+
         //Print the svg background
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            Drawable gauge = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge, null);
-            gauge.setBounds(0, 0, getWidth(), getHeight());
-            gauge.draw(canvas);
-        }
+        Drawable leftGauge = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge_left, null);
+        leftGauge.setBounds(0, 0, gaugeSize, gaugeSize);
+        leftGauge.draw(canvas);
 
-        final float indicatorSizeFactor = 0.95F;
-        final float indicatorThickness = 0.12F;
+        Drawable rightGauge = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge_right, null);
+        rightGauge.setBounds(getWidth()-gaugeSize, 0, getWidth(), gaugeSize);
+        rightGauge.draw(canvas);
 
-        final RectF rect = new RectF(
-            0 + (getWidth() * (1 - indicatorSizeFactor)),
-            0 + (getHeight() * (1 - indicatorSizeFactor)),
-            getWidth() * indicatorSizeFactor,
-            getHeight() * indicatorSizeFactor
-        );
+        Drawable leftIndicator = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge_left_indicator, null);
+        leftIndicator.setBounds(gaugeSize/8, gaugeSize/8, gaugeSize-(gaugeSize/8), gaugeSize-(gaugeSize/8));
+        leftIndicator.draw(canvas);
 
-        //Draw speed indicator
-        canvas.drawArc(rect, 135F, getSpeedIndicatorAngle(), true, speedIndicatorColor );
-        //Draw motor power percentage
-        canvas.drawArc(rect, 120F, getMotorPowerIndicatorAngle(), true, motorPowerIndicatorColor );
+        canvas.drawArc(leftIndicatorSpace, 135F, getSpeedIndicatorAngle(), true, backgroundColor );
 
-        //hide the middle part of the indicators
-        canvas.drawCircle(centerX, centerY, (getWidth()*(indicatorSizeFactor-indicatorThickness)*0.5F), backgroundColor);
+        Drawable rightIndicator = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge_right_indicator, null);
+        rightIndicator.setBounds(getWidth() - gaugeSize + (gaugeSize/8), gaugeSize/8, getWidth() - gaugeSize/8, gaugeSize-(gaugeSize/8));
+        rightIndicator.draw(canvas);
+
+        canvas.drawArc(rightIndicatorSpace, 45F, getMotorPowerIndicatorAngle(), true, backgroundColor );
+
+        Drawable gradient = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_gauge_gradient, null);
+        gradient.setBounds(gaugeSize/5, gaugeSize/5, gaugeSize-(gaugeSize/5), gaugeSize-(gaugeSize/5));
+        gradient.draw(canvas);
+
+        gradient.setBounds(getWidth() - gaugeSize + (gaugeSize/5), gaugeSize/5, getWidth() - gaugeSize/5, gaugeSize-(gaugeSize/5));
+        gradient.draw(canvas);
 
         //print digital speed
-        textColor.setTextSize(getWidth() / 5f);
+        textColor.setTextSize(gaugeSize / 5f);
         textColor.setTextAlign(Paint.Align.CENTER);
 
         final Typeface currentTypeFace = textColor.getTypeface();
@@ -109,9 +103,18 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
         textColor.setTypeface(bold);
 
-        final int textXPos = (getWidth() / 2);
-        final int textYPos = (int) ((getHeight() / 2) - ((textColor.descent() + textColor.ascent()) / 2)) ;
-        canvas.drawText(getCurrentSpeedKMHString(), textXPos, textYPos, textColor);
+        final int leftGaugeTextXPos = (gaugeSize / 2);
+        final int rightGaugeTextXPos = getWidth() - (gaugeSize / 2);
+        final int primaryTextYPos = (int) ((getHeight() / 2.2F) - ((textColor.descent() + textColor.ascent()) / 2.2F)) ;
+        final int secondaryTextYPos = (int) ((getHeight() / 1.7F) - ((textColor.descent() + textColor.ascent()) / 1.7F)) ;
+
+        canvas.drawText(getCurrentSpeedKMHString(), leftGaugeTextXPos, primaryTextYPos, textColor);
+        canvas.drawText(Integer.toString(motorPowerPercentage), rightGaugeTextXPos, primaryTextYPos, textColor);
+
+        textColor.setTextSize(gaugeSize / 12f);
+
+        canvas.drawText("KM/H", leftGaugeTextXPos, secondaryTextYPos, textColor);
+        canvas.drawText("POWER", rightGaugeTextXPos, secondaryTextYPos, textColor);
 
         getHolder().unlockCanvasAndPost(canvas);
     }
@@ -124,7 +127,6 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
-        setupDimensions();
         drawSpeedometer();
     }
 
@@ -146,29 +148,30 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         this.currentSpeedMS = currentSpeedMS;
     }
 
-    public void setMotorPowerPercentage(double motorPowerPercentage) {
-        this.motorPowerPercentage = motorPowerPercentage;
-    }
 
     private float getSpeedIndicatorAngle() {
-        if (getCurrentSpeedKMH() > 7) {
-            return 270F;
+        if (getCurrentSpeedKMH() > 6.5) {
+            return -90F;
         }
-
-        return (float) getCurrentSpeedKMH() * 270 / 7;
-    }
-
-    private float getMotorPowerIndicatorAngle(){
-        if (Math.abs(motorPowerPercentage) > 100 ){
-            return -60;
-        }
-
-        return (float) Math.abs(motorPowerPercentage) * 60 / 100 * -1;
+        System.out.println((float) (getCurrentSpeedKMH() * 270 / 6.5F) - 360);
+        return  (float) (getCurrentSpeedKMH() * 270 / 6.5F) - 360;
     }
 
     private String getCurrentSpeedKMHString(){
        final String twoDigit = Double.toString(getCurrentSpeedKMH());
        return twoDigit.substring(0, Math.min(twoDigit.length(), 3));
+    }
+
+    public void setMotorPowerPercentage(int motorPowerPercentage) {
+        this.motorPowerPercentage = Math.abs(motorPowerPercentage*100/130);
+    }
+
+    private float getMotorPowerIndicatorAngle(){
+        if (motorPowerPercentage >= 100) {
+            return 90F;
+        }
+
+        return  360 - (motorPowerPercentage * 270 / 100);
     }
 
 }

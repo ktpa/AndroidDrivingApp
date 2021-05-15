@@ -47,6 +47,6 @@ public interface SmartCar {
     }
 
     interface MotorPowerUpdatedCallback {
-        void onMotorPowerUpdated(double power);
+        void onMotorPowerUpdated(int power);
     }
 }

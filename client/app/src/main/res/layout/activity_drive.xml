@@ -4,142 +4,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/BG"
+    android:background="@color/driveBG"
     tools:context=".activity.LoginActivity">
 
     <ImageView
-        android:id="@+id/backRectTop"
+        android:id="@+id/dashboard"
         android:layout_width="match_parent"
-        android:layout_height="285dp"
-        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:layout_height="300dp"
         android:translationZ="1dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/backRectMid"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/backRectMid"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/grey_curved_rectangle_with_border"
-        android:translationZ="5dp"
-        android:elevation="5dp"
-        app:layout_constraintBottom_toTopOf="@id/backRectBot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
-        app:layout_constraintVertical_bias="0.475" />
-
-    <ImageView
-        android:id="@+id/backRectBot"
-        android:layout_width="match_parent"
-        android:layout_height="302dp"
-        android:layout_margin="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginBottom="6dp"
-        android:src="@drawable/grey_curved_rectangle_with_border"
-        android:translationZ="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:srcCompat="@drawable/ic_dashboard"
+        tools:layout_editor_absoluteX="0dp" />
 
     <ImageView
         android:id="@+id/joystick"
-        android:layout_width="125dp"
-        android:layout_height="125dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="95dp"
-        android:layout_marginTop="95dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginBottom="75dp"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
-        app:layout_constraintEnd_toEndOf="@id/backRectBot"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@id/backRectBot"
-        app:layout_constraintTop_toTopOf="@+id/backRectBot"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_button" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.44"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_knob" />
+
 
     <ImageView
         android:id="@+id/backbtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginBottom="3dp"
         android:translationZ="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
-        app:layout_constraintEnd_toEndOf="@id/backRectBot"
-        app:layout_constraintHorizontal_bias="0.027"
-        app:layout_constraintStart_toStartOf="@id/backRectBot"
-        app:layout_constraintTop_toTopOf="@+id/backRectBot"
-        app:layout_constraintVertical_bias="0.961"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_back" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:layout_marginTop="25dp"
         android:layout_weight="0.3"
         android:contentDescription="cameraView"
         android:elevation="6dp"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
-        app:layout_constraintTop_toTopOf="@+id/backRectTop" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <group01.smartcar.client.view.Speedometer
         android:id="@+id/fancySpeedometer"
-        android:layout_width="140dp"
+        android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
-        app:layout_constraintStart_toStartOf="@+id/backRectMid"
-        app:layout_constraintTop_toTopOf="@+id/backRectMid"
-        app:layout_constraintVertical_bias="1.0" />
-    <TextView
-        android:id="@+id/simpleSpeedometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="56dp"
-        android:fontFamily="sans-serif-medium"
-        android:textSize="32dp"
-        android:translationZ="6dp"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/backRectMid"
-        app:layout_constraintTop_toTopOf="@id/backRectMid"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="253dp"
+        app:layout_constraintBottom_toTopOf="@+id/backbtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Switch
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/gearbox_vertical_background"
+        android:layout_marginBottom="13dp"
         android:elevation="6dp"
-        android:rotation="90"
         android:scrollbarSize="4dp"
         android:switchMinWidth="120dp"
         android:track="@color/grey"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
+        app:layout_constraintBottom_toBottomOf="@+id/dashboard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/backRectMid"
-        app:layout_constraintVertical_bias="0.716" />
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/micButton"
@@ -155,6 +93,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_mic_black_off" />
+
+    <TextView
+        android:id="@+id/clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="10:45"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:translationZ="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <TextView
+        android:id="@+id/battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="125dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="95%"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:translationZ="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
