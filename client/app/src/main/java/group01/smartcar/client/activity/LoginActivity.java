@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -106,19 +107,34 @@ public class LoginActivity extends AppCompatActivity {
 
                 return;
             }
+            // Check if a user is already logged into the account
+            databaseReference.child("users/" + firebaseAuth.getCurrentUser().getUid() + "/isLoggedIn")
+                    .get().addOnCompleteListener(dbTask -> {
+                if (!dbTask.isSuccessful()) {
+                    Log.e("ERROR", "Error getting data");
+                } else if (dbTask.getResult().exists()) {
+                    Object userSession = dbTask.getResult().getValue();
+                    if (userSession.equals(true)) {
+                        Toast.makeText(getApplicationContext(),
+                                "You cannot log in on multiple devices! Log out of your initial session.",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail());
+                        userMap.put("isLoggedIn", true);
 
-            userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail());
+                        databaseReference.child
+                                ("users/" + firebaseAuth.getCurrentUser().getUid())
+                                .updateChildren(userMap);
 
-            databaseReference.child
-                    ("users/" + firebaseAuth.getCurrentUser().getUid())
-                    .updateChildren(userMap);
+                        final Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
+                        LoginActivity.this.startActivityForResult(intent, 0);
 
-            final Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
-            LoginActivity.this.startActivityForResult(intent, 0);
+                        Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT).show();
-
-            finish();
+                        finish();
+                    }
+                }
+            });
         });
     }
 
