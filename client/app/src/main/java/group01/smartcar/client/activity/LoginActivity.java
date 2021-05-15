@@ -28,7 +28,8 @@ public class LoginActivity extends AppCompatActivity {
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance
             ("https://smartcar-client-default-rtdb.europe-west1.firebasedatabase.app/");
-    private final DatabaseReference databaseReference = firebaseDatabase.getReference().child("Users");
+    private final DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private final Map<String, Object> userMap = new HashMap<>();
 
     private EditText emailTextView;
     private EditText passwordTextView;
@@ -106,13 +107,11 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            final Map<String, String> userMap = new HashMap<>();
-            final String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+            userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail());
 
-            userMap.put("user", userId);
-            userMap.put("email", email);
-
-            databaseReference.push().setValue(userMap);
+            databaseReference.child
+                    ("users/" + firebaseAuth.getCurrentUser().getUid())
+                    .updateChildren(userMap);
 
             final Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
             LoginActivity.this.startActivityForResult(intent, 0);

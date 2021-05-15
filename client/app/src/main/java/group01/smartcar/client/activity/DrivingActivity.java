@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,6 +27,14 @@ import androidx.core.content.ContextCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -39,10 +48,15 @@ import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
-
 // 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingActivity extends AppCompatActivity {
+
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance
+            ("https://smartcar-client-default-rtdb.europe-west1.firebasedatabase.app/");
+    private final DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private static final Integer RECORD_AUDIO_REQUEST_CODE = 1;
 
@@ -54,7 +68,7 @@ public class DrivingActivity extends AppCompatActivity {
     private float joystickInitY;
     private boolean notSetInit;
     private float joystickRadius;
-    private float drivingSensitivity;
+    private float drivingSensitivity = 1;
 
     private SmartCar car;
     private ImageView cameraView;
@@ -75,8 +89,11 @@ public class DrivingActivity extends AppCompatActivity {
 
         requestRequiredPermissions();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
-        drivingSensitivity = sharedPreferences.getFloat("sensitivity", 1);
+        if (firebaseUser == null) {
+            fetchSensitivityLocally();
+        } else {
+            fetchSensitivityFromDatabase();
+        }
 
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
@@ -297,5 +314,25 @@ public class DrivingActivity extends AppCompatActivity {
         }
 
         voiceControl.executeCommand(commandParts[0], Arrays.copyOfRange(commandParts, 1, commandParts.length));
+    }
+
+    private void fetchSensitivityFromDatabase() {
+        databaseReference.child("users/" + firebaseUser.getUid() + "/sensitivity")
+                .get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e("ERROR", "Error getting data");
+            } else {
+                Number fetchedSens = (Number) task.getResult().getValue();
+                drivingSensitivity = fetchedSens.floatValue();
+            }
+        });
+    }
+
+    private void fetchSensitivityLocally() {
+        if (firebaseUser == null) {
+            SharedPreferences sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
+            drivingSensitivity = sharedPreferences.getFloat("sensitivity", 1);
+        }
+
     }
 }
