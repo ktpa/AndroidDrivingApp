@@ -4,11 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -80,10 +82,12 @@ public class DrivingActivity extends AppCompatActivity {
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
+    private ImageView batteryImage;
 
     private SmartCarVoiceControl voiceControl;
 
     private ScheduledFuture<?> speedometerUpdater;
+    private ScheduledFuture<?> batteryRenderer;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -103,6 +107,7 @@ public class DrivingActivity extends AppCompatActivity {
         speedometer = findViewById(R.id.fancySpeedometer);
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
+        batteryImage = findViewById(R.id.battery_image);
 
         animJoystickY = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_Y, 0);
         animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
@@ -124,6 +129,7 @@ public class DrivingActivity extends AppCompatActivity {
         registerComponentCallbacks();
 
         speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
+        batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
     }
 
 
@@ -136,6 +142,9 @@ public class DrivingActivity extends AppCompatActivity {
         if (speedometerUpdater != null && speedometerUpdater.isCancelled()) {
             speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
         }
+        if (batteryRenderer != null && batteryRenderer.isCancelled()) {
+            batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
+        }
     }
 
     @Override
@@ -144,6 +153,9 @@ public class DrivingActivity extends AppCompatActivity {
 
         car.pause();
         speedometerUpdater.cancel(true);
+        if (!batteryRenderer.isCancelled()) {
+            batteryRenderer.cancel(true);
+        }
     }
 
     @Override
@@ -152,6 +164,46 @@ public class DrivingActivity extends AppCompatActivity {
 
         speechListener.destroy();
         speedometerUpdater.cancel(true);
+        if (!batteryRenderer.isCancelled()) {
+            batteryRenderer.cancel(true);
+        }
+    }
+
+    private float getBatteryLevel() {
+        final Intent batteryIntent = registerReceiver(
+                null,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        );
+
+        final int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        final int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        if (level == -1 || scale == -1) {
+            return 50.0f;
+        }
+
+        return (float) level / (float) scale * 100.0f;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void renderBatteryLevel() {
+        int level = (int) getBatteryLevel();
+
+        if (level > 75) {
+            batteryImage.setImageResource(R.drawable.battery_full);
+        }
+
+        if (level > 50 && level <= 75) {
+            batteryImage.setImageResource(R.drawable.battery_high);
+        }
+
+        if (level > 25 && level <= 50) {
+            batteryImage.setImageResource(R.drawable.battery_medium);
+        }
+
+        if (level <= 25) {
+            batteryImage.setImageResource(R.drawable.battery_low);
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
