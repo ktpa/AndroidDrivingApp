@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private VideoView videoBackground;
     private MediaPlayer mediaPlayer;
+    private Toast loginToast;
 
     private int currentVideoPosition;
 
@@ -98,12 +99,14 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
-                Toast.makeText(
-                    LoginActivity.this,
-                    "Failed to log in! Ask your " +
-                            "local AlSet dealer for your " +
-                            "personal login details.",
-                    Toast.LENGTH_SHORT).show();
+                cancelToast(loginToast);
+                loginToast = Toast.makeText(
+                        LoginActivity.this,
+                        "Failed to log in! Ask your " +
+                                "local AlSet dealer for your " +
+                                "personal login details.",
+                        Toast.LENGTH_SHORT);
+                loginToast.show();
 
                 return;
             }
@@ -112,24 +115,38 @@ public class LoginActivity extends AppCompatActivity {
                     .get().addOnCompleteListener(dbTask -> {
                 if (!dbTask.isSuccessful()) {
                     Log.e("ERROR", "Error getting data");
-                } else if (dbTask.getResult().exists()) {
-                    Object userSession = dbTask.getResult().getValue();
+                } else {
+                    Object userSession = Boolean.FALSE;
+                    if (dbTask.getResult().exists()) {
+                        userSession = dbTask.getResult().getValue();
+                    }
+
                     if (userSession.equals(true)) {
-                        Toast.makeText(getApplicationContext(),
-                                "You cannot log in on multiple devices! Log out of your initial session.",
-                                Toast.LENGTH_SHORT).show();
+                        cancelToast(loginToast);
+                        loginToast = Toast.makeText(getApplicationContext(),
+                            "You cannot log in on multiple devices! " +
+                                    "Log out of your initial session.",
+                            Toast.LENGTH_SHORT);
+                        loginToast.show();
                     } else {
-                        userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail());
+                        userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser())
+                                .getEmail());
                         userMap.put("isLoggedIn", true);
 
-                        databaseReference.child
-                                ("users/" + firebaseAuth.getCurrentUser().getUid())
+                        databaseReference.child("users/" + firebaseAuth.getCurrentUser().getUid())
                                 .updateChildren(userMap);
 
-                        final Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
+                        final Intent intent = new Intent(
+                                LoginActivity.this,
+                                UserMenuActivity.class);
+
                         LoginActivity.this.startActivityForResult(intent, 0);
 
-                        Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT).show();
+                        cancelToast(loginToast);
+                        loginToast = Toast.makeText(getApplicationContext(),
+                                "Welcome to AlSet",
+                                Toast.LENGTH_SHORT);
+                        loginToast.show();
 
                         finish();
                     }
@@ -137,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         });
     }
+
 
     private void loadBackground() {
         videoBackground = findViewById(R.id.videoView);
@@ -164,6 +182,12 @@ public class LoginActivity extends AppCompatActivity {
                 mediaPlayer.start();
             }
         });
+    }
+
+    private void cancelToast(Toast toast) {
+        if (toast != null) {
+            toast.cancel();
+        }
     }
 
     private void onDebugModeActivated(View view) {
