@@ -75,7 +75,7 @@ public class UserMenuActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT);
                     toast.show();
                     savedUserSession.put("sensitivity", calculateSensitivity(5));
-                    seekBar.setProgress(convertSensitivityToSeekBar((Float) savedUserSession.get("sensitivity")));
+                    seekBar.setProgress(5);
                 } else {
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

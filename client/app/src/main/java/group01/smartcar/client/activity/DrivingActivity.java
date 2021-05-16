@@ -19,7 +19,6 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -33,8 +32,6 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -405,7 +402,14 @@ public class DrivingActivity extends AppCompatActivity {
             if (!task.isSuccessful()) {
                 Log.e("ERROR", "Error getting data");
             } else {
+                DataSnapshot getResult = task.getResult();
+                if (getResult == null) {
+                    return;
+                }
                 Number fetchedSens = (Number) task.getResult().getValue();
+                if (fetchedSens == null) {
+                    return;
+                }
                 drivingSensitivity = fetchedSens.floatValue();
             }
         });
