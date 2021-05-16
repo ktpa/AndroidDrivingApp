@@ -54,7 +54,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <group01.smartcar.client.view.ProximitySensor
+    <group01.smartcar.client.view.ProximityIndicator
         android:id="@+id/proximitySensor"
         android:layout_width="100dp"
         android:layout_height="140dp"
