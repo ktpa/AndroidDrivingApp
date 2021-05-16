@@ -54,6 +54,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <group01.smartcar.client.view.ProximitySensor
+        android:id="@+id/proximitySensor"
+        android:layout_width="100dp"
+        android:layout_height="140dp"
+        app:layout_constraintBottom_toBottomOf="@+id/fancySpeedometer"
+        app:layout_constraintEnd_toEndOf="@+id/fancySpeedometer"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="@+id/fancySpeedometer"
+        app:layout_constraintTop_toTopOf="@+id/fancySpeedometer"
+        app:layout_constraintVertical_bias="0.0" />
+
     <group01.smartcar.client.view.Speedometer
         android:id="@+id/fancySpeedometer"
         android:layout_width="match_parent"
@@ -65,7 +76,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:visibility="invisible" />
 
     <Switch
         android:id="@+id/drive_park_switch"

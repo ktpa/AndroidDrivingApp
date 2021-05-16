@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -47,6 +46,7 @@ import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.SmartCarApplication;
 import group01.smartcar.client.SmartCarVoiceControl;
 import group01.smartcar.client.speech.SpeechListener;
+import group01.smartcar.client.view.ProximitySensor;
 import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
@@ -76,6 +76,7 @@ public class DrivingActivity extends AppCompatActivity {
     private SmartCar car;
     private ImageView cameraView;
     private Speedometer speedometer;
+    private ProximitySensor proximitySensor;
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
@@ -85,6 +86,7 @@ public class DrivingActivity extends AppCompatActivity {
     private SmartCarVoiceControl voiceControl;
 
     private ScheduledFuture<?> speedometerUpdater;
+    private ScheduledFuture<?> proximitySensorUpdater;
     private ScheduledFuture<?> batteryRenderer;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -103,6 +105,7 @@ public class DrivingActivity extends AppCompatActivity {
 
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
+        proximitySensor = findViewById(R.id.proximitySensor);
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
         batteryImage = findViewById(R.id.battery_image);
@@ -128,9 +131,11 @@ public class DrivingActivity extends AppCompatActivity {
         registerComponentCallbacks();
 
         speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
+        proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximitySensor::update);
         batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
 
         speedometer.setVisibility(View.INVISIBLE);
+        proximitySensor.setVisibility(View.INVISIBLE);
         cameraView.setVisibility(View.INVISIBLE);
         joystick.setVisibility(View.INVISIBLE);
         micButton.setVisibility(View.INVISIBLE);
@@ -146,6 +151,11 @@ public class DrivingActivity extends AppCompatActivity {
         if (speedometerUpdater != null && speedometerUpdater.isCancelled()) {
             speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
         }
+
+        if (proximitySensorUpdater != null && proximitySensorUpdater.isCancelled()) {
+            proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximitySensor::update);
+        }
+
         if (batteryRenderer != null && batteryRenderer.isCancelled()) {
             batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
         }
@@ -156,7 +166,15 @@ public class DrivingActivity extends AppCompatActivity {
         super.onPause();
 
         car.pause();
-        speedometerUpdater.cancel(true);
+
+        if (!speedometerUpdater.isCancelled()) {
+            speedometerUpdater.cancel(true);
+        }
+
+        if (!proximitySensorUpdater.isCancelled()) {
+            proximitySensorUpdater.cancel(true);
+        }
+
         if (!batteryRenderer.isCancelled()) {
             batteryRenderer.cancel(true);
         }
@@ -167,7 +185,15 @@ public class DrivingActivity extends AppCompatActivity {
         super.onDestroy();
 
         speechListener.destroy();
-        speedometerUpdater.cancel(true);
+
+        if (!speedometerUpdater.isCancelled()) {
+            speedometerUpdater.cancel(true);
+        }
+
+        if (!proximitySensorUpdater.isCancelled()) {
+            proximitySensorUpdater.cancel(true);
+        }
+
         if (!batteryRenderer.isCancelled()) {
             batteryRenderer.cancel(true);
         }
@@ -237,6 +263,7 @@ public class DrivingActivity extends AppCompatActivity {
                 sw.setThumbDrawable(thumbActive);
                 sw.setTrackDrawable(trackActive);
                 speedometer.setVisibility(View.VISIBLE);
+                proximitySensor.setVisibility(View.VISIBLE);
                 cameraView.setVisibility(View.VISIBLE);
                 joystick.setVisibility(View.VISIBLE);
                 micButton.setVisibility(View.VISIBLE);
@@ -246,12 +273,11 @@ public class DrivingActivity extends AppCompatActivity {
                 sw.setThumbDrawable(thumb);
                 sw.setTrackDrawable(track);
                 speedometer.setVisibility(View.INVISIBLE);
+                proximitySensor.setVisibility(View.INVISIBLE);
                 cameraView.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.INVISIBLE);
                 micButton.setVisibility(View.INVISIBLE);
                 backButton.setVisibility(View.VISIBLE);
-
-
             }
         });
 
