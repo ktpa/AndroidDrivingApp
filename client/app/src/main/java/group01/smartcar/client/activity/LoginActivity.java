@@ -5,6 +5,9 @@ import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.provider.Settings.Secure;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,6 +28,8 @@ import group01.smartcar.client.R;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private String android_id;
+
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance
             ("https://smartcar-client-default-rtdb.europe-west1.firebasedatabase.app/");
@@ -36,11 +41,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private VideoView videoBackground;
     private MediaPlayer mediaPlayer;
+    private Toast loginToast;
 
     private int currentVideoPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        android_id = Settings.Secure.getString(
+                getApplicationContext().getContentResolver(),
+                Secure.ANDROID_ID);
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -97,30 +107,62 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
-                Toast.makeText(
-                    LoginActivity.this,
-                    "Failed to log in! Ask your " +
-                            "local AlSet dealer for your " +
-                            "personal login details.",
-                    Toast.LENGTH_SHORT).show();
+                cancelToast(loginToast);
+                loginToast = Toast.makeText(
+                        LoginActivity.this,
+                        "Failed to log in! Ask your " +
+                                "local AlSet dealer for your " +
+                                "personal login details.",
+                        Toast.LENGTH_SHORT);
+                loginToast.show();
 
                 return;
             }
+            // Check if a user is already logged into the account
+            databaseReference.child("users/" + firebaseAuth.getCurrentUser().getUid() + "/isLoggedIn")
+                    .get().addOnCompleteListener(dbTask -> {
+                if (!dbTask.isSuccessful()) {
+                    Log.e("ERROR", "Error getting data");
+                } else {
+                    Object userSession = "";
+                    if (dbTask.getResult().exists()) {
+                        userSession = dbTask.getResult().getValue();
+                    }
 
-            userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getEmail());
+                    if (!(userSession.equals(android_id) || userSession.equals(""))) {
+                        cancelToast(loginToast);
+                        loginToast = Toast.makeText(getApplicationContext(),
+                            "You cannot log in on multiple devices! " +
+                                    "Log out of your initial session.",
+                            Toast.LENGTH_SHORT);
+                        loginToast.show();
+                    } else {
+                        userMap.put("email", Objects.requireNonNull(firebaseAuth.getCurrentUser())
+                                .getEmail());
+                        userMap.put("isLoggedIn", android_id);
 
-            databaseReference.child
-                    ("users/" + firebaseAuth.getCurrentUser().getUid())
-                    .updateChildren(userMap);
+                        databaseReference.child("users/" + firebaseAuth.getCurrentUser().getUid())
+                                .updateChildren(userMap);
 
-            final Intent intent = new Intent(LoginActivity.this, UserMenuActivity.class);
-            LoginActivity.this.startActivityForResult(intent, 0);
+                        final Intent intent = new Intent(
+                                LoginActivity.this,
+                                UserMenuActivity.class);
 
-            Toast.makeText(getApplicationContext(), "Welcome to AlSet", Toast.LENGTH_SHORT).show();
+                        LoginActivity.this.startActivityForResult(intent, 0);
 
-            finish();
+                        cancelToast(loginToast);
+                        loginToast = Toast.makeText(getApplicationContext(),
+                                "Welcome to AlSet",
+                                Toast.LENGTH_SHORT);
+                        loginToast.show();
+
+                        finish();
+                    }
+                }
+            });
         });
     }
+
 
     private void loadBackground() {
         videoBackground = findViewById(R.id.videoView);
@@ -148,6 +190,12 @@ public class LoginActivity extends AppCompatActivity {
                 mediaPlayer.start();
             }
         });
+    }
+
+    private void cancelToast(Toast toast) {
+        if (toast != null) {
+            toast.cancel();
+        }
     }
 
     private void onDebugModeActivated(View view) {

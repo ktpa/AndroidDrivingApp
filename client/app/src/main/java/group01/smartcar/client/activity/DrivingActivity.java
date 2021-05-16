@@ -416,6 +416,5 @@ public class DrivingActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences("Preferences", MODE_PRIVATE);
             drivingSensitivity = sharedPreferences.getFloat("sensitivity", 1);
         }
-
     }
 }

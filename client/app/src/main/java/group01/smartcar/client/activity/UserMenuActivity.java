@@ -49,7 +49,7 @@ public class UserMenuActivity extends AppCompatActivity {
     private SeekBar seekBar;
     private Toast toast;
 
-    private final Map<String, Object> savedSens = new HashMap<>();
+    private final Map<String, Object> savedUserSession = new HashMap<>();
 
     private ScheduledFuture<?> batteryRenderer;
 
@@ -74,8 +74,8 @@ public class UserMenuActivity extends AppCompatActivity {
                             "Error getting data, setting to default sensitivity",
                             Toast.LENGTH_SHORT);
                     toast.show();
-                    savedSens.put("sensitivity", calculateSensitivity(5));
-                    seekBar.setProgress(convertSensitivityToSeekBar((Float) savedSens.get("sensitivity")));
+                    savedUserSession.put("sensitivity", calculateSensitivity(5));
+                    seekBar.setProgress(convertSensitivityToSeekBar((Float) savedUserSession.get("sensitivity")));
                 } else {
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -199,10 +199,10 @@ public class UserMenuActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (firebaseUser != null) {
-                    savedSens.put("sensitivity", calculateSensitivity(progress));
+                    savedUserSession.put("sensitivity", calculateSensitivity(progress));
                     databaseReference.child
                             ("users/" + firebaseUser.getUid())
-                            .updateChildren(savedSens);
+                            .updateChildren(savedUserSession);
                 } else {
                     sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE);
                     editor = sharedPreferences.edit();
@@ -246,6 +246,10 @@ public class UserMenuActivity extends AppCompatActivity {
 
     private void onLogoutButtonClick(View view) {
         // TODO: Actually log out and pass Toast to next screen
+        savedUserSession.put("isLoggedIn", "");
+        databaseReference.child
+                ("users/" + firebaseUser.getUid())
+                .updateChildren(savedUserSession);
         FirebaseAuth.getInstance().signOut();
 
         final Intent intent = new Intent(this, LoginActivity.class);
