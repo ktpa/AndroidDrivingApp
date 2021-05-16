@@ -13,5 +13,6 @@ public class ForwardCommand implements VoiceControlCommand {
     @Override
     public void execute(SmartCar smartCar, String... parameters) {
         smartCar.setSpeed(50);
+        smartCar.setSteeringAngle(0);
     }
 }
