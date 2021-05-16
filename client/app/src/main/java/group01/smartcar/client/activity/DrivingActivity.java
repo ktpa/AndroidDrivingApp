@@ -46,7 +46,7 @@ import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.SmartCarApplication;
 import group01.smartcar.client.SmartCarVoiceControl;
 import group01.smartcar.client.speech.SpeechListener;
-import group01.smartcar.client.view.ProximitySensor;
+import group01.smartcar.client.view.ProximityIndicator;
 import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
@@ -76,7 +76,7 @@ public class DrivingActivity extends AppCompatActivity {
     private SmartCar car;
     private ImageView cameraView;
     private Speedometer speedometer;
-    private ProximitySensor proximitySensor;
+    private ProximityIndicator proximityIndicator;
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
@@ -105,7 +105,7 @@ public class DrivingActivity extends AppCompatActivity {
 
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
-        proximitySensor = findViewById(R.id.proximitySensor);
+        proximityIndicator = findViewById(R.id.proximitySensor);
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
         batteryImage = findViewById(R.id.battery_image);
@@ -131,11 +131,11 @@ public class DrivingActivity extends AppCompatActivity {
         registerComponentCallbacks();
 
         speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
-        proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximitySensor::update);
+        proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximityIndicator::update);
         batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
 
         speedometer.setVisibility(View.INVISIBLE);
-        proximitySensor.setVisibility(View.INVISIBLE);
+        proximityIndicator.setVisibility(View.INVISIBLE);
         cameraView.setVisibility(View.INVISIBLE);
         joystick.setVisibility(View.INVISIBLE);
         micButton.setVisibility(View.INVISIBLE);
@@ -153,7 +153,7 @@ public class DrivingActivity extends AppCompatActivity {
         }
 
         if (proximitySensorUpdater != null && proximitySensorUpdater.isCancelled()) {
-            proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximitySensor::update);
+            proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximityIndicator::update);
         }
 
         if (batteryRenderer != null && batteryRenderer.isCancelled()) {
@@ -263,7 +263,7 @@ public class DrivingActivity extends AppCompatActivity {
                 sw.setThumbDrawable(thumbActive);
                 sw.setTrackDrawable(trackActive);
                 speedometer.setVisibility(View.VISIBLE);
-                proximitySensor.setVisibility(View.VISIBLE);
+                proximityIndicator.setVisibility(View.VISIBLE);
                 cameraView.setVisibility(View.VISIBLE);
                 joystick.setVisibility(View.VISIBLE);
                 micButton.setVisibility(View.VISIBLE);
@@ -273,7 +273,7 @@ public class DrivingActivity extends AppCompatActivity {
                 sw.setThumbDrawable(thumb);
                 sw.setTrackDrawable(track);
                 speedometer.setVisibility(View.INVISIBLE);
-                proximitySensor.setVisibility(View.INVISIBLE);
+                proximityIndicator.setVisibility(View.INVISIBLE);
                 cameraView.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.INVISIBLE);
                 micButton.setVisibility(View.INVISIBLE);
