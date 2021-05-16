@@ -1,6 +1,7 @@
 package group01.smartcar.client.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,7 +27,7 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
 
         getHolder().addCallback(this);
-        setZOrderOnTop(true);
+        //setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
 
@@ -34,14 +35,14 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         super(context, attributes, style);
 
         getHolder().addCallback(this);
-        setZOrderOnTop(true);
+        //setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
     }
     public Speedometer(Context context, AttributeSet attributes){
         super(context, attributes);
 
         getHolder().addCallback(this);
-        setZOrderOnTop(true);
+        //setZOrderOnTop(true);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
 
     }
@@ -61,7 +62,8 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         final Paint textColor = new Paint();
         textColor.setARGB(255,255,255,255);
 
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clear the BG
+
+        canvas.drawColor(getResources().getColor(R.color.driveBG, getResources().newTheme()));
 
         final RectF leftIndicatorSpace = new RectF(gaugeSize/9, gaugeSize/9, gaugeSize-(gaugeSize/9), gaugeSize-(gaugeSize/9));
         final RectF rightIndicatorSpace = new RectF(getWidth() - gaugeSize + (gaugeSize/9), gaugeSize/9, getWidth() - gaugeSize/9, gaugeSize-(gaugeSize/9));
@@ -153,7 +155,6 @@ public class Speedometer extends SurfaceView implements SurfaceHolder.Callback {
         if (getCurrentSpeedKMH() > 6.5) {
             return -90F;
         }
-        System.out.println((float) (getCurrentSpeedKMH() * 270 / 6.5F) - 360);
         return  (float) (getCurrentSpeedKMH() * 270 / 6.5F) - 360;
     }
 

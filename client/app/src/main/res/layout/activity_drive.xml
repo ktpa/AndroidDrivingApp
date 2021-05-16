@@ -32,13 +32,14 @@
 
     <ImageView
         android:id="@+id/backbtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_marginBottom="20dp"
         android:translationZ="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_back" />
+        app:srcCompat="@drawable/ic_exit_button" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -59,8 +60,10 @@
         android:layout_height="140dp"
         android:layout_marginTop="45dp"
         android:layout_marginBottom="253dp"
+        android:translationZ="2dp"
         app:layout_constraintBottom_toTopOf="@+id/backbtn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -78,21 +81,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <ImageView
         android:id="@+id/micButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:backgroundTint="#F9F8FA"
-        android:elevation="6dp"
-        android:paddingRight="10dp"
-        android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:translationZ="999dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_mic_black_off" />
-
+        app:layout_constraintTop_toBottomOf="@+id/fancySpeedometer"
+        app:srcCompat="@drawable/ic_mic" />
 
     <TextClock
         android:layout_width="wrap_content"

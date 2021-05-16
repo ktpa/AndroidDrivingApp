@@ -83,6 +83,7 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView micButton;
     private SpeechListener speechListener;
     private ImageView batteryImage;
+    private ImageView backButton;
 
     private SmartCarVoiceControl voiceControl;
 
@@ -108,6 +109,7 @@ public class DrivingActivity extends AppCompatActivity {
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
         batteryImage = findViewById(R.id.battery_image);
+        backButton = findViewById(R.id.backbtn);
 
         animJoystickY = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_Y, 0);
         animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
@@ -134,6 +136,7 @@ public class DrivingActivity extends AppCompatActivity {
         speedometer.setVisibility(View.INVISIBLE);
         cameraView.setVisibility(View.INVISIBLE);
         joystick.setVisibility(View.INVISIBLE);
+        micButton.setVisibility(View.INVISIBLE);
     }
 
 
@@ -239,6 +242,8 @@ public class DrivingActivity extends AppCompatActivity {
                 speedometer.setVisibility(View.VISIBLE);
                 cameraView.setVisibility(View.VISIBLE);
                 joystick.setVisibility(View.VISIBLE);
+                micButton.setVisibility(View.VISIBLE);
+                backButton.setVisibility(View.INVISIBLE);
             } else {
                 car.stop();
                 sw.setThumbDrawable(thumb);
@@ -246,18 +251,21 @@ public class DrivingActivity extends AppCompatActivity {
                 speedometer.setVisibility(View.INVISIBLE);
                 cameraView.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.INVISIBLE);
+                micButton.setVisibility(View.INVISIBLE);
+                backButton.setVisibility(View.VISIBLE);
+
 
             }
         });
 
         micButton.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                micButton.setImageResource(R.drawable.ic_mic_black_off);
+                micButton.setImageResource(R.drawable.ic_mic);
                 speechListener.stop();
             }
 
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                micButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                micButton.setImageResource(R.drawable.ic_mic_active);
                 speechListener.start();
             }
 
@@ -306,7 +314,6 @@ public class DrivingActivity extends AppCompatActivity {
         int speed = (int) (yPercent * -100);
 
         if (car.getStatus() == ACTIVE) {
-            System.out.println(angle);
             car.setSteeringAngle(angle);
             car.setSpeed(speed);
         }
@@ -372,7 +379,7 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     private void onSpeechResults(Bundle bundle) {
-        micButton.setImageResource(R.drawable.ic_mic_black_off);
+        micButton.setImageResource(R.drawable.ic_mic);
 
         final List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
@@ -381,7 +388,7 @@ public class DrivingActivity extends AppCompatActivity {
         }
 
         final String command = data.get(0);
-
+        System.out.println(data.get(0));
         final String[] commandParts = command.trim().split(" ");
 
         if (commandParts.length == 1) {
