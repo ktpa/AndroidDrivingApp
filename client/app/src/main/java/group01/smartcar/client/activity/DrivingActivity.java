@@ -4,9 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -24,11 +28,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -76,10 +79,13 @@ public class DrivingActivity extends AppCompatActivity {
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
+    private ImageView batteryImage;
+    private ImageView backButton;
 
     private SmartCarVoiceControl voiceControl;
 
     private ScheduledFuture<?> speedometerUpdater;
+    private ScheduledFuture<?> batteryRenderer;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -99,6 +105,8 @@ public class DrivingActivity extends AppCompatActivity {
         speedometer = findViewById(R.id.fancySpeedometer);
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
+        batteryImage = findViewById(R.id.battery_image);
+        backButton = findViewById(R.id.backbtn);
 
         animJoystickY = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_Y, 0);
         animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
@@ -120,7 +128,14 @@ public class DrivingActivity extends AppCompatActivity {
         registerComponentCallbacks();
 
         speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
+        batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
+
+        speedometer.setVisibility(View.INVISIBLE);
+        cameraView.setVisibility(View.INVISIBLE);
+        joystick.setVisibility(View.INVISIBLE);
+        micButton.setVisibility(View.INVISIBLE);
     }
+
 
     @Override
     protected void onResume() {
@@ -131,6 +146,9 @@ public class DrivingActivity extends AppCompatActivity {
         if (speedometerUpdater != null && speedometerUpdater.isCancelled()) {
             speedometerUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(speedometer::update);
         }
+        if (batteryRenderer != null && batteryRenderer.isCancelled()) {
+            batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
+        }
     }
 
     @Override
@@ -139,6 +157,9 @@ public class DrivingActivity extends AppCompatActivity {
 
         car.pause();
         speedometerUpdater.cancel(true);
+        if (!batteryRenderer.isCancelled()) {
+            batteryRenderer.cancel(true);
+        }
     }
 
     @Override
@@ -147,6 +168,46 @@ public class DrivingActivity extends AppCompatActivity {
 
         speechListener.destroy();
         speedometerUpdater.cancel(true);
+        if (!batteryRenderer.isCancelled()) {
+            batteryRenderer.cancel(true);
+        }
+    }
+
+    private float getBatteryLevel() {
+        final Intent batteryIntent = registerReceiver(
+                null,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        );
+
+        final int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        final int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+        if (level == -1 || scale == -1) {
+            return 50.0f;
+        }
+
+        return (float) level / (float) scale * 100.0f;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void renderBatteryLevel() {
+        int level = (int) getBatteryLevel();
+
+        if (level > 75) {
+            batteryImage.setImageResource(R.drawable.battery_full);
+        }
+
+        if (level > 50 && level <= 75) {
+            batteryImage.setImageResource(R.drawable.battery_high);
+        }
+
+        if (level > 25 && level <= 50) {
+            batteryImage.setImageResource(R.drawable.battery_medium);
+        }
+
+        if (level <= 25) {
+            batteryImage.setImageResource(R.drawable.battery_low);
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -158,6 +219,10 @@ public class DrivingActivity extends AppCompatActivity {
 
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             final VibrationEffect vibrationEffect1;
+            final Drawable thumb = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_thumb, null);
+            final Drawable thumbActive = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_thumb_active, null);
+            final Drawable track = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_track, null);
+            final Drawable trackActive = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_switch_track_active, null);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 vibrationEffect1 = VibrationEffect.createOneShot(100, VibrationEffect.EFFECT_HEAVY_CLICK);
@@ -169,19 +234,35 @@ public class DrivingActivity extends AppCompatActivity {
 
             if(isChecked) {
                 car.start();
+                sw.setThumbDrawable(thumbActive);
+                sw.setTrackDrawable(trackActive);
+                speedometer.setVisibility(View.VISIBLE);
+                cameraView.setVisibility(View.VISIBLE);
+                joystick.setVisibility(View.VISIBLE);
+                micButton.setVisibility(View.VISIBLE);
+                backButton.setVisibility(View.INVISIBLE);
             } else {
                 car.stop();
+                sw.setThumbDrawable(thumb);
+                sw.setTrackDrawable(track);
+                speedometer.setVisibility(View.INVISIBLE);
+                cameraView.setVisibility(View.INVISIBLE);
+                joystick.setVisibility(View.INVISIBLE);
+                micButton.setVisibility(View.INVISIBLE);
+                backButton.setVisibility(View.VISIBLE);
+
+
             }
         });
 
         micButton.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                micButton.setImageResource(R.drawable.ic_mic_black_off);
+                micButton.setImageResource(R.drawable.ic_mic);
                 speechListener.stop();
             }
 
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                micButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                micButton.setImageResource(R.drawable.ic_mic_active);
                 speechListener.start();
             }
 
@@ -230,7 +311,6 @@ public class DrivingActivity extends AppCompatActivity {
         int speed = (int) (yPercent * -100);
 
         if (car.getStatus() == ACTIVE) {
-            System.out.println(angle);
             car.setSteeringAngle(angle);
             car.setSpeed(speed);
         }
@@ -296,7 +376,7 @@ public class DrivingActivity extends AppCompatActivity {
     }
 
     private void onSpeechResults(Bundle bundle) {
-        micButton.setImageResource(R.drawable.ic_mic_black_off);
+        micButton.setImageResource(R.drawable.ic_mic);
 
         final List<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
@@ -305,7 +385,7 @@ public class DrivingActivity extends AppCompatActivity {
         }
 
         final String command = data.get(0);
-
+        System.out.println(data.get(0));
         final String[] commandParts = command.trim().split(" ");
 
         if (commandParts.length == 1) {
@@ -322,7 +402,14 @@ public class DrivingActivity extends AppCompatActivity {
             if (!task.isSuccessful()) {
                 Log.e("ERROR", "Error getting data");
             } else {
+                DataSnapshot getResult = task.getResult();
+                if (getResult == null) {
+                    return;
+                }
                 Number fetchedSens = (Number) task.getResult().getValue();
+                if (fetchedSens == null) {
+                    return;
+                }
                 drivingSensitivity = fetchedSens.floatValue();
             }
         });

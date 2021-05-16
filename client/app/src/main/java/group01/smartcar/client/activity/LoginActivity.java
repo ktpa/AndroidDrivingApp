@@ -17,6 +17,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -119,14 +121,30 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
             // Check if a user is already logged into the account
-            databaseReference.child("users/" + firebaseAuth.getCurrentUser().getUid() + "/isLoggedIn")
+            FirebaseUser signedInUser = firebaseAuth.getCurrentUser();
+            if (signedInUser == null) {
+                Log.e("ERROR", "Error getting data");
+                return;
+            }
+
+            databaseReference.child("users/" + signedInUser.getUid() + "/isLoggedIn")
                     .get().addOnCompleteListener(dbTask -> {
                 if (!dbTask.isSuccessful()) {
                     Log.e("ERROR", "Error getting data");
                 } else {
                     Object userSession = "";
+                    DataSnapshot result = dbTask.getResult();
+
+                    if (result == null) {
+                        Log.e("ERROR", "Error getting data");
+                        return;
+                    }
+
                     if (dbTask.getResult().exists()) {
                         userSession = dbTask.getResult().getValue();
+                        if (userSession == null) {
+                            userSession = "";
+                        }
                     }
 
                     if (!(userSession.equals(android_id) || userSession.equals(""))) {
@@ -162,7 +180,6 @@ public class LoginActivity extends AppCompatActivity {
             });
         });
     }
-
 
     private void loadBackground() {
         videoBackground = findViewById(R.id.videoView);
