@@ -145,6 +145,14 @@ public class UserMenuActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+        if (firebaseUser != null) {
+            savedUserSession.put("isLoggedIn", "");
+            databaseReference.child
+                    ("users/" + firebaseUser.getUid())
+                    .updateChildren(savedUserSession);
+            FirebaseAuth.getInstance().signOut();
+        }
+
         if (!batteryRenderer.isCancelled()) {
             batteryRenderer.cancel(true);
         }
@@ -246,14 +254,19 @@ public class UserMenuActivity extends AppCompatActivity {
 
     private void onLogoutButtonClick(View view) {
         // TODO: Actually log out and pass Toast to next screen
-        savedUserSession.put("isLoggedIn", "");
-        databaseReference.child
-                ("users/" + firebaseUser.getUid())
-                .updateChildren(savedUserSession);
-        FirebaseAuth.getInstance().signOut();
+        if (firebaseUser == null) {
+            final Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        } else {
+            savedUserSession.put("isLoggedIn", "");
+            databaseReference.child
+                    ("users/" + firebaseUser.getUid())
+                    .updateChildren(savedUserSession);
+            FirebaseAuth.getInstance().signOut();
 
-        final Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+            final Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
         finish();
     }
 
