@@ -145,14 +145,6 @@ public class UserMenuActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (firebaseUser != null) {
-            savedUserSession.put("isLoggedIn", "");
-            databaseReference.child
-                    ("users/" + firebaseUser.getUid())
-                    .updateChildren(savedUserSession);
-            FirebaseAuth.getInstance().signOut();
-        }
-
         if (!batteryRenderer.isCancelled()) {
             batteryRenderer.cancel(true);
         }
