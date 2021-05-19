@@ -1,4 +1,4 @@
-package group01.smartcar.client;
+package group01.smartcar.client.speech;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,22 +6,19 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.widget.ImageView;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
-public class SpeechControl {
+public class SpeechListener {
 
-
-    private SpeechRecognizer speechRecognizer;
+    private final SpeechRecognizer speechRecognizer;
     private final Intent speechRecognizerIntent;
+
     private ResultsCallback resultsCallback;
 
-
-    public SpeechControl(Context context){
-
+    public SpeechListener(Context context) {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+
         speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
@@ -74,10 +71,9 @@ public class SpeechControl {
 
             }
         });
-
     }
 
-    public void start(){
+    public void start() {
         speechRecognizer.startListening(speechRecognizerIntent);
     }
 
@@ -93,7 +89,7 @@ public class SpeechControl {
         this.resultsCallback = resultsCallback;
     }
 
-    interface ResultsCallback{
+    public interface ResultsCallback{
         void onResults(Bundle bundle);
     }
 }

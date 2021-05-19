@@ -4,140 +4,128 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/BG"
-    tools:context=".MainActivity">
+    android:background="@color/driveBG"
+    tools:context=".activity.LoginActivity">
 
     <ImageView
-        android:id="@+id/backRectTop"
+        android:id="@+id/dashboard"
         android:layout_width="match_parent"
-        android:layout_height="285dp"
-        android:src="@drawable/grey_curved_rectangle_with_border"
+        android:layout_height="300dp"
         android:translationZ="1dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toTopOf="@+id/joystickView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:srcCompat="@drawable/ic_dashboard"
+        tools:layout_editor_absoluteX="0dp" />
 
     <ImageView
-        android:id="@+id/backRectMid"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:src="@drawable/grey_curved_rectangle_with_border"
-        android:translationZ="5dp"
-        android:elevation="5dp"
-        app:layout_constraintBottom_toTopOf="@id/backRectBot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backRectTop"
-        app:layout_constraintVertical_bias="0.475" />
-
-    <ImageView
-        android:id="@+id/backRectBot"
-        android:layout_width="match_parent"
-        android:layout_height="302dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginTop="0dp"
-        android:src="@drawable/grey_curved_rectangle_with_border"
-        android:translationZ="1dp"
-        android:layout_margin="6dp"
+        android:id="@+id/joystick"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="75dp"
+        android:translationZ="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backRectMid"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_knob" />
+
+
+    <ImageView
+        android:id="@+id/backbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_marginBottom="20dp"
+        android:translationZ="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_exit_button" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        android:layout_marginTop="25dp"
         android:layout_weight="0.3"
         android:contentDescription="cameraView"
         android:elevation="6dp"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectTop"
-        app:layout_constraintTop_toTopOf="@+id/backRectTop" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <group01.smartcar.client.Speedometer
-        android:id="@+id/fancySpeedometer"
-        android:layout_width="140dp"
+    <group01.smartcar.client.view.ProximityIndicator
+        android:id="@+id/proximitySensor"
+        android:layout_width="100dp"
         android:layout_height="140dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
-        app:layout_constraintStart_toStartOf="@+id/backRectMid"
-        app:layout_constraintTop_toTopOf="@+id/backRectMid"
-        app:layout_constraintVertical_bias="1.0" />
-    <TextView
-        android:id="@+id/simpleSpeedometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="56dp"
-        android:fontFamily="sans-serif-medium"
-        android:textSize="32dp"
-        android:translationZ="6dp"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="@id/backRectMid"
-        app:layout_constraintTop_toTopOf="@id/backRectMid"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/fancySpeedometer"
+        app:layout_constraintEnd_toEndOf="@+id/fancySpeedometer"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="@+id/fancySpeedometer"
+        app:layout_constraintTop_toTopOf="@+id/fancySpeedometer"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <group01.smartcar.client.view.Speedometer
+        android:id="@+id/fancySpeedometer"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="253dp"
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/backbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Switch
         android:id="@+id/drive_park_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/gearbox_vertical_background"
+        android:layout_marginBottom="10dp"
         android:elevation="6dp"
-        android:rotation="90"
-        android:scrollbarSize="4dp"
-        android:switchMinWidth="120dp"
-        android:track="@color/grey"
+        android:switchMinWidth="100dp"
+        android:track="@drawable/ic_switch_track"
+        android:thumb="@drawable/ic_switch_thumb"
         android:translationZ="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectMid"
+        app:layout_constraintBottom_toBottomOf="@+id/dashboard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/backRectMid"
-        app:layout_constraintVertical_bias="0.716" />
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <ImageView
         android:id="@+id/micButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:backgroundTint="#F9F8FA"
-        android:paddingRight="10dp"
-        android:translationZ="6dp"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:translationZ="999dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_mic_black_off" />
+        app:layout_constraintTop_toBottomOf="@+id/fancySpeedometer"
+        app:srcCompat="@drawable/ic_mic" />
 
-    <group01.smartcar.client.JoystickView
-        android:id="@+id/joystickView2"
-        android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_margin="12dp"
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="125dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="sans-serif-medium"
+        android:format24Hour="H:mm"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:translationZ="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <ImageView
+        android:id="@+id/battery_image"
+        android:layout_width="55dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="125dp"
         android:alpha="1"
-        android:elevation="1dp"
-        android:translationZ="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/backRectBot"
-        app:layout_constraintTop_toTopOf="@+id/backRectBot"
-        tools:layout_editor_absoluteX="12dp" />
-
+        android:rotation="90"
+        android:translationZ="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

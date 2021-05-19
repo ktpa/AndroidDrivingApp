@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:rotation="0"
-    tools:context=".MainActivity">
+    tools:context=".activity.LoginActivity">
 
     <VideoView
         android:id="@+id/videoView"
@@ -80,9 +80,7 @@
         android:layout_marginTop="48dp"
         android:background="@drawable/transparent"
         android:drawablePadding="2dp"
-        android:gravity="center|left"
-        android:paddingStart="33dp"
-        android:paddingLeft="33dp"
+        android:gravity="center"
         android:text="@string/start_your_engines"
         android:textColor="#ffffff"
         app:backgroundTint="#3B83EF"

@@ -25,7 +25,9 @@ namespace mqtt_topic
     const auto CONTROL_GLOBAL = "/smartcar/control/#";
     const auto CONTROL_SPEED = "/smartcar/control/speed";
     const auto CONTROL_STEERING = "/smartcar/control/steering";
-    const auto CONTROL_SPEED_OUT = "/smartcar/control/speedMS";
+    const auto TELEMETRY_SPEED = "/smartcar/telemetry/speed";
+    const auto TELEMETRY_FRONT_ULTRASONIC = "/smartcar/telemetry/frontUltrasonic";
+    const auto TELEMETRY_BACK_INFRARED = "/smartcar/telemetry/backInfrared";
     const auto CAMERA = "/smartcar/camera";
 }
 
@@ -231,7 +233,39 @@ void publishCameraFrame()
 
 void publishCarSpeed()
 {
-      mqtt.publish(mqtt_topic::CONTROL_SPEED_OUT, String(car.getSpeed()));
+      mqtt.publish(mqtt_topic::TELEMETRY_SPEED, String(car.getSpeed()));
+}
+
+void publishFrontUltrasonic()
+{
+#ifdef __SMCE__
+    const long distance = frontUSSensor.getDistance();
+    static long previousDistance = -1;
+
+    if (distance == previousDistance) {
+        return;
+    }
+
+    previousDistance = distance;
+
+    mqtt.publish(mqtt_topic::TELEMETRY_FRONT_ULTRASONIC, String(distance));
+#endif
+}
+
+void publishBackInfrared()
+{
+#ifdef __SMCE__
+    const long distance = backIRSensor.getDistance();
+    static long previousDistance = -1;
+
+    if (distance == previousDistance) {
+        return;
+    }
+
+    previousDistance = distance;
+
+    mqtt.publish(mqtt_topic::TELEMETRY_BACK_INFRARED, String(distance));
+#endif
 }
 
 void publishWithTimer(){
@@ -243,6 +277,8 @@ void publishWithTimer(){
         previousFrame = currentTime;
         publishCameraFrame();
         publishCarSpeed();
+        publishFrontUltrasonic();
+        publishBackInfrared();
     }
 #endif
 

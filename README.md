@@ -4,7 +4,7 @@
 
 ## What you are going to make?
 
-We are going to build a driverless car, with voice recognition capabilities.
+We are going to build a remotely drivable car, with voice recognition capabilities.
 
 ---
 
