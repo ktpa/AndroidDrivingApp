@@ -12,8 +12,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run unit tests
         run: ./gradlew test
-      - name: Android Emulator
-        uses: vgaidarji/android-github-actions-emulator@v1.0.1
 
   android_tests:
     runs-on: macos-10.15
@@ -26,3 +24,5 @@ jobs:
           api-level: 29
           working-directory: ./client
           script: ./gradlew connectedCheck
+      - name: Android Emulator
+        uses: vgaidarji/android-github-actions-emulator@v1.0.1
