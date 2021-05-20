@@ -146,6 +146,8 @@ public class DrivingActivity extends AppCompatActivity {
         joystick.setVisibility(View.INVISIBLE);
         micButton.setVisibility(View.INVISIBLE);
         proximityIndicator.setVisibility(View.VISIBLE);
+        proximityIndicator.setZOrderMediaOverlay(true);
+        proximityIndicator.setAlpha(0.5f);
     }
 
 

@@ -73,7 +73,7 @@
         android:id="@+id/proximitySensor"
         android:layout_width="100dp"
         android:layout_height="140dp"
-        android:translationZ="998dp"
+        android:translationZ="999dp"
         app:layout_constraintBottom_toBottomOf="@+id/fancySpeedometer"
         app:layout_constraintEnd_toEndOf="@+id/fancySpeedometer"
         app:layout_constraintHorizontal_bias="0.501"
