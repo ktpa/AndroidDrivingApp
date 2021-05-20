@@ -8,6 +8,20 @@
     tools:context=".activity.LoginActivity">
 
     <ImageView
+        android:id="@+id/speedometerOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="253dp"
+        android:translationZ="999dp"
+        app:layout_constraintBottom_toTopOf="@+id/backbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:srcCompat="@drawable/speedometer_overlay"/>
+
+    <ImageView
         android:id="@+id/dashboard"
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -41,6 +55,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_exit_button" />
 
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
@@ -58,6 +73,7 @@
         android:id="@+id/proximitySensor"
         android:layout_width="100dp"
         android:layout_height="140dp"
+        android:translationZ="998dp"
         app:layout_constraintBottom_toBottomOf="@+id/fancySpeedometer"
         app:layout_constraintEnd_toEndOf="@+id/fancySpeedometer"
         app:layout_constraintHorizontal_bias="0.501"
@@ -127,5 +143,7 @@
         android:translationZ="6dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

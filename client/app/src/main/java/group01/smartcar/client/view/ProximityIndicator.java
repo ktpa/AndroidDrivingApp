@@ -52,7 +52,7 @@ public class ProximityIndicator extends SurfaceView implements SurfaceHolder.Cal
 
         getHolder().addCallback(this);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        setZOrderOnTop(true);
+        //setZOrderOnTop(true);
     }
 
     public ProximityIndicator(Context context, AttributeSet attrs) {
@@ -60,7 +60,7 @@ public class ProximityIndicator extends SurfaceView implements SurfaceHolder.Cal
 
         getHolder().addCallback(this);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        setZOrderOnTop(true);
+        //setZOrderOnTop(true);
     }
 
     public ProximityIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -68,7 +68,7 @@ public class ProximityIndicator extends SurfaceView implements SurfaceHolder.Cal
 
         getHolder().addCallback(this);
         getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        setZOrderOnTop(true);
+        //setZOrderOnTop(true);
     }
 
     @Override

@@ -77,6 +77,7 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView cameraView;
     private Speedometer speedometer;
     private ProximityIndicator proximityIndicator;
+    private ImageView speedometerOverlay;
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
@@ -107,6 +108,7 @@ public class DrivingActivity extends AppCompatActivity {
 
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
+        speedometerOverlay = findViewById(R.id.speedometerOverlay);
         proximityIndicator = findViewById(R.id.proximitySensor);
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
@@ -140,11 +142,10 @@ public class DrivingActivity extends AppCompatActivity {
         proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximityIndicator::update);
         batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
 
-        speedometer.setVisibility(View.INVISIBLE);
-        proximityIndicator.setVisibility(View.INVISIBLE);
         cameraView.setVisibility(View.INVISIBLE);
         joystick.setVisibility(View.INVISIBLE);
         micButton.setVisibility(View.INVISIBLE);
+        proximityIndicator.setVisibility(View.VISIBLE);
     }
 
 
@@ -270,10 +271,7 @@ public class DrivingActivity extends AppCompatActivity {
                 car.start();
                 sw.setThumbDrawable(thumbActive);
                 sw.setTrackDrawable(trackActive);
-                speedometer.setAlpha(0f);
-                speedometer.setVisibility(View.VISIBLE);
-                proximityIndicator.setAlpha(0f);
-                proximityIndicator.setVisibility(View.VISIBLE);
+                speedometerOverlay.setAlpha(1f);
                 cameraView.setAlpha(0f);
                 cameraView.setVisibility(View.VISIBLE);
                 joystick.setAlpha(0f);
@@ -293,21 +291,15 @@ public class DrivingActivity extends AppCompatActivity {
                 sw.setThumbDrawable(thumb);
                 sw.setTrackDrawable(track);
 
-
-                speedometer.animate()
-                        .alpha(0f)
-                        .setDuration(100)
-                        .setListener(null);
-                proximityIndicator.animate()
-                        .alpha(0f)
-                        .setDuration(100)
-                        .setListener(null);
-                proximityIndicator.setVisibility(View.INVISIBLE);
+                speedometerOverlay.animate()
+                        .alpha(1f)
+                        .setDuration(1600)
+                        .setListener(null)
+                        .withEndAction(hide());
                 cameraView.animate()
                         .alpha(0f)
                         .setDuration(800)
-                        .setListener(null)
-                        .withEndAction(hide());
+                        .setListener(null);
                 joystick.animate()
                         .alpha(0f)
                         .setDuration(800)
@@ -370,7 +362,6 @@ public class DrivingActivity extends AppCompatActivity {
         return(new Runnable() {
             @Override
             public void run() {
-                speedometer.setVisibility(View.INVISIBLE);
                 cameraView.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.INVISIBLE);
                 micButton.setVisibility(View.INVISIBLE);
@@ -388,13 +379,9 @@ public class DrivingActivity extends AppCompatActivity {
             @Override
             public void run() {
                 backButton.setVisibility(View.INVISIBLE);
-                speedometer.animate()
-                        .alpha(1f)
-                        .setDuration(500)
-                        .setListener(null);
-                proximityIndicator.animate()
-                        .alpha(1f)
-                        .setDuration(500)
+                speedometerOverlay.animate()
+                        .alpha(0f)
+                        .setDuration(1600)
                         .setListener(null);
                 cameraView.animate()
                         .alpha(1f)
