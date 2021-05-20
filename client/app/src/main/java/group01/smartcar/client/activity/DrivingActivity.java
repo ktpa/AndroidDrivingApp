@@ -370,7 +370,6 @@ public class DrivingActivity extends AppCompatActivity {
         return(new Runnable() {
             @Override
             public void run() {
-
                 speedometer.setVisibility(View.INVISIBLE);
                 cameraView.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.INVISIBLE);
@@ -391,11 +390,11 @@ public class DrivingActivity extends AppCompatActivity {
                 backButton.setVisibility(View.INVISIBLE);
                 speedometer.animate()
                         .alpha(1f)
-                        .setDuration(100)
+                        .setDuration(500)
                         .setListener(null);
                 proximityIndicator.animate()
                         .alpha(1f)
-                        .setDuration(100)
+                        .setDuration(500)
                         .setListener(null);
                 cameraView.animate()
                         .alpha(1f)
