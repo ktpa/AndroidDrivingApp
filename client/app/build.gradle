@@ -24,6 +24,8 @@ android {
         buildConfigField("String", "MQTT_CLIENT_ID", secrets['MQTT_CLIENT_ID'])
         buildConfigField("String", "MQTT_USERNAME", secrets['MQTT_USERNAME'])
         buildConfigField("String", "MQTT_PASSWORD", secrets['MQTT_PASSWORD'])
+        buildConfigField("String", "LOGIN_TEST_USERNAME", secrets['LOGIN_TEST_USERNAME'])
+        buildConfigField("String", "LOGIN_TEST_PASSWORD", secrets['LOGIN_TEST_PASSWORD'])
     }
 
     buildTypes {

@@ -16,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import group01.smartcar.client.R;
+import group01.smartcar.client.internal.resources.Secrets;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -44,7 +45,7 @@ public class LoginActivityTest {
                                         0),
                                 2),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("gussjodije@student.gu.se"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText(Secrets.LoginTestCredentials.getLoginTestUsername()), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.password_textfield),
@@ -54,7 +55,7 @@ public class LoginActivityTest {
                                         0),
                                 3),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("password123!"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText(Secrets.LoginTestCredentials.getLoginTestPassword()), closeSoftKeyboard());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.login_button), withText("Start your engines"),
