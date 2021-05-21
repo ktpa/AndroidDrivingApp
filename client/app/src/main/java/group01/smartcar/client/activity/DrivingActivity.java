@@ -51,7 +51,7 @@ import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
-// 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
+// Immersive view adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingActivity extends AppCompatActivity {
 
@@ -84,7 +84,7 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView batteryImage;
     private ImageView backButton;
 
-    private int shortAnimationDuration;
+    private static final int animationDuration = 400;
 
     private SmartCarVoiceControl voiceControl;
 
@@ -119,9 +119,6 @@ public class DrivingActivity extends AppCompatActivity {
         animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
         notSetInit = true;
         joystickRadius = 0;
-
-        shortAnimationDuration = getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
 
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -268,8 +265,6 @@ public class DrivingActivity extends AppCompatActivity {
             }
 
             if(isChecked) {
-                // this is where we animoot
-                Log.d("TAG", "registerComponentCallbacks: " + shortAnimationDuration);
                 car.start();
                 sw.setThumbDrawable(thumbActive);
                 sw.setTrackDrawable(trackActive);
@@ -284,7 +279,7 @@ public class DrivingActivity extends AppCompatActivity {
 
                 backButton.animate()
                         .alpha(0f)
-                        .setDuration(400)
+                        .setDuration(animationDuration)
                         .setListener(null)
                         .withEndAction(show());
 
@@ -295,20 +290,20 @@ public class DrivingActivity extends AppCompatActivity {
 
                 speedometerOverlay.animate()
                         .alpha(1f)
-                        .setDuration(1600)
+                        .setDuration(animationDuration * 4)
                         .setListener(null)
                         .withEndAction(hide());
                 cameraView.animate()
                         .alpha(0f)
-                        .setDuration(800)
+                        .setDuration(animationDuration * 2)
                         .setListener(null);
                 joystick.animate()
                         .alpha(0f)
-                        .setDuration(800)
+                        .setDuration(animationDuration * 2)
                         .setListener(null);
                 micButton.animate()
                         .alpha(0f)
-                        .setDuration(800)
+                        .setDuration(animationDuration * 2)
                         .setListener(null);
 
 
@@ -370,7 +365,7 @@ public class DrivingActivity extends AppCompatActivity {
                 backButton.setVisibility(View.VISIBLE);
                 backButton.animate()
                         .alpha(1f)
-                        .setDuration(400)
+                        .setDuration(animationDuration)
                         .setListener(null);
             }
         });
@@ -383,19 +378,19 @@ public class DrivingActivity extends AppCompatActivity {
                 backButton.setVisibility(View.INVISIBLE);
                 speedometerOverlay.animate()
                         .alpha(0f)
-                        .setDuration(1600)
+                        .setDuration(animationDuration * 4)
                         .setListener(null);
                 cameraView.animate()
                         .alpha(1f)
-                        .setDuration(2000)
+                        .setDuration(animationDuration * 5)
                         .setListener(null);
                 joystick.animate()
                         .alpha(1f)
-                        .setDuration(800)
+                        .setDuration(animationDuration * 2)
                         .setListener(null);
                 micButton.animate()
                         .alpha(1f)
-                        .setDuration(1200)
+                        .setDuration(animationDuration * 3)
                         .setListener(null);
             }
         });
