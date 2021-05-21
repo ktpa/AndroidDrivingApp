@@ -51,7 +51,7 @@ import group01.smartcar.client.view.Speedometer;
 
 import static group01.smartcar.client.SmartCar.Status.ACTIVE;
 
-// 78 to 112 adapted from https://developer.android.com/training/system-ui/immersive .
+// Immersive view adapted from https://developer.android.com/training/system-ui/immersive .
 
 public class DrivingActivity extends AppCompatActivity {
 
@@ -77,11 +77,14 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView cameraView;
     private Speedometer speedometer;
     private ProximityIndicator proximityIndicator;
+    private ImageView speedometerOverlay;
     private Vibrator vibrator;
     private ImageView micButton;
     private SpeechListener speechListener;
     private ImageView batteryImage;
     private ImageView backButton;
+
+    private static final int animationDuration = 400;
 
     private SmartCarVoiceControl voiceControl;
 
@@ -105,6 +108,7 @@ public class DrivingActivity extends AppCompatActivity {
 
         cameraView = findViewById(R.id.imageView);
         speedometer = findViewById(R.id.fancySpeedometer);
+        speedometerOverlay = findViewById(R.id.speedometerOverlay);
         proximityIndicator = findViewById(R.id.proximitySensor);
         micButton = findViewById(R.id.micButton);
         joystick = findViewById(R.id.joystick);
@@ -115,6 +119,7 @@ public class DrivingActivity extends AppCompatActivity {
         animJoystickX = new SpringAnimation(joystick, DynamicAnimation.TRANSLATION_X, 0);
         notSetInit = true;
         joystickRadius = 0;
+
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -134,11 +139,12 @@ public class DrivingActivity extends AppCompatActivity {
         proximitySensorUpdater = SmartCarApplication.getTaskExecutor().scheduleTask(proximityIndicator::update);
         batteryRenderer = SmartCarApplication.getTaskExecutor().scheduleTask(this::renderBatteryLevel, 5000);
 
-        speedometer.setVisibility(View.INVISIBLE);
-        proximityIndicator.setVisibility(View.INVISIBLE);
         cameraView.setVisibility(View.INVISIBLE);
         joystick.setVisibility(View.INVISIBLE);
         micButton.setVisibility(View.INVISIBLE);
+        proximityIndicator.setVisibility(View.VISIBLE);
+        proximityIndicator.setZOrderMediaOverlay(true);
+        proximityIndicator.setAlpha(0.5f);
     }
 
 
@@ -262,22 +268,45 @@ public class DrivingActivity extends AppCompatActivity {
                 car.start();
                 sw.setThumbDrawable(thumbActive);
                 sw.setTrackDrawable(trackActive);
-                speedometer.setVisibility(View.VISIBLE);
-                proximityIndicator.setVisibility(View.VISIBLE);
+                speedometerOverlay.setAlpha(1f);
+                cameraView.setAlpha(0f);
                 cameraView.setVisibility(View.VISIBLE);
+                joystick.setAlpha(0f);
                 joystick.setVisibility(View.VISIBLE);
+                micButton.setAlpha(0f);
                 micButton.setVisibility(View.VISIBLE);
-                backButton.setVisibility(View.INVISIBLE);
+                backButton.setAlpha(1f);
+
+                backButton.animate()
+                        .alpha(0f)
+                        .setDuration(animationDuration)
+                        .setListener(null)
+                        .withEndAction(show());
+
             } else {
                 car.stop();
                 sw.setThumbDrawable(thumb);
                 sw.setTrackDrawable(track);
-                speedometer.setVisibility(View.INVISIBLE);
-                proximityIndicator.setVisibility(View.INVISIBLE);
-                cameraView.setVisibility(View.INVISIBLE);
-                joystick.setVisibility(View.INVISIBLE);
-                micButton.setVisibility(View.INVISIBLE);
-                backButton.setVisibility(View.VISIBLE);
+
+                speedometerOverlay.animate()
+                        .alpha(1f)
+                        .setDuration(animationDuration * 4)
+                        .setListener(null)
+                        .withEndAction(hide());
+                cameraView.animate()
+                        .alpha(0f)
+                        .setDuration(animationDuration * 2)
+                        .setListener(null);
+                joystick.animate()
+                        .alpha(0f)
+                        .setDuration(animationDuration * 2)
+                        .setListener(null);
+                micButton.animate()
+                        .alpha(0f)
+                        .setDuration(animationDuration * 2)
+                        .setListener(null);
+
+
             }
         });
 
@@ -325,6 +354,47 @@ public class DrivingActivity extends AppCompatActivity {
             });
     }
 
+
+    private Runnable hide() {
+        return(new Runnable() {
+            @Override
+            public void run() {
+                cameraView.setVisibility(View.INVISIBLE);
+                joystick.setVisibility(View.INVISIBLE);
+                micButton.setVisibility(View.INVISIBLE);
+                backButton.setVisibility(View.VISIBLE);
+                backButton.animate()
+                        .alpha(1f)
+                        .setDuration(animationDuration)
+                        .setListener(null);
+            }
+        });
+    }
+
+    private Runnable show() {
+        return(new Runnable() {
+            @Override
+            public void run() {
+                backButton.setVisibility(View.INVISIBLE);
+                speedometerOverlay.animate()
+                        .alpha(0f)
+                        .setDuration(animationDuration * 4)
+                        .setListener(null);
+                cameraView.animate()
+                        .alpha(1f)
+                        .setDuration(animationDuration * 5)
+                        .setListener(null);
+                joystick.animate()
+                        .alpha(1f)
+                        .setDuration(animationDuration * 2)
+                        .setListener(null);
+                micButton.animate()
+                        .alpha(1f)
+                        .setDuration(animationDuration * 3)
+                        .setListener(null);
+            }
+        });
+    }
 
     private void setInit() {
         joystickInitX = joystick.getX();
