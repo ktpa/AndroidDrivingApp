@@ -28,4 +28,15 @@ public final class Secrets {
             return BuildConfig.MQTT_PASSWORD;
         }
     }
+
+    public static final class LoginTestCredentials {
+
+        private  LoginTestCredentials() {
+        }
+
+        public static String getLoginTestUsername() { return BuildConfig.LOGIN_TEST_USERNAME; }
+
+        public static String getLoginTestPassword() { return BuildConfig.LOGIN_TEST_PASSWORD; }
+
+    }
 }
