@@ -11,8 +11,10 @@ public class StopCommand implements VoiceControlCommand {
     }
 
     @Override
-    public void execute(SmartCar smartCar, String... parameters) {
+    public boolean execute(SmartCar smartCar, String... parameters) {
         smartCar.setSpeed(0);
         smartCar.setSteeringAngle(0);
+
+        return true;
     }
 }

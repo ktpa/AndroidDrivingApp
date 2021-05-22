@@ -1,12 +1,22 @@
 package group01.smartcar.client.internal.speech.commands;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import group01.smartcar.client.SmartCar;
 import group01.smartcar.client.internal.speech.VoiceControlCommand;
 
 public class TurnCommand implements VoiceControlCommand {
+
+    private final Set<String> parameters = new HashSet<String>() {
+        {
+        add("left");
+        add("right");
+        }
+    };
+
+    private final Set<String> aliases = Collections.singleton("lean");
 
     @Override
     public String getName() {
@@ -14,14 +24,24 @@ public class TurnCommand implements VoiceControlCommand {
     }
 
     @Override
-    public List<String> getAliases() {
-        return Collections.singletonList("lean");
+    public Set<String> getAliases() {
+        return aliases;
     }
 
     @Override
-    public void execute(SmartCar smartCar, String... parameters) {
-        if (parameters != null && parameters.length < 1) {
-            return;
+    public boolean hasParameters() {
+        return true;
+    }
+
+    @Override
+    public boolean hasParameter(String parameter) {
+        return parameters.contains(parameter);
+    }
+
+    @Override
+    public boolean execute(SmartCar smartCar, String... parameters) {
+        if (parameters == null || parameters.length < 1) {
+            return false;
         }
 
         switch (parameters[0]) {
@@ -31,6 +51,10 @@ public class TurnCommand implements VoiceControlCommand {
             case "right":
                 smartCar.setSteeringAngle(50);
                 break;
+            default:
+                return false;
         }
+
+        return true;
     }
 }

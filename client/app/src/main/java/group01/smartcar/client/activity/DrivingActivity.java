@@ -484,12 +484,31 @@ public class DrivingActivity extends AppCompatActivity {
         System.out.println(data.get(0));
         final String[] commandParts = command.trim().split(" ");
 
+        final boolean executionResult = executeVoiceCommand(commandParts);
+
+        // TODO: Give visual feedback for command execution result
+    }
+
+    private boolean executeVoiceCommand(String[] commandParts) {
         if (commandParts.length == 1) {
-            voiceControl.executeCommand(commandParts[0]);
-            return;
+            return voiceControl.executeCommand(commandParts[0]);
         }
 
-        voiceControl.executeCommand(commandParts[0], Arrays.copyOfRange(commandParts, 1, commandParts.length));
+        for (int i = 0; i < commandParts.length; i++) {
+            final String command = commandParts[i];
+
+            if (!voiceControl.commandExists(command)) {
+                continue;
+            }
+
+            if (i == commandParts.length - 1) {
+                return voiceControl.executeCommand(command);
+            }
+
+            return voiceControl.executeCommand(command, Arrays.copyOfRange(commandParts, i + 1, commandParts.length));
+        }
+
+        return false;
     }
 
     private void fetchSensitivityFromDatabase() {
