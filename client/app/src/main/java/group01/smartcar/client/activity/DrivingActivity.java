@@ -127,6 +127,8 @@ public class DrivingActivity extends AppCompatActivity {
         car.onCameraFrameReceived(this::onCameraFrameReceived);
         car.onSpeedUpdated(speedometer::setCurrentSpeedMS);
         car.onMotorPowerUpdated(speedometer::setMotorPowerPercentage);
+        car.onFrontSensorUpdated(this::onFrontSensorUpdated);
+        car.onBackSensorUpdated(this::onBackSensorUpdated);
 
         voiceControl = SmartCarVoiceControl.create(car);
 
@@ -469,6 +471,44 @@ public class DrivingActivity extends AppCompatActivity {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 
         cameraView.setImageBitmap(bitmap);
+    }
+
+    private void onFrontSensorUpdated(int distance) {
+        if (distance > 100) {
+            proximityIndicator.setFrontIndicatorLevel(ProximityIndicator.IndicatorLevel.LOW);
+            return;
+        }
+
+        if (distance > 50) {
+            proximityIndicator.setFrontIndicatorLevel(ProximityIndicator.IndicatorLevel.MEDIUM);
+            return;
+        }
+
+        if (distance > 20) {
+            proximityIndicator.setFrontIndicatorLevel(ProximityIndicator.IndicatorLevel.HIGH);
+            return;
+        }
+
+        proximityIndicator.setFrontIndicatorLevel(ProximityIndicator.IndicatorLevel.NO_DETECTION);
+    }
+
+    private void onBackSensorUpdated(int distance) {
+        if (distance > 30) {
+            proximityIndicator.setBackIndicatorLevel(ProximityIndicator.IndicatorLevel.LOW);
+            return;
+        }
+
+        if (distance > 20) {
+            proximityIndicator.setBackIndicatorLevel(ProximityIndicator.IndicatorLevel.MEDIUM);
+            return;
+        }
+
+        if (distance > 10) {
+            proximityIndicator.setBackIndicatorLevel(ProximityIndicator.IndicatorLevel.HIGH);
+            return;
+        }
+
+        proximityIndicator.setBackIndicatorLevel(ProximityIndicator.IndicatorLevel.NO_DETECTION);
     }
 
     private void onSpeechResults(Bundle bundle) {

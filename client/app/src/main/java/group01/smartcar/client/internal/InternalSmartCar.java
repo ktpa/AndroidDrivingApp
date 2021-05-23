@@ -28,6 +28,8 @@ public class InternalSmartCar implements SmartCar {
     private CameraFrameReceivedCallback cameraFrameReceivedCallback;
     private SpeedUpdatedCallback speedUpdatedCallback;
     private MotorPowerUpdatedCallback motorPowerUpdatedCallback;
+    private ProximitySensorUpdatedCallback frontSensorUpdatedCallback;
+    private ProximitySensorUpdatedCallback backSensorUpdatedCallback;
 
     private Status status = INACTIVE;
 
@@ -116,6 +118,16 @@ public class InternalSmartCar implements SmartCar {
         this.motorPowerUpdatedCallback = motorPowerUpdatedCallback;
     }
 
+    @Override
+    public void onFrontSensorUpdated(ProximitySensorUpdatedCallback proximitySensorUpdatedCallback) {
+        this.frontSensorUpdatedCallback = proximitySensorUpdatedCallback;
+    }
+
+    @Override
+    public void onBackSensorUpdated(ProximitySensorUpdatedCallback proximitySensorUpdatedCallback) {
+        this.backSensorUpdatedCallback = proximitySensorUpdatedCallback;
+    }
+
     private void connect() {
         try {
             if (!mqtt.isConnected()) {
@@ -142,36 +154,58 @@ public class InternalSmartCar implements SmartCar {
 
         }
 
-@Override
-public void messageArrived(String topic, MqttMessage message) {
-    if (topic.equals(SmartCarTopics.CAMERA)) {
-        final byte[] payload = message.getPayload();
-        final int[] pixels = new int[IMAGE_WIDTH * IMAGE_HEIGHT];
-        for (int ci = 0; ci < pixels.length; ++ci) {
-            final byte r = payload[3 * ci];
-            final byte g = payload[3 * ci + 1];
-            final byte b = payload[3 * ci + 2];
-            pixels[ci] = Color.rgb(r, g, b);
-        }
+    @Override
+    public void messageArrived(String topic, MqttMessage message) {
+        if (topic.equals(SmartCarTopics.CAMERA)) {
+            final byte[] payload = message.getPayload();
+            final int[] pixels = new int[IMAGE_WIDTH * IMAGE_HEIGHT];
+            for (int ci = 0; ci < pixels.length; ++ci) {
+                final byte r = payload[3 * ci];
+                final byte g = payload[3 * ci + 1];
+                final byte b = payload[3 * ci + 2];
+                pixels[ci] = Color.rgb(r, g, b);
+            }
 
-        if (cameraFrameReceivedCallback != null) {
-            cameraFrameReceivedCallback.onCameraFrameReceived(pixels, IMAGE_WIDTH, IMAGE_HEIGHT);
-        }
-    }
+            if (cameraFrameReceivedCallback != null) {
+                cameraFrameReceivedCallback.onCameraFrameReceived(pixels, IMAGE_WIDTH, IMAGE_HEIGHT);
+            }
 
-    if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)){
-        final double newSpeedMS = Double.parseDouble(message.toString());
-        if (currentSpeedMS == newSpeedMS) {
             return;
         }
 
-        currentSpeedMS = newSpeedMS;
+        if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)) {
+            final double newSpeedMS = Double.parseDouble(message.toString());
+            if (currentSpeedMS == newSpeedMS) {
+                return;
+            }
 
-        if (speedUpdatedCallback != null) {
-            speedUpdatedCallback.onSpeedUpdated(currentSpeedMS);
+            currentSpeedMS = newSpeedMS;
+
+            if (speedUpdatedCallback != null) {
+                speedUpdatedCallback.onSpeedUpdated(currentSpeedMS);
+            }
+
+            return;
+        }
+
+        if (topic.equals(SmartCarTopics.TELEMETRY_FRONT_ULTRASONIC)) {
+            final int distance = Integer.parseInt(message.toString());
+
+            if (backSensorUpdatedCallback != null) {
+                backSensorUpdatedCallback.onProximitySensorUpdated(distance);
+            }
+
+            return;
+        }
+
+        if (topic.equals(SmartCarTopics.TELEMETRY_BACK_INFRARED)) {
+            final int distance = Integer.parseInt(message.toString());
+
+            if (backSensorUpdatedCallback != null) {
+                backSensorUpdatedCallback.onProximitySensorUpdated(distance);
+            }
         }
     }
-}
 
         @Override
         public void deliveryComplete(IMqttDeliveryToken token) {

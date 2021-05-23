@@ -28,6 +28,10 @@ public interface SmartCar {
 
     void onMotorPowerUpdated(MotorPowerUpdatedCallback motorPowerUpdatedCallback);
 
+    void onFrontSensorUpdated(ProximitySensorUpdatedCallback proximitySensorUpdatedCallback);
+
+    void onBackSensorUpdated(ProximitySensorUpdatedCallback proximitySensorUpdatedCallback);
+
     static SmartCar createCar(Context context) {
         return new InternalSmartCar(context);
     }
@@ -48,5 +52,9 @@ public interface SmartCar {
 
     interface MotorPowerUpdatedCallback {
         void onMotorPowerUpdated(int power);
+    }
+
+    interface ProximitySensorUpdatedCallback {
+        void onProximitySensorUpdated(int distance);
     }
 }
