@@ -167,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
                                 UserMenuActivity.class);
 
                         LoginActivity.this.startActivityForResult(intent, 0);
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                         cancelToast(loginToast);
                         loginToast = Toast.makeText(getApplicationContext(),
@@ -219,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
     private void onDebugModeActivated(View view) {
         final Intent intent = new Intent(this, UserMenuActivity.class);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 }

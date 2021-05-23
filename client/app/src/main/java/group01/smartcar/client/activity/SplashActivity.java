@@ -34,12 +34,12 @@ public class SplashActivity extends AppCompatActivity {
         hideSystemUI();
 
         logo.animate()
-                .translationX(3200)
+                .translationX(-3200)
                 .setDuration(1000)
                 .setStartDelay(2000);
 
         lottieAnimationView.animate()
-                .translationX(3200)
+                .translationX(-3200)
                 .setDuration(1000)
                 .setStartDelay(2000);
 
@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
                     LoginActivity.class);
 
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         }, 2695);
     }
