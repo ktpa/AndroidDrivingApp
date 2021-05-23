@@ -84,7 +84,7 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView batteryImage;
     private ImageView backButton;
 
-    private static final int animationDuration = 400;
+    private static final int animationDuration = 200;
 
     private SmartCarVoiceControl voiceControl;
 
