@@ -265,6 +265,7 @@ public class UserMenuActivity extends AppCompatActivity {
     private void onDriveButtonClick(View view) {
         final Intent intent = new Intent(this, DrivingActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 
