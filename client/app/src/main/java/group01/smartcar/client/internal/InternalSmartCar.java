@@ -142,36 +142,36 @@ public class InternalSmartCar implements SmartCar {
 
         }
 
-        @Override
-        public void messageArrived(String topic, MqttMessage message) {
-            if (topic.equals(SmartCarTopics.CAMERA)) {
-                final byte[] payload = message.getPayload();
-                final int[] pixels = new int[IMAGE_WIDTH * IMAGE_HEIGHT];
-                for (int ci = 0; ci < pixels.length; ++ci) {
-                    final byte r = payload[3 * ci];
-                    final byte g = payload[3 * ci + 1];
-                    final byte b = payload[3 * ci + 2];
-                    pixels[ci] = Color.rgb(r, g, b);
-                }
-
-                if (cameraFrameReceivedCallback != null) {
-                    cameraFrameReceivedCallback.onCameraFrameReceived(pixels, IMAGE_WIDTH, IMAGE_HEIGHT);
-                }
-            }
-
-            if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)){
-                final double newSpeedMS = Double.parseDouble(message.toString());
-                if (currentSpeedMS == newSpeedMS) {
-                    return;
-                }
-
-                currentSpeedMS = newSpeedMS;
-
-                if (speedUpdatedCallback != null) {
-                    speedUpdatedCallback.onSpeedUpdated(currentSpeedMS);
-                }
-            }
+@Override
+public void messageArrived(String topic, MqttMessage message) {
+    if (topic.equals(SmartCarTopics.CAMERA)) {
+        final byte[] payload = message.getPayload();
+        final int[] pixels = new int[IMAGE_WIDTH * IMAGE_HEIGHT];
+        for (int ci = 0; ci < pixels.length; ++ci) {
+            final byte r = payload[3 * ci];
+            final byte g = payload[3 * ci + 1];
+            final byte b = payload[3 * ci + 2];
+            pixels[ci] = Color.rgb(r, g, b);
         }
+
+        if (cameraFrameReceivedCallback != null) {
+            cameraFrameReceivedCallback.onCameraFrameReceived(pixels, IMAGE_WIDTH, IMAGE_HEIGHT);
+        }
+    }
+
+    if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)){
+        final double newSpeedMS = Double.parseDouble(message.toString());
+        if (currentSpeedMS == newSpeedMS) {
+            return;
+        }
+
+        currentSpeedMS = newSpeedMS;
+
+        if (speedUpdatedCallback != null) {
+            speedUpdatedCallback.onSpeedUpdated(currentSpeedMS);
+        }
+    }
+}
 
         @Override
         public void deliveryComplete(IMqttDeliveryToken token) {
