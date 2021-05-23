@@ -62,7 +62,7 @@ SmartCar car(arduinoRuntime, control, gyroscope, leftOdometer, rightOdometer);
 
 const auto TRIGGER_PIN = 6;
 const auto ECHO_PIN = 7;
-const auto MAX_DISTANCE = 400;
+const auto ULTRASONIC_DETECTION_DISTANCE = 150;
 const unsigned short FRONT_IR_PIN = 0;
 const unsigned short BACK_IR_PIN = 3;
 
@@ -71,7 +71,7 @@ GP2D120 frontIRSensor(arduinoRuntime, FRONT_IR_PIN);
 GP2D120 backIRSensor(arduinoRuntime, BACK_IR_PIN);
 
 //measures distances in longer distances
-SR04 frontUSSensor(arduinoRuntime, TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+SR04 frontUSSensor(arduinoRuntime, TRIGGER_PIN, ECHO_PIN, ULTRASONIC_DETECTION_DISTANCE);
 
 std::vector<char> frameBuffer; // CameraCode
 
@@ -236,25 +236,11 @@ void publishCarSpeed()
       mqtt.publish(mqtt_topic::TELEMETRY_SPEED, String(car.getSpeed()));
 }
 
-const int ULTRASONIC_DETECTION_DISTANCE = 150;
-
 void publishFrontUltrasonic()
 {
 #ifdef __SMCE__
     const long distance = frontUSSensor.getDistance();
     static long previousDistance = -1;
-
-    if (distance == previousDistance) 
-    {
-        return;
-    }
-
-    previousDistance = distance;
-
-    if (distance > ULTRASONIC_DETECTION_DISTANCE)
-    {
-        return;
-    }
 
     mqtt.publish(mqtt_topic::TELEMETRY_FRONT_ULTRASONIC, String(distance));
 #endif
@@ -268,7 +254,8 @@ void publishBackInfrared()
     const long distance = backIRSensor.getDistance();
     static long previousDistance = -1;
 
-    if (distance == previousDistance) {
+    if (distance == previousDistance) 
+    {
         return;
     }
 
