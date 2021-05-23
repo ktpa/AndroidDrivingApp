@@ -26,14 +26,33 @@ public class InternalSmartCarVoiceControl implements SmartCarVoiceControl {
     }
 
     @Override
-    public void executeCommand(String commandName, String... parameters) {
-        final Optional<VoiceControlCommand> command = getCommand(commandName);
+    public boolean executeCommand(String commandName, String... parameters) {
+        return getCommand(commandName)
+            .map(command -> {
+                if (!command.hasParameters()) {
+                    return command.execute(smartCar, parameters);
+                }
 
-        if (!command.isPresent()) {
-            return;
-        }
+                final List<String> includedParameters = new ArrayList<>();
 
-        command.get().execute(smartCar, parameters);
+                for (final String parameter : parameters) {
+                    if (command.hasParameter(parameter)) {
+                        includedParameters.add(parameter);
+                    }
+                }
+
+                if (includedParameters.isEmpty()) {
+                    return false;
+                }
+
+                return command.execute(smartCar, includedParameters.toArray(new String[0]));
+            })
+            .orElse(false);
+    }
+
+    @Override
+    public boolean commandExists(String commandName) {
+        return getCommand(commandName).isPresent();
     }
 
     private Optional<VoiceControlCommand> getCommand(String identifier) {
