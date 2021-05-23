@@ -159,19 +159,19 @@ public class InternalSmartCar implements SmartCar {
                 }
             }
 
-            if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)){
-                final double newSpeedMS = Double.parseDouble(message.toString());
-                if (currentSpeedMS == newSpeedMS) {
-                    return;
-                }
-
-                currentSpeedMS = newSpeedMS;
-
-                if (speedUpdatedCallback != null) {
-                    speedUpdatedCallback.onSpeedUpdated(currentSpeedMS);
-                }
-            }
+    if(topic.equals(SmartCarTopics.TELEMETRY_SPEED)){
+        final double newSpeedMS = Double.parseDouble(message.toString());
+        if (currentSpeedMS == newSpeedMS) {
+            return;
         }
+
+        currentSpeedMS = newSpeedMS;
+
+        if (speedUpdatedCallback != null) {
+            speedUpdatedCallback.onSpeedUpdated(currentSpeedMS);
+        }
+    }
+}
 
         @Override
         public void deliveryComplete(IMqttDeliveryToken token) {
