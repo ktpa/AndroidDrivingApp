@@ -59,6 +59,7 @@ public class UserMenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideSystemUI();
         setContentView(R.layout.activity_usermenu);
 
         seekBar = findViewById(R.id.driving_sensitivity);
@@ -115,8 +116,6 @@ public class UserMenuActivity extends AppCompatActivity {
 
         batteryText = findViewById(R.id.battery_text);
         batteryImage = findViewById(R.id.battery_image);
-
-        hideSystemUI();
 
         registerComponentCallbacks();
 
