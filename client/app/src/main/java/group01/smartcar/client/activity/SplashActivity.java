@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 
@@ -18,7 +17,6 @@ import group01.smartcar.client.R;
 public class SplashActivity extends AppCompatActivity {
 
     private ImageView logo;
-    private ConstraintLayout constraintLayout;
     private LottieAnimationView lottieAnimationView;
 
     @Override
@@ -36,27 +34,24 @@ public class SplashActivity extends AppCompatActivity {
         hideSystemUI();
 
         logo.animate()
-                .translationX(1600)
+                .translationX(3200)
                 .setDuration(1000)
                 .setStartDelay(2000);
 
         lottieAnimationView.animate()
-                .translationX(1600)
+                .translationX(3200)
                 .setDuration(1000)
                 .setStartDelay(2000);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final Intent intent = new Intent(
-                        SplashActivity.this,
-                        LoginActivity.class);
+        new Handler().postDelayed(() -> {
+            final Intent intent = new Intent(
+                    SplashActivity.this,
+                    LoginActivity.class);
 
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                finish();
-            }
-        }, 3000);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            finish();
+        }, 2695);
     }
 
     private void hideSystemUI() {
