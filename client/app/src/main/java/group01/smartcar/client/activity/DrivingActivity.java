@@ -395,16 +395,7 @@ public class DrivingActivity extends AppCompatActivity {
             }
         });
     }
-
-    private Runnable micDefaultImage() {
-        return(new Runnable(){
-            public void run(){
-                micButton.setImageResource(R.drawable.ic_mic);
-                micButton.postDelayed(this::run, 3000); //set to go off again in 3 seconds.
-            }
-        });
-    }
-
+    
     private void setInit() {
         joystickInitX = joystick.getX();
         joystickInitY = joystick.getY();
