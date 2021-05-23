@@ -484,7 +484,7 @@ public class DrivingActivity extends AppCompatActivity {
             return;
         }
 
-        if (distance > 20) {
+        if (distance > 0) {
             proximityIndicator.setFrontIndicatorLevel(ProximityIndicator.IndicatorLevel.HIGH);
             return;
         }
@@ -503,7 +503,7 @@ public class DrivingActivity extends AppCompatActivity {
             return;
         }
 
-        if (distance > 10) {
+        if (distance > 0) {
             proximityIndicator.setBackIndicatorLevel(ProximityIndicator.IndicatorLevel.HIGH);
             return;
         }
