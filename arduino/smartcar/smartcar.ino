@@ -236,21 +236,31 @@ void publishCarSpeed()
       mqtt.publish(mqtt_topic::TELEMETRY_SPEED, String(car.getSpeed()));
 }
 
+const int ULTRASONIC_DETECTION_DISTANCE = 150;
+
 void publishFrontUltrasonic()
 {
 #ifdef __SMCE__
     const long distance = frontUSSensor.getDistance();
     static long previousDistance = -1;
 
-    if (distance == previousDistance) {
+    if (distance == previousDistance) 
+    {
         return;
     }
 
     previousDistance = distance;
 
+    if (distance > ULTRASONIC_DETECTION_DISTANCE)
+    {
+        return;
+    }
+
     mqtt.publish(mqtt_topic::TELEMETRY_FRONT_ULTRASONIC, String(distance));
 #endif
 }
+
+const int INFRARED_DETECTION_DISTANCE = 40;
 
 void publishBackInfrared()
 {
@@ -263,6 +273,11 @@ void publishBackInfrared()
     }
 
     previousDistance = distance;
+
+    if (distance > INFRARED_DETECTION_DISTANCE)
+    {
+        return;
+    }
 
     mqtt.publish(mqtt_topic::TELEMETRY_BACK_INFRARED, String(distance));
 #endif
