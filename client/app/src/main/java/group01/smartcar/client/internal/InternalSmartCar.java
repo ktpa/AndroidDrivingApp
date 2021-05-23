@@ -191,8 +191,8 @@ public class InternalSmartCar implements SmartCar {
         if (topic.equals(SmartCarTopics.TELEMETRY_FRONT_ULTRASONIC)) {
             final int distance = Integer.parseInt(message.toString());
 
-            if (backSensorUpdatedCallback != null) {
-                backSensorUpdatedCallback.onProximitySensorUpdated(distance);
+            if (frontSensorUpdatedCallback != null) {
+                frontSensorUpdatedCallback.onProximitySensorUpdated(distance);
             }
 
             return;
@@ -218,6 +218,8 @@ public class InternalSmartCar implements SmartCar {
         public void onSuccess(IMqttToken asyncActionToken) {
             mqtt.subscribe(SmartCarTopics.CAMERA, 1, mqttSubscriptionListener);
             mqtt.subscribe(SmartCarTopics.TELEMETRY_SPEED, 1, mqttSubscriptionListener);
+            mqtt.subscribe(SmartCarTopics.TELEMETRY_FRONT_ULTRASONIC, 1, mqttSubscriptionListener);
+            mqtt.subscribe(SmartCarTopics.TELEMETRY_BACK_INFRARED, 1, mqttSubscriptionListener);
         }
 
         @Override
