@@ -42,24 +42,18 @@ public class DrivingActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                6),
+                                7),
                         isDisplayed()));
         switch_.perform(click());
 
-        ViewInteraction view = onView(
-                allOf(withId(R.id.fancySpeedometer),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        view.check(matches(isDisplayed()));
-
         ViewInteraction imageView = onView(
-                allOf(withId(R.id.micButton),
+                allOf(withId(R.id.joystick),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         imageView.check(matches(isDisplayed()));
 
         ViewInteraction imageView2 = onView(
-                allOf(withId(R.id.joystick),
+                allOf(withId(R.id.micButton),
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         imageView2.check(matches(isDisplayed()));

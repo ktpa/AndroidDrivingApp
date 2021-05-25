@@ -23,4 +23,4 @@ jobs:
         with:
           api-level: 29
           working-directory: ./client
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck -Ptest=group01.smartcar.client.activity.LoginActivityTest
