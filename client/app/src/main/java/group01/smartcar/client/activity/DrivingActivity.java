@@ -415,6 +415,7 @@ public class DrivingActivity extends AppCompatActivity {
     private void onBackbtnClicked(View view) {
         final Intent intent = new Intent(this, UserMenuActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 
