@@ -84,7 +84,7 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView batteryImage;
     private ImageView backButton;
 
-    private static final int animationDuration = 400;
+    private static final int animationDuration = 200;
 
     private SmartCarVoiceControl voiceControl;
 
@@ -395,7 +395,7 @@ public class DrivingActivity extends AppCompatActivity {
             }
         });
     }
-
+    
     private void setInit() {
         joystickInitX = joystick.getX();
         joystickInitY = joystick.getY();
@@ -485,12 +485,39 @@ public class DrivingActivity extends AppCompatActivity {
         System.out.println(data.get(0));
         final String[] commandParts = command.trim().split(" ");
 
+        final boolean executionResult = executeVoiceCommand(commandParts);
+
+        if(executionResult){
+            micButton.setImageResource(R.drawable.ic_mic_confirm);
+            micButton.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    micButton.setImageResource(R.drawable.ic_mic);
+                }
+            }, 2000);
+        }
+    }
+
+    private boolean executeVoiceCommand(String[] commandParts) {
         if (commandParts.length == 1) {
-            voiceControl.executeCommand(commandParts[0]);
-            return;
+            return voiceControl.executeCommand(commandParts[0]);
         }
 
-        voiceControl.executeCommand(commandParts[0], Arrays.copyOfRange(commandParts, 1, commandParts.length));
+        for (int i = 0; i < commandParts.length; i++) {
+            final String command = commandParts[i];
+
+            if (!voiceControl.commandExists(command)) {
+                continue;
+            }
+
+            if (i == commandParts.length - 1) {
+                return voiceControl.executeCommand(command);
+            }
+
+            return voiceControl.executeCommand(command, Arrays.copyOfRange(commandParts, i + 1, commandParts.length));
+        }
+
+        return false;
     }
 
     private void fetchSensitivityFromDatabase() {

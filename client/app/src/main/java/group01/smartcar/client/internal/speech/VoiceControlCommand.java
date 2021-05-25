@@ -1,7 +1,7 @@
 package group01.smartcar.client.internal.speech;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import group01.smartcar.client.SmartCar;
 
@@ -9,9 +9,17 @@ public interface VoiceControlCommand {
     
     String getName();
 
-    default List<String> getAliases() {
-        return Collections.emptyList();
+    default Set<String> getAliases() {
+        return Collections.emptySet();
     }
 
-    void execute(SmartCar smartCar, String... parameters);
+    default boolean hasParameters() {
+        return false;
+    }
+
+    default boolean hasParameter(String parameter) {
+        return false;
+    }
+
+    boolean execute(SmartCar smartCar, String... parameters);
 }
