@@ -46,12 +46,6 @@ public class DrivingActivityTest {
                         isDisplayed()));
         switch_.perform(click());
 
-        ViewInteraction view = onView(
-                allOf(withId(R.id.fancySpeedometer),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        view.check(matches(isDisplayed()));
-
         ViewInteraction imageView = onView(
                 allOf(withId(R.id.joystick),
                         withParent(withParent(withId(android.R.id.content))),
