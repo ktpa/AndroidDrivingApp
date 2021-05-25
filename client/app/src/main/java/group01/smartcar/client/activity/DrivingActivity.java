@@ -84,7 +84,7 @@ public class DrivingActivity extends AppCompatActivity {
     private ImageView batteryImage;
     private ImageView backButton;
 
-    private static final int animationDuration = 400;
+    private static final int animationDuration = 200;
 
     private SmartCarVoiceControl voiceControl;
 
@@ -397,7 +397,7 @@ public class DrivingActivity extends AppCompatActivity {
             }
         });
     }
-
+    
     private void setInit() {
         joystickInitX = joystick.getX();
         joystickInitY = joystick.getY();
@@ -417,6 +417,7 @@ public class DrivingActivity extends AppCompatActivity {
     private void onBackbtnClicked(View view) {
         final Intent intent = new Intent(this, UserMenuActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         finish();
     }
 
@@ -526,7 +527,15 @@ public class DrivingActivity extends AppCompatActivity {
 
         final boolean executionResult = executeVoiceCommand(commandParts);
 
-        // TODO: Give visual feedback for command execution result
+        if(executionResult){
+            micButton.setImageResource(R.drawable.ic_mic_confirm);
+            micButton.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    micButton.setImageResource(R.drawable.ic_mic);
+                }
+            }, 2000);
+        }
     }
 
     private boolean executeVoiceCommand(String[] commandParts) {
