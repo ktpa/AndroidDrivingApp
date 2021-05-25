@@ -486,8 +486,7 @@ public class DrivingActivity extends AppCompatActivity {
 
         final boolean executionResult = executeVoiceCommand(commandParts);
 
-        // TODO: Give visual feedback for command execution result
-        if(executionResult == true){
+        if(executionResult){
             micButton.setImageResource(R.drawable.ic_mic_confirm);
             micButton.postDelayed(new Runnable() {
                 @Override
