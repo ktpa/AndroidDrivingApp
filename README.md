@@ -93,3 +93,5 @@ Mislav Milicevic (gusmilicmi@student.gu.se)
 Karl Nilsson (gusnilkaay@student.gu.se)
 
 Gregory Sastrawidjaya (gussasgr@student.gu.se)
+
+Jens Sjödin (gussjodije@student.gu.se)
