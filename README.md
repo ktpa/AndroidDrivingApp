@@ -28,6 +28,8 @@ Ultimately, in times of self isolation, our product makes the action of commutin
 
 - Android device (Android 9.0+)
 - Android Studio preinstalled on your computer
+- SMCE-gd preinstalled
+- MQTT localhost preinstalled and running
 
 ### Installation steps: 
 
@@ -36,7 +38,9 @@ Ultimately, in times of self isolation, our product makes the action of commutin
 3) Go to ```Build``` and click ```Build APK```.
 4) Locate the file and transfer it to your Android device. 
 5) Install the APK.
-6) Enjoy your AlSet!
+6) Launch SMCE-gd and compile and start up sketch
+7) Ensure MQTT is up and running
+8) Enjoy your AlSet!
 
 Clarification on how the app is operated can be found on the [Wiki](https://github.com/DIT112-V21/group-01/wiki).
 
