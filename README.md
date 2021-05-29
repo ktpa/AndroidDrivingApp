@@ -42,6 +42,18 @@ Ultimately, in times of self isolation, our product makes the action of commutin
 7) Ensure MQTT is up and running
 8) Enjoy your AlSet!
 
+### Using voice functionality on an Android Virtual Device
+1) Launch your AVD
+2) Go to Extended controls
+3) Select Microphone
+4) Toggle the option "Virtual microphone uses host audio input"
+5) Recompile the application without closing the virtual device.
+6) You should now hear a sound when you press the microphone-button from the drive-screen.
+7) Any problems can usually be solved by doing the following steps:
+
+Go to AVD Manager and select "Wipe Data" on your AVD.
+Follow "Running on an Android Virtual Device" steps.
+
 Clarification on how the app is operated can be found on the [Wiki](https://github.com/DIT112-V21/group-01/wiki).
 
 ---
