@@ -16,9 +16,9 @@ We want to simulate the experience of owning a luxury vehicle with all the bells
 
 ## What problem does it solve?
 
-COVID-19 has unquestionably affected many people's lives worldwide. Safe transportation has proven to be very difficult. AlSet offers a solution for stressed car owners who are worried about the changing circumstances of the world around them by allowing them to drive a car from the safety of their own home, wherever they want, whenever they want.
+Safe transportation has proven to be very difficult due to the ongoing COVID-19 pandemic. AlSet offers a solution for stressed car owners who are worried about the changing circumstances of the world around them by allowing them to drive a car from the safety of their own home, wherever they want, whenever they want.
 
-Ultimately, in times of self isolation, our product makes the action of commuting by yourself more attractive than using public transport. Driving a car can be a very boring task for some people, but by combining the possibilities of IoT into a well designed app, we aim to provide a driving experience that is ultimately safer, more secure, but most of all, enjoyable to the end user.
+Driving a car can be a very boring task for some people, but by combining the possibilities of IoT into a well designed app, we aim to provide a driving experience that is ultimately safer, more secure, but most of all, enjoyable to the end user. Ultimately, in times of self isolation, our product makes the action of commuting by yourself more attractive than using public transport. 
 
 ---
 
