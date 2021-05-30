@@ -26,7 +26,7 @@ Driving a car can be a very boring task for some people. But, by combining the p
 
 ### Requirements:
 
-- Android device (Version: Android 9.0+) (Reccomended: Virtual Android device)
+- Android device/emulator (Version: Android 9.0+) 
 - Android Studio preinstalled on your computer
 - SMCE-gd preinstalled
 - MQTT localhost preinstalled and running
@@ -50,7 +50,9 @@ Driving a car can be a very boring task for some people. But, by combining the p
 5) Recompile the application without closing the virtual device.
 6) You should now hear a sound when you press the microphone button from the drive-screen.
 7) Any problems can usually be solved by doing the following steps:
+    
     • Go to AVD Manager, and select "Wipe Data" on your AVD.
+    
     • Follow the "Running on an Android Virtual Device" steps.
 
 Clarification on how the app is operated can be found on the [Wiki](https://github.com/DIT112-V21/group-01/wiki).
