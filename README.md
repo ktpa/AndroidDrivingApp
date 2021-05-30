@@ -83,6 +83,10 @@ Originally, the plan was to implement AlSet with a physical Arduino car. However
 - [SmartCar API](https://platisd.github.io/smartcar_shield/) 
 - [SMCE](https://github.com/ItJustWorksTM/smce-gd)
 
+### Product Video
+
+The product video for the AlSet vehicle can be found [here](https://www.youtube.com/watch?v=U5SjewAVq1w).
+
 ---
 
 ### Development team
